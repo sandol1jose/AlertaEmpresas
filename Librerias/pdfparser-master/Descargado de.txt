@@ -1,0 +1,5 @@
+https://github.com/smalot/pdfparser
+
+
+código:
+https://parzibyte.me/blog/2019/06/16/extraer-texto-imagenes-pdf-php/

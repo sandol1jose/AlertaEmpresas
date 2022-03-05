@@ -1,0 +1,88 @@
+{
+    "id": 1,
+    "cif": "text",
+    "nombrecomercial": "text",
+    "denominaciones_sociales": "Nombre1; Nombre2; Nombre3",
+    "formajuridica": "text",
+    "objetosocial": "text",
+    "capitalsocial": "text",
+    "direccion": "text",
+    "fechaconstitucion": "09/02/2022",
+    "anuncio_borme": [
+        {
+            "numero": 1,
+            "fecha": "09/02/2022",
+            "tipo": "text",
+            "anuncio": "text"
+        },
+        {
+            "numero": 550,
+            "fecha": "09/02/2022",
+            "tipo": "text",
+            "anuncio": "text"
+        }
+    ],
+
+    "Nombramientos": [
+        {
+            "numero_borme": 550,
+            "fecha_incripcion": "27/01/2022",
+            "fecha_borme": "09/02/2022",
+            "entidades": [
+                {
+                    "entidad": "Alonzo Perez Garcia",
+                    "tipo_directio": "Adm. Unico"
+                },
+                {
+                    "entidad": "Alonzo Perez Garcia",
+                    "tipo_directio": "Consejero"
+                }
+            ]
+        }
+    ],
+
+    "Directivos":[
+        {
+            "fecha": "03/02/2022",
+            "datos":
+                {
+                    "entidad": "Alonzo Perez Garcia",
+                    "realcion": "Adm. Unico",
+                    "desde": "03/02/2022",
+                    "hasta": "03/02/2022"
+                }
+        },
+        {
+            "fecha": "03/02/2022",
+            "datos": 
+                {
+                    "entidad": "Alonzo Perez Garcia",
+                    "realcion": "Adm. Unico",
+                    "desde": "03/02/2022",
+                    "hasta": "03/02/2022"
+                }
+        }
+    ],
+
+    "Declaracion de unipersonalidad": [
+        {
+            "entidad": "Alonzo Perez Garcia",
+            "tipo_directio": "Adm. Unico",
+            "fecha_incripcion": "27/01/2022",
+            "numero_borme": 550
+        }
+    ],
+
+    "alertas":[
+        {
+            "cantidad": 10,
+            "correo_cliente": "ejmemplo@gmail.com",
+            "estado": true
+        },
+        {
+            "cantidad": 7,
+            "correo_cliente": "ejmemplo2@hotmail.com",
+            "estado": false
+        }
+    ]
+}

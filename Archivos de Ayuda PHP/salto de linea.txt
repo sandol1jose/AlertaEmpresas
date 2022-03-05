@@ -1,0 +1,15 @@
+Arreglar salto de linea
+https://github.com/smalot/pdfparser/issues/175
+
+Esto me pasa con los archivos PDF generados con MS Word.
+Una solución sucia es cambiar una línea en la función getText de la clase Object.
+
+if ($current_position_tm['y'] !== false) {
+  $delta = abs(floatval($y) - floatval($current_position_tm['y']));
+    if ($delta > 10) {
+      $text .= "\n";
+    }
+}
+Después de depurar un poco, $delta fue en algún momento 0, en algún momento> 7, por lo que cambiar la prueba a ($ delta> 7) agrega correctamente las líneas nuevas.
+
+Me imagino que esto se debe a problemas de fuente específicos, por lo que el número correcto puede variar y esto no será una solución permanente, pero podría ayudarlo a convertir archivos PDF generados por Word.

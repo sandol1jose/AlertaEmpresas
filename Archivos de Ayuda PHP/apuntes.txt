@@ -1,0 +1,53 @@
+Indices MONGODB:
+
+https://nelsoncode.medium.com/como-buscar-por-frase-especifica-b%C3%BAsqueda-de-texto-en-mongodb-efc848236a97
+Consulta Like con Index
+db.teachers.find( { $text: { $search: "\"Nelson\"" } } );
+
+
+Rendimiento PHP
+
+https://diego.com.es/rendimiento-en-php#:~:text=Si%20quieres%20que%20una%20variable,que%20lo%20hacen%20los%20objetos.
+
+
+
+Guardar y Leer fechas con Mongodb PHP
+https://www.lawebdelprogramador.com/codigo/PHP/5240-MongoDB-Guardar-y-leer-una-fecha.html
+
+
+
+
+GRUPO MONGODB
+db.empresas.aggregate([{$group: { _id:  "$anuncio_borme.tipo" } }]);
+
+db.empresas.distinct("nombre_comercial").length;
+
+
+
+
+db.empresas.find({"anuncio_borme.tipo": "Constitución", "anuncio_borme.fecha": new Date("2022-02-09")}).pretty()
+
+
+//Mostrar solo el campo
+db.empresas2.find({"anuncio_borme.numero": 62424}, {"anuncio_borme.$": 1})
+
+
+
+
+
+Consultas Like
+https://lineadecodigo.com/mongodb/consultas-mongodb-like/
+db.empresas2.find({"anuncio_borme.anuncio": /SecreNoConsj:/ }, {"anuncio_borme.$": 1});
+
+
+
+BORME
+https://www.anuncioslegales.es/que-es-el-borme
+
+
+
+
+
+Indice de un array Mongodb
+https://docs.mongodb.com/manual/reference/operator/aggregation/indexOfArray/
+db.empresas2.aggregate([{ $project: { index: { $indexOfArray: [ "$Directivos.datos.entidad", "LOZANO MARTINEZ ISAAC"] },}}])

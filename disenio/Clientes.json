@@ -1,0 +1,26 @@
+{
+    "id": 1,
+    "nombres": "text",
+    "apellidos": "text",
+    "email": "text",
+    "password": "text",
+    "verificacion":[
+        {
+            "clave": "54AS5",
+            "fecha": "09/02/2022",
+            "verificado": false
+        },
+        {
+            "clave": "789AWE",
+            "fecha": "09/02/2022",
+            "verificado": true
+        }
+    ],
+    "codigo_update_pass":[
+        {
+            "codigo": "text",
+            "fecha": "09/02/2020",
+            "confirmacion": false
+        }
+    ]
+}

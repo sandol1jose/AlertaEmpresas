@@ -1,0 +1,100 @@
+{
+"nombre_comercial": "ALBATERAPIA CUERPO Y MENTE SOCIEDAD LIMITADA",
+"anuncio_borme": [
+    {
+        "numero": 57448,
+        "fecha": "10/02/2022",
+        "tipo": "Ampliación de capital",
+        "anuncio": "Ampliación de capital.  Capital: 200.133,00 Euros. Resultante Suscrito: 4.561.229,40 Euros.  Datos registrales. T 910, L 674, F 175,S 8, H AB 15743, I/A 10 ( 1.02.22)"
+    }
+]
+}
+
+{"nombre_comercial": "ALBATERAPIA CUERPO Y MENTE SOCIEDAD LIMITADA"},
+{ $addToSet: 
+    { "anuncio_borme" :
+        {
+            "numero": 57448,
+            "fecha": "10/02/2022",
+            "tipo": "Ampliación de capital",
+            "anuncio": "Ampliación de capital.  Capital: 200.133,00 Euros. Resultante Suscrito: 4.561.229,40 Euros.  Datos registrales. T 910, L 674, F 175,S 8, H AB 15743, I/A 10 ( 1.02.22)"
+        }  
+    }
+}
+
+
+
+
+
+
+
+
+{
+    "_id" : ObjectId("6211d15716dcda4b0a52dfe2"),
+    "nombre_comercial" : "AIRE PROTESICOS SOCIEDAD LIMITADA.",
+    "anuncio_borme" : [
+            {
+                    "borme" : "BORME-A-2022-29-04",
+                    "numero" : 62424,
+                    "fecha" : ISODate("2022-02-11T00:00:00Z"),
+                    "tipo" : "Constitución",
+                    "anuncio" : "Constitución. Comienzo de operaciones: 20.01.22. Objeto social: CNAE: 3250. Las actividades de laboratorio de prótesis dental. Fabriación de instrumentos, mediante la particpación en otras sociedades con objeto idéntico o análogo. Domicilio: PLAZA MAYOR S/N Ptl.B 3 B (HUERCAL-OVERA). Capital: 3.000,00 Euros. Declaración de unipersonalidad. Socio único: ALONSO GRANERO RAMON. Nombramientos. Adm. Unico: EXPOSITO GARCIA AGUEDA. Datos registrales. T 2170 , F 11, S 8, H AL 54406, I/A 1 (27.01.22)."
+            }
+    ]
+}
+
+
+
+
+    {
+        "_id" : ObjectId("6211d16316dcda4b0a52e107"),
+        "nombre_comercial" : "PROMOCIONES URBANISTICAS LA LOMA BLANCA SOCIEDAD LIMITADA.",
+        "anuncio_borme" : [
+                {
+                        "borme" : "BORME-A-2022-23-04",
+                        "numero" : 48520,
+                        "fecha" : ISODate("2022-02-03T00:00:00Z"),
+                        "tipo" : "Nombramientos",
+                        "anuncio" : "Nombramientos. Consejero: MARTIN GARCIA GABRIEL;MARTIN GARCIA ISABEL. Presidente: MARTIN CUENCA GABRIEL. Vicepresid.: MARTIN CUENCA MANUEL. Consejero: MARTIN GARCIA GABRIEL. SecreNoConsj: LLERENA HUALDE JUAN MANUEL. VsecrNoConsj: LLERENA RUIZ JUAN MANUEL. Reelecciones. Consejero: MARTIN CUENCA GABRIEL;MARTIN CUENCA MATILDE;MARTIN CUENCA MANUEL. Modificaciones estatutarias. Artículo de los estatutos: ARTICULO 2º. OBJETO. 2.1. La sociedad tiene por objeto: La compra, venta y arrendamiento de inmuebles rústicos y urbanos. La promocion, diseño, gestión y ejecución de toda clase de promociones urbanisticas e inmobiliarias. La promoción, construccion, venta y. Otros conceptos: Modificacion texto integro de los estatutos. Cambio de objeto social. La sociedad tiene por objeto: La compra, venta y arrendamiento de inmuebles rústicos y urbanos. La promocion, diseño, gestión y ejecución de toda clase de promociones urbanisticas e inmobiliarias. La promoción, construccion, venta y arrendamiento de toda clase de edificaciones, para toda clase de u. Datos registrales. T 474 , F 165, S 8, H AL 1583, I/A 16 (24.01.22)."
+                },
+                { 
+                    "borme" : "BORME-A-2022-23-03",                         
+                    "numero" : 48508,                         
+                    "fecha" : ISODate("2022-02-03T00:00:00Z"),                         
+                    "tipo" : "Nombramientos",                         
+                    "anuncio" : "Nombramientos. Apoderado: CERDAN JIMENEZ FERNANDO. Datos registrales. T 3803 , F 99, S 8, H A 141645, I/A 7 (27.01.22)."                
+                }
+        ]
+    }
+
+
+
+
+    {
+        "_id" : ObjectId("6211d15916dcda4b0a52e0c5"),
+        "nombre_comercial" : "REPV STEADY 04 SL.",
+        "anuncio_borme" : [
+                {
+                        "borme" : "BORME-A-2022-23-03",
+                        "numero" : 48506,
+                        "fecha" : ISODate("2022-02-03T00:00:00Z"),
+                        "tipo" : "Nombramientos",
+                        "anuncio" : "Nombramientos. Apoderado: DE COS GRACIA EDUARDO ANTONIO. Datos registrales. T 4432 , F 36, S 8, H A 177522, I/A 2 (27.01.22)."
+                },
+                { 
+                    "borme" : "BORME-A-2022-23-03",                         
+                    "numero" : 48508,                         
+                    "fecha" : ISODate("2022-02-03T00:00:00Z"),                         
+                    "tipo" : "Nombramientos",                         
+                    "anuncio" : "Nombramientos. Apoderado: CERDAN JIMENEZ FERNANDO. Datos registrales. T 3803 , F 99, S 8, H A 141645, I/A 7 (27.01.22)."                
+                },
+                {
+                    "borme" : "BORME-A-2022-29-04",
+                    "numero" : 62424,
+                    "fecha" : ISODate("2022-02-11T00:00:00Z"),
+                    "tipo" : "Constitución",
+                    "anuncio" : "Constitución. Comienzo de operaciones: 20.01.22. Objeto social: CNAE: 3250. Las actividades de laboratorio de prótesis dental. Fabriación de instrumentos, mediante la particpación en otras sociedades con objeto idéntico o análogo. Domicilio: PLAZA MAYOR S/N Ptl.B 3 B (HUERCAL-OVERA). Capital: 3.000,00 Euros. Declaración de unipersonalidad. Socio único: ALONSO GRANERO RAMON. Nombramientos. Adm. Unico: EXPOSITO GARCIA AGUEDA. Datos registrales. T 2170 , F 11, S 8, H AL 54406, I/A 1 (27.01.22)."
+            
+                }
+            ]
+    }
