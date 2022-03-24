@@ -1,0 +1,9 @@
+{
+    "_id": "ObjectId",
+    "Nombre_Empresa": "text",
+    "id_empresa": "ObjectId",
+    "bormes_agregados": [
+        45653,
+        55656
+    ]
+}

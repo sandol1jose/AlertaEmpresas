@@ -22,5 +22,9 @@
             "fecha": "09/02/2020",
             "confirmacion": false
         }
+    ],
+    "alertas":[
+        "_id",
+        "_id"
     ]
 }

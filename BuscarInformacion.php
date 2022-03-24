@@ -1,48 +1,52 @@
 <?php
 $tiempo_inicio = microtime(true);
 set_time_limit(50000);
-ini_set('memory_limit', '512M');
+//ini_set('memory_limit', '512M');
+ini_set('memory_limit', '256M');
 
 include "Librerias/pdfparser-master/alt_autoload.php-dist"; //Clase para pasar pdf a texto plano
 
 //date_default_timezone_set("Europe/Madrid");
 
 //Codigo para que ignore la alerta cuando no existe un archivo
-/*set_error_handler("warning_handler", E_WARNING);
+set_error_handler("warning_handler", E_WARNING);
 function warning_handler($errno, $errstr) { 
     throw new ErrorException($errstr, 0, $errno);
-}*/
+}
 
-$desde = $_POST["desde"];
+/*$desde = $_POST["desde"];
 $hasta = $_POST["hasta"];
-/*
+
 $desde = '2022/02/17';
 $hasta = '2022/02/17';*/
 
 $NumeroEntrada = 0;//Contador de los registros en el BORME 1 - PROYECTOS 
 $borme = NULL; //borme actual;
 
-
-require 'Archivos de Ayuda PHP/conexion.php';
+//require_once($_SERVER['DOCUMENT_ROOT'] . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
+$root = str_replace('\\', '/', dirname(__DIR__));
+require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
+//require 'Archivos de Ayuda PHP/conexion.php';
 $conexion = new Conexion();
 $database = $conexion->Conectar();
 $collection = $database->empresas;
 
+$fechaActual = $_POST["fecha"];
+RecorrerXML($fechaActual);
 
 //Recorrer fechas
-$fechaInicio=strtotime($desde);
+/*$fechaInicio=strtotime($desde);
 $fechaFin=strtotime($hasta);
 unset($desde);
 unset($hasta);
 for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
     $dia = date("w", $i);
     if($dia != 0 && $dia != 6){//Verificando que no sea Sabado o Domingo
-
         $fechaActual = date("Ymd", $i);
         RecorrerXML($fechaActual);
         unset($fechaActual);
     }
-}
+}*/
 
 
 
@@ -57,7 +61,6 @@ function RecorrerXML($fecha){
         //Recorriendo xml
         $documento = simplexml_load_file($xml);
         $diario = $documento->diario->seccion[0]->emisor->item;
-        unset($xml);
         
         foreach($diario as $dia){
             //echo strval($dia["id"]) . "<br>";
@@ -84,18 +87,31 @@ function RecorrerXML($fecha){
             unset($URL);
             unset($dia); 
         }*/
+
+        global $database;
+        //$filtro = [ "_id" => new MongoDB\BSON\ObjectID("62240d2cc69d280981437b15") ];
+        $FechaMilis = new MongoDB\BSON\UTCDatetime(strtotime($fecha . " 00:00:00")*1000);
+        $documentInsert = [
+            "archivo_actualizado" => $xml,
+            "fecha" => $FechaMilis
+        ];
+        $collection2 = $database->control;
+        $Result = $collection2->insertOne($documentInsert);
+
+
         echo "FIN DEL SUMARIO";
         echo "---------------------------------------------------<br><br><br><br>";
+        unset($xml);
     } catch (Exception $e) {
         echo "Este Archivo no tiene nada<br>";
         echo $e->getMessage();
         echo $xml . "<br><br>";
         unset($e); 
         unset($xml); 
-    }    
+    }
 }
 
-//restore_error_handler();//Restaura el mensaje de alerta
+restore_error_handler();//Restaura el mensaje de alerta
 
 
 function ConvertirATexto($URL, $fecha){
@@ -217,14 +233,21 @@ function RecorrerTexto($texto, $fecha){
     unset($buscador);
     unset($i);
 }
-echo "Fase 1, el uso de memoria es de: ", round(memory_get_usage()/1024, 2), "KB";
+//echo "Fase 1, el uso de memoria es de: ", round(memory_get_usage()/1024, 2), "KB";
 
 function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
     global $borme;
     $NombreEmpresa = str_replace($NumeroEntrada . " - ", "", $NombreEmpresa);
     $NombreEmpresa = preg_replace("/\s+/", " ", trim($NombreEmpresa)); //Quitando espacios de mas
     //$Entrada = str_replace("\n", " ", $Entrada); //Quitando espacios de mas
+    //vamos a crear un ID a partir del nombre
+    $id_NombreEmpresa = str_replace(",", "", $NombreEmpresa);
+    $id_NombreEmpresa = str_replace(".", "", $id_NombreEmpresa);
+    $id_NombreEmpresa = str_replace(" ", "", $id_NombreEmpresa);
+    
     $Entrada = preg_replace("/\s+/", " ", trim($Entrada)); //Quitando espacios de mas
+
+    
     
     $tipo = "";
     for($i=0; $i<strlen($Entrada); $i++){
@@ -244,11 +267,13 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
     //echo "La fecha guardada es: ". date("Y-m-d H:i:s", strval($FechaMilis)/1000) . "<br><br>";
     
     
-    $filtro = ["nombre_comercial" => $NombreEmpresa];
+    $filtro = ["id_nombre_comercial" => $id_NombreEmpresa];
 
 
     $actualizar = 
     [
+        '$set' => ["nombre_comercial" => $NombreEmpresa],
+        
         '$addToSet' => 
         [ "anuncio_borme" =>
             [
@@ -257,7 +282,7 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
                 "fecha" => $FechaMilis,
                 "tipo" => $tipo,
                 "anuncio" => $Entrada
-            ]  
+            ]
         ]
     ];
     
@@ -287,7 +312,6 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
         echo "Archivo Actualizado / " . $NombreEmpresa . "<br>";
     }
 
-    
     echo $NombreEmpresa;
     echo "<br>";
     echo $tipo;
@@ -420,11 +444,11 @@ function separartexto($texto){
 }*/
 
 
-
+/*
 $tiempo_fin = microtime(true);
 $tiempo = $tiempo_fin - $tiempo_inicio;
 echo "\n\n";
-echo "Tiempo empleado: " . ($tiempo_fin - $tiempo_inicio);
+echo "Tiempo empleado: " . ($tiempo_fin - $tiempo_inicio);*/
 
 
 ?>

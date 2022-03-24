@@ -38,7 +38,8 @@ db.empresas2.find({"anuncio_borme.numero": 62424}, {"anuncio_borme.$": 1})
 Consultas Like
 https://lineadecodigo.com/mongodb/consultas-mongodb-like/
 db.empresas2.find({"anuncio_borme.anuncio": /SecreNoConsj:/ }, {"anuncio_borme.$": 1});
-
+db.empresas2.find({"Nombre": /.*ra.*/i}); //Es insensitivo a mayusculas
+db.empresas2.find({"anuncio_borme.anuncio": {$regex:"SecreNoConsj:"}}) //En PHP
 
 
 BORME
@@ -51,3 +52,30 @@ https://www.anuncioslegales.es/que-es-el-borme
 Indice de un array Mongodb
 https://docs.mongodb.com/manual/reference/operator/aggregation/indexOfArray/
 db.empresas2.aggregate([{ $project: { index: { $indexOfArray: [ "$Directivos.datos.entidad", "LOZANO MARTINEZ ISAAC"] },}}])
+
+
+
+
+
+
+Ordenar documentos por fecha
+db.control.find().sort({fecha: -1}).pretty();
+
+
+
+
+
+
+
+La nueva biblioteca PHP MongoDB no tiene los métodos limit()y sort()en los 
+cursores como tenía la antigua biblioteca PHP Mongo. Ahora deben especificarse 
+en el momento de la consulta, por ejemplo:
+
+$collection->find($query, [
+    'limit' => 10,
+    'sort'  => [ 'date' => -1 ],
+    'projection' => [
+        '_id' => 1,
+        'description' => 1,
+    ]
+];

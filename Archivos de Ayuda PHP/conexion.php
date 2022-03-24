@@ -1,6 +1,10 @@
 <?php
 //Archivo de coneccion para mongodb
-require 'mongodb/vendor/autoload.php';
+//require 'mongodb/vendor/autoload.php';
+$root = str_replace('\\', '/', dirname(__DIR__));
+require_once($root . '/mongodb/vendor/autoload.php');
+//require_once('../mongodb/vendor/autoload.php');
+//require_once('mongodb/vendor/autoload.php');
 
 class Conexion{
 
