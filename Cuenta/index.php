@@ -25,27 +25,38 @@ $Result = $collection->findOne($filter);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="../js/general.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" type="text/css" href="../css/switch.css">
     <title>Cuenta</title>
 </head>
 <body>
 
+<?php include '../templates/encabezado.php'; ?>
+
+<div class="DivTituloGrande">
+    <span class="Titulo2">Bienvenido a tu cuenta</span>
+</div>
+
+
+
     <?php
     	if(isset($_SESSION["Cliente"])){?>
-        <a href="../Login/LogOut.php">Salir</a><br>
-
-        <a><?php echo $_SESSION["Cliente"]["Nombres"] . " " . $_SESSION["Cliente"]["Apellidos"]; ?></a>
-    <?php } ?>
+        <div class="nombre">
+            <span><?php echo $_SESSION["Cliente"]["Nombres"] . " " . $_SESSION["Cliente"]["Apellidos"]; ?></span>
+        </div>
+<?php } ?>
     
 
-    <br><br>
-    <span>Empresas que sigues</span><br><br>
+
+<div class="divSubtitulo2">
+    <span class="Subtitulo2">Empresas que sigues</span>
+</div>
+    
 
 <?php
 if(isset($Result["alertas"])){
 ?>
+<div class="divTabla">
     <table>
         <tr>
             <th>Estado</th>
@@ -69,18 +80,37 @@ foreach($Result["alertas"] as $alerta){
     }
 ?>
         <tr>
-            <td><input id="check<?php echo $id_empresa; ?>" type="checkbox" <?php echo $check; ?> 
-            onClick="SeguirEmpresa('<?php echo $id_empresa; ?>', '<?php echo $Correo; ?>', '<?php echo $Position; ?>');"></td>
-            <td><a href="../MostrarEmpresa.php?id=<?php echo $id_empresa; ?>&name=<?php echo $Nombre_empresa; ?>"><?php echo $Nombre_empresa; ?></a></td>
-            <td><input type="number" value="<?php echo $alerta["cantidad"]; ?>" min="0" max="10"></td>
+            <td class="tdCheck">
+                <label class="switch">
+                    <input id="check<?php echo $id_empresa; ?>" type="checkbox" <?php echo $check; ?> 
+                    onClick="SeguirEmpresa('<?php echo $id_empresa; ?>', '<?php echo $Correo; ?>', '<?php echo $Position; ?>');">
+                <span class="slider round"></span>    
+                </label>
+            </td>
+            <td class="tdNombreEmpresa"><a href="../MostrarEmpresa.php?id=<?php echo $id_empresa; ?>&name=<?php echo $Nombre_empresa; ?>"><?php echo $Nombre_empresa; ?></a></td>
+            <td class="tdInptNumber"><input class="inptNumber" type="number" value="<?php echo $alerta["cantidad"]; ?>" min="0" max="10"></td>
         </tr>
 <?php
 $Position++;
-}
-}
-?>
+}?>
 
-</table>
+    </table>
+
+    <span class="txtExtra">Éstas son las empresas de las que recibirás alertas en cuanto haya un cambio</span>
+
+
+
+</div>
+
+<?php } ?>
+
+
+
+
+
+<?php include '../templates/footer.php'; ?>
+
+
 
 </body>
 </html>

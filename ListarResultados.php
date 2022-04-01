@@ -5,27 +5,38 @@
 $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
 
+if(!isset($_POST["buscador"]) || $_POST["buscador"] == ""){
+    header('Location: index.php');
+}
 
 $NombreEmpresa = strtoupper($_POST["buscador"]);
 
-//$filter = [ '$text' => [ '$search' => "\"$NombreEmpresa\"" ] ];
-$filter = [ '$or' => [
+$filter = [ '$text' => [ '$search' => "\"$NombreEmpresa\"" ] ];
+/*$filter = [ '$or' => [
     ["nombre_comercial" => ['$regex' => $NombreEmpresa ]],
     ["denominaciones_sociales" => ['$regex' => $NombreEmpresa ]]
     ],
     "activo" => ['$ne' => 0 ] 
-    
 ];
-$options = ["nombre_comercial" => 1, 'limit' => 100];
+$options = ["nombre_comercial" => 1, 'limit' => 100];*/
+
+//$filter = ["nombre_comercial" => ['$regex' => $NombreEmpresa ]];
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();
-$collection = $database->empresas;
-$Result = $collection->find($filter, $options)->toArray();
+//$collection = $database->empresas;
+$collection = $database->anuncios;
+$Result = $collection->find($filter/*, $options*/)->toArray();
 
 echo count($Result) . " resultados...<br><br>";
+//$ArrayResultados = NULL;
 if(count($Result) != 0){
     foreach($Result as $res){
+        //$ArrayResultados 
+
+
+
+
         $id = strval($res["_id"]);
         $nombre_comercial = strval($res["nombre_comercial"]);
         echo $id . "<br>";
@@ -38,8 +49,6 @@ if(count($Result) != 0){
             }
         }
         echo "<br>";
-    
-    
     }
 }
 ?>

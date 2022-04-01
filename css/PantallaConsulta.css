@@ -1,0 +1,113 @@
+.DivTituloGrande{
+    justify-content: flex-start;
+}
+
+.TituloEmpresa{
+    margin-left: 50px;
+}
+
+.divDatosEmpresa{
+    text-align: left;
+    font-size: 14px;
+}
+
+.txtparrafo{
+    color: rgba(0, 0, 0, 0.49);
+}
+
+.divSubtitulo2{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+}
+
+
+
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 44% 500px;
+    grid-template-rows: auto;
+    gap: 150px;
+    /*background-color: #2196F3;*/
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
+    padding: 0px;
+    text-align: center;
+}
+  
+.grid-container > div {
+    /*background-color: rgba(255, 255, 255, 0.8);*/
+    font-size: 14px;
+}
+
+.tablaDirectivos {
+    width: 500px;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th{
+    
+    padding: 5px;
+    padding-top: 0px;
+}
+
+.tdDirect{
+    background: rgba(63, 56, 141, 0.07);
+    padding: 5px;
+}
+
+.tdcenter{
+    text-align: center;
+}
+
+.BotonGeneral{
+    width: 230px;
+}
+
+
+
+
+/*apartado de anuncios en el BORME */
+.divAnuncios{
+    width: 60%;
+    margin-left: 50px;
+    margin-top: 50px;
+    margin-bottom: 150px;
+    font-size: 14px;
+}
+
+.tdFecha{
+    vertical-align: baseline;
+}
+
+.tdImagen{
+    padding: 18px;
+    width: 50px;
+    vertical-align: baseline;
+    text-align: right;
+    padding-right: 15px;
+}
+
+.divAnuncio{
+    padding: 18px;
+    background: rgba(196, 196, 196, 0.14);
+    border-radius: 5px 5px 5px 5px;
+}
+
+.aVerDocumento{
+    text-decoration: none;
+    color: rgba(52, 52, 53, 0.5);
+    font-size: 12px;
+}
+
+.aVerDocumento:hover{
+    color: rgba(0, 0, 0, 0.884);
+}
+
+.txtTipo{
+    color: #3F388D;
+}

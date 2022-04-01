@@ -1,10 +1,14 @@
 <?php
-$tiempo_inicio = microtime(true);
+//$tiempo_inicio = microtime(true);
 set_time_limit(50000);
-//ini_set('memory_limit', '512M');
-ini_set('memory_limit', '256M');
+ini_set('memory_limit', '512M');
+//ini_set('memory_limit', '256M');
 
-include "Librerias/pdfparser-master/alt_autoload.php-dist"; //Clase para pasar pdf a texto plano
+include "../Librerias/pdfparser-master/alt_autoload.php-dist"; //Clase para pasar pdf a texto plano
+//include 'scraping.php';
+
+$root = str_replace('\\', '/', dirname(__DIR__));
+require_once($root . '/Archivos de Ayuda PHP/conexion.php');
 
 //date_default_timezone_set("Europe/Madrid");
 
@@ -14,24 +18,19 @@ function warning_handler($errno, $errstr) {
     throw new ErrorException($errstr, 0, $errno);
 }
 
-/*$desde = $_POST["desde"];
-$hasta = $_POST["hasta"];
-
-$desde = '2022/02/17';
-$hasta = '2022/02/17';*/
-
 $NumeroEntrada = 0;//Contador de los registros en el BORME 1 - PROYECTOS 
+$Provincia = NULL; //Guarda la provincia donde se realizo el registro
 $borme = NULL; //borme actual;
+$ArrayInsertador = NULL; //Almacenará 20 registros para almacenar de 20 en 20
 
-//require_once($_SERVER['DOCUMENT_ROOT'] . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
-$root = str_replace('\\', '/', dirname(__DIR__));
-require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
-//require 'Archivos de Ayuda PHP/conexion.php';
 $conexion = new Conexion();
 $database = $conexion->Conectar();
-$collection = $database->empresas;
+//$collection = $database->empresas;
+$collection = $database->anuncios;
 
 $fechaActual = $_POST["fecha"];
+//$fechaActual = '20090102';
+//$fechaActual = '20220330';
 RecorrerXML($fechaActual);
 
 //Recorrer fechas
@@ -48,40 +47,80 @@ for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
     }
 }*/
 
-
-
+$contador = 1;
+$contadorGeneral = 0;
 function RecorrerXML($fecha){
     global $borme;
+    global $Provincia;
+    global $contador;
+    global $contadorGeneral;
+    global $ArrayInsertador;
     $xml = ("https://www.boe.es/diario_borme/xml.php?id=BORME-S-" . $fecha);
-  
+
+    $diario = NULL;
     try {
-        
         //$contents = file_get_contents($xml);
-        
         //Recorriendo xml
         $documento = simplexml_load_file($xml);
         $diario = $documento->diario->seccion[0]->emisor->item;
         
+    } catch (Exception $e) {
+        /*echo "El Archivo XML no tiene nada<br>";
+        echo $xml . "<br>";
+        echo "<span style='background-color: red;  color: white;'>" . $e->getMessage() . "</span><br><br>";
+        unset($e); */
+        //unset($xml); 
+    }
+
+    if($diario != NULL){
         foreach($diario as $dia){
             //echo strval($dia["id"]) . "<br>";
             //echo $dia->titulo . "<br>";
             //echo $dia->urlPdf . "<br><br>";
-            if(strpos($dia->titulo, "ÍNDICE ALFABÉTICO DE SOCIEDADES") === false){
-                $borme = strval($dia["id"]);
+            try{
+                if(strpos($dia->titulo, "ÍNDICE ALFABÉTICO DE SOCIEDADES") === false){
+                    $Provincia = strval($dia->titulo);
+                    $borme = strval($dia["id"]);
+                    $URL = "https://www.boe.es" . $dia->urlPdf;
+                    //echo $URL . " / ";
+                    ConvertirATexto($URL, $fecha);
+                    if($ArrayInsertador != NULL){
+                        if(count($ArrayInsertador) > 0){
+                            global $collection;
+                            $Result1 = $collection->insertMany($ArrayInsertador);
+                            $ArrayInsertador = NULL;
+                        }
+                    }
+
+                    /*$AnunciosScraping = Escrapear($borme);
+                    if($contador == $AnunciosScraping){
+                        echo "<span style='background-color: green; color: white;'>Son iguales</span><br>";
+                    }else{
+                        echo "<span style='background-color: red;  color: white;'>NO SON IGUALES</span><br>";
+                    }*/
+                    //echo "Anuncios: " . $contador . "<br>"; 
+                    $contadorGeneral = $contadorGeneral +  $contador;
+                    //echo "AnunciosEscraping: " . $AnunciosScraping . "<br><br>";    
+                    unset($URL);
+                    unset($dia);         
+                }
+            }catch(Exception $e){
+                /*echo "Error al abrir el archivo PDF<br>";
                 $URL = "https://www.boe.es" . $dia->urlPdf;
-                echo $URL . " / ";
-                ConvertirATexto($URL, $fecha);    
-                unset($URL);
-                unset($dia);         
+                echo $URL . "<br>";
+                echo "<span style='background-color: red;  color: white;'>" . $e->getMessage() . "</span><br><br>";
+                unset($e); */
+                //unset($xml); 
             }
         }
+        echo $contadorGeneral;
         unset($diario); 
         unset($documento);
-        /*
-        for($i=0; $i<1; $i++){
+        
+        /*for($i=0; $i<1; $i++){
             //$URL = "https://www.boe.es" . $diario[$i]->urlPdf;
-            $borme = "BORME-A-2022-33-02.pdf";
-            $URL = "https://www.boe.es/borme/dias/2022/02/11/pdfs/BORME-A-2022-29-38.pdf";
+            $borme = "BORME-A-2009-3-15.pdf";
+            $URL = "https://boe.es/borme/dias/2009/01/07/pdfs/BORME-A-2009-3-28.pdf";
             echo $URL . " / "; 
             ConvertirATexto($URL, $fecha);
             unset($URL);
@@ -99,15 +138,9 @@ function RecorrerXML($fecha){
         $Result = $collection2->insertOne($documentInsert);
 
 
-        echo "FIN DEL SUMARIO";
+        /*echo "FIN DEL SUMARIO";
         echo "---------------------------------------------------<br><br><br><br>";
-        unset($xml);
-    } catch (Exception $e) {
-        echo "Este Archivo no tiene nada<br>";
-        echo $e->getMessage();
-        echo $xml . "<br><br>";
-        unset($e); 
-        unset($xml); 
+        unset($xml);*/
     }
 }
 
@@ -130,18 +163,35 @@ function ConvertirATexto($URL, $fecha){
 }
 
 
-
 function RecorrerTexto($texto, $fecha){
     global $NumeroEntrada;
+    global $contador;
+    $contador = 1;
     $NumeroEntrada = 0;
     $lineas = explode("\n", $texto);
     $buscador = "Empresa";
     $NombreEmpresa = "";
     $Entrada = "";
-    echo "<pre>";
-    for($i=8; $i<count($lineas); $i++){
-        
-        if($i==8){
+
+    //Verificando si existe la linea Verificable en https://www.boe.es
+    $Inicio = 7;
+    //$LineaProvincia = 6;
+    if(strpos($lineas[2], "https://www.boe.es") == true){
+        //$LineaProvincia = 7;
+        $Inicio = 8;
+    }
+
+    //$Provincia = $lineas[$LineaProvincia];
+
+    //echo "<pre>";
+    for($i=$Inicio; $i<count($lineas); $i++){
+
+        /*if($NumeroEntrada == 7279){
+            echo "si";
+        }*/
+
+        //$LineaActual2 = $lineas[$i];
+        if($i==$Inicio){
             //Sacando el NUMERO DE ENTRADA
             $cadenaNumEntrada = "";
             $textoLinea = $lineas[$i];
@@ -165,26 +215,28 @@ function RecorrerTexto($texto, $fecha){
 
         }else if(strpos($lineas[$i], "\n") == true){
         
+        }else if($lineas[$i] == ""){
+
         }else{
             if($buscador == "Empresa"){//Buscando nombre de empresa
                 if(!(strpos($lineas[$i], $NumeroEntrada) === false)){
                     $LineaActual = $lineas[$i];
                     $tamañoLinea = strlen($LineaActual);
                     $Penultimo = $LineaActual[$tamañoLinea-1];
-                    if($Penultimo != "." && strlen($LineaActual) > 85){//Si termina en un punto
-                        /*if(strlen($LineaActual) > 85){//un titulo de 2 lineas
-                            
-                        }else{
-                            $buscador = "Entrada";
-                        }*/
-                        $buscador = "Empresa";
-                    }else{
+                    /*if($Penultimo != "." && strlen($LineaActual) > 85){//Si termina en un punto
                         if(strtoupper($lineas[$i+1]) === $lineas[$i+1]){//Si es mayuscula
                             $buscador = "Empresa";
                         }else{
                             $buscador = "Entrada";
                         }
+                        //$buscador = "Empresa";
+                    }else{*/
+                    if(strtoupper($lineas[$i+1]) === $lineas[$i+1]){//Si la siguiente linea es mayuscula
+                        $buscador = "Empresa";
+                    }else{
+                        $buscador = "Entrada";
                     }
+                    //}
                     $NombreEmpresa = $lineas[$i];
                 }else{
                     //Es un titulo de 2 o mas lineas lineas
@@ -192,18 +244,19 @@ function RecorrerTexto($texto, $fecha){
                         $LineaActual = $lineas[$i];
                         $tamañoLinea = strlen($LineaActual);
                         $Penultimo = $LineaActual[$tamañoLinea-1];
-                        if($Penultimo == "." && strlen($LineaActual) > 85){//Si termina en un punto
+                        /*if($Penultimo == "." && strlen($LineaActual) > 85){//Si termina en un punto
                             $buscador = "Empresa";
                             $NombreEmpresa = $NombreEmpresa . " " . $lineas[$i];
-                        }else{
+                        }else{*/
                             if(strtoupper($lineas[$i+1]) === $lineas[$i+1]){//Si es mayuscula
                                 $buscador = "Empresa";
-                                $NombreEmpresa = $NombreEmpresa . " " . $lineas[$i];
+                                //$NombreEmpresa = $NombreEmpresa . " " . $lineas[$i];
                             }else{
                                 $buscador = "Entrada";
-                                $NombreEmpresa = $NombreEmpresa . " " . $lineas[$i];
+                                //$NombreEmpresa = $NombreEmpresa . " " . $lineas[$i];
                             }
-                        }
+                        //}
+                        $NombreEmpresa = $NombreEmpresa . " " . $lineas[$i];
                     }else{
                         $buscador = "Entrada";
                         $Entrada = $Entrada . " " . $lineas[$i];
@@ -216,6 +269,7 @@ function RecorrerTexto($texto, $fecha){
                     $Entrada = "";
                     $NumeroEntrada++;
                     $buscador = "Empresa";
+                    $contador++;
                 }else if($i+2 == count($lineas)){//Si es el ultimo registro
                     GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha);
                     $Entrada = "";
@@ -226,7 +280,7 @@ function RecorrerTexto($texto, $fecha){
         }
     }
 
-    echo "</pre>";
+    //echo "</pre>";
     unset($NumeroEntrada);
     unset($lineas);
     unset($texto);
@@ -235,8 +289,12 @@ function RecorrerTexto($texto, $fecha){
 }
 //echo "Fase 1, el uso de memoria es de: ", round(memory_get_usage()/1024, 2), "KB";
 
+
 function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
     global $borme;
+    global $Provincia;
+    global $ArrayInsertador;
+
     $NombreEmpresa = str_replace($NumeroEntrada . " - ", "", $NombreEmpresa);
     $NombreEmpresa = preg_replace("/\s+/", " ", trim($NombreEmpresa)); //Quitando espacios de mas
     //$Entrada = str_replace("\n", " ", $Entrada); //Quitando espacios de mas
@@ -246,8 +304,7 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
     $id_NombreEmpresa = str_replace(" ", "", $id_NombreEmpresa);
     
     $Entrada = preg_replace("/\s+/", " ", trim($Entrada)); //Quitando espacios de mas
-
-    
+    //$Provincia = preg_replace("/\s+/", " ", trim($Provincia)); //Quitando espacios de mas
     
     $tipo = "";
     for($i=0; $i<strlen($Entrada); $i++){
@@ -255,7 +312,6 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
             if($Entrada[$i+1] == " " || $Entrada[$i+1] == " "){
                 break;
             }
-            
         }
         $tipo = $tipo . $Entrada[$i];
     }
@@ -266,7 +322,7 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
     //var_dump($FechaMilis);
     //echo "La fecha guardada es: ". date("Y-m-d H:i:s", strval($FechaMilis)/1000) . "<br><br>";
     
-    
+    /*
     $filtro = ["id_nombre_comercial" => $id_NombreEmpresa];
 
 
@@ -281,15 +337,17 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
                 "numero" => $NumeroEntrada,
                 "fecha" => $FechaMilis,
                 "tipo" => $tipo,
+                "provincia" => $Provincia,
                 "anuncio" => $Entrada
             ]
         ]
-    ];
+    ];*/
     
-    
+    /*
     $document = 
     [
         "nombre_comercial" => $NombreEmpresa,
+        "id_nombre_comercial" => $id_NombreEmpresa,
         "anuncio_borme" => [
             [
                 "borme" => $borme,
@@ -299,26 +357,49 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha){
                 "anuncio" => $Entrada
             ]
         ]
+    ];*/
+
+    $ArrayInsertador[] = 
+    [
+        "nombre_comercial" => $NombreEmpresa,
+        "id_nombre_comercial" => $id_NombreEmpresa,
+        "borme" => $borme,
+        "numero" => $NumeroEntrada,
+        "numid" => date("Y", strtotime($fecha)) . $NumeroEntrada,
+        "fecha" => $FechaMilis,
+        "tipo" => $tipo,
+        "anuncio" => $Entrada
     ];
 
+    $contadorArray = count($ArrayInsertador);
+
+    if(count($ArrayInsertador) == 30){
+        global $collection;
+        $Result1 = $collection->insertMany($ArrayInsertador);
+        $ArrayInsertador = NULL;
+    }
+
     
+
+    /*
     global $collection;
-    $Result1 = $collection->findOneAndUpdate($filtro, $actualizar, ['upsert' => true]);
+    $Result1 = $collection->findOneAndUpdate($filtro, $actualizar, ['upsert' => true]);*/
     
+    /*
     if($Result1 == null){
         //$Result2 = $collection->insertOne($document);
         echo "Archivo Nuevo <br>";
     }else{
         echo "Archivo Actualizado / " . $NombreEmpresa . "<br>";
-    }
+    }*/
 
-    echo $NombreEmpresa;
+    /*echo $NombreEmpresa;
     echo "<br>";
     echo $tipo;
     echo "<br>";
     echo $Entrada;
     echo "<br>";
-    echo "Registro No. " . $NumeroEntrada . "<br><br>";
+    echo "Registro No. " . $NumeroEntrada . "<br><br>";*/
 }
 
 

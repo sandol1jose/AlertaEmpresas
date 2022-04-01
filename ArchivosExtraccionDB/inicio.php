@@ -34,11 +34,16 @@
 <script src="https://momentjs.com/downloads/moment.js"></script>
 <script>
     
+    var contador1 = 0;
+    var contador2 = 0;
+    var numero = 0;
 	function ProcesarDatos(){
         var desde = document.getElementById("desde").value;
         var hasta = document.getElementById("hasta").value;
         var fechaInicio = Date.parse(desde) / 1000;
         var fechaFin = Date.parse(hasta) / 1000;
+        contador1 = 0;
+        contador2 = 0;
 
         for(var i=fechaInicio; i<=fechaFin; i+=86400){
             var date = new Date(i * 1000);
@@ -59,15 +64,21 @@
 			data: {'fecha': fecha},
 			dataType: "html",
 			beforeSend: function(){
-                console.log("Estamos procesando los datos... " + fecha);
+                contador1++;
+                console.log(contador1 + " - Estamos procesando los datos... " + fecha);
 			},
 			error: function(){
 				console.log("error petición ajax");
 			},
 			success: function(data){
+                if(data != ""){
+                    console.log(data);
+                    numero = numero + parseInt(data);
+                }
                 var dataActual = document.getElementById("txtSalida").innerHTML;
-                document.getElementById("txtSalida").innerHTML = (dataActual + " " + data);
-                console.log("terminamos " + fecha);  
+                document.getElementById("txtSalida").innerHTML = (dataActual + "<br> " + numero);
+                contador2++;
+                console.log(contador2 + " - terminamos " + fecha);  
 			}
 		});
     }

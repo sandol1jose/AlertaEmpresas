@@ -1,0 +1,46 @@
+@import url(../css/fonts.css);
+
+.nombre{
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00000073;
+}
+
+.divTabla{
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-bottom: 100px;
+}
+
+td{
+    height: 30px;
+}
+
+.tdNombreEmpresa{
+    width: 800px;
+}
+
+.tdCheck{
+    text-align: center;
+    width: 80px;
+    transform: scale(0.55, 0.55);
+}
+
+.tdInptNumber{
+    text-align: center; 
+}
+
+.inptNumber{
+    text-align: center; 
+    width: 35px;
+}
+
+
+.txtExtra{
+    display: flex;
+    margin-top: 20px;
+    font-size: 14px;
+    color: rgba(52, 52, 53, 0.5);
+}

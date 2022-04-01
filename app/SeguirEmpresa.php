@@ -99,9 +99,9 @@ function VerificarSeguimiento(){
                 $position++;
                 if($alerta["id_empresa"] == $idEmpresa){
                     if($alerta["estado"] == true){
-                        $Retorno = "<button onClick=\"SeguirEmpresa('" . $idEmpresa . "','" . $_SESSION["Cliente"]["Correo"] . "','" . $position . "', 2);\">Desactivar Notificacion</button>";
+                        $Retorno = "<button class='BotonGeneral' onClick=\"SeguirEmpresa('" . $idEmpresa . "','" . $_SESSION["Cliente"]["Correo"] . "','" . $position . "', 2);\">Desactivar Notificacion</button>";
                     }else{
-                        $Retorno = "<button onClick=\"SeguirEmpresa('" . $idEmpresa . "','" . $_SESSION["Cliente"]["Correo"] . "','" . $position . "', 1);\">Activar Notificacion</button>";
+                        $Retorno = "<button class='BotonGeneral' onClick=\"SeguirEmpresa('" . $idEmpresa . "','" . $_SESSION["Cliente"]["Correo"] . "','" . $position . "', 1);\">Activar Notificacion</button>";
                     }
                     $encontrado = true;
                     break;
@@ -109,11 +109,11 @@ function VerificarSeguimiento(){
             }
 
             if($encontrado == false){
-                $Retorno = "<button onClick=\"SeguirEmpresa('" . $idEmpresa . "','" . $_SESSION["Cliente"]["Correo"] . "','" . -1 . "', 1);\">Activar Notificacion</button>";
+                $Retorno = "<button class='BotonGeneral' onClick=\"SeguirEmpresa('" . $idEmpresa . "','" . $_SESSION["Cliente"]["Correo"] . "','" . -1 . "', 1);\">Activar Notificacion</button>";
             }
 
         }else{
-            $Retorno = "<button onClick=\"SeguirEmpresa('". $idEmpresa ."','". $_SESSION["Cliente"]["Correo"] ."','". $position ."', 1);\">Activar Notificacion</button>";
+            $Retorno = "<button class='BotonGeneral' onClick=\"SeguirEmpresa('". $idEmpresa ."','". $_SESSION["Cliente"]["Correo"] ."','". $position ."', 1);\">Activar Notificacion</button>";
         }
     }
     

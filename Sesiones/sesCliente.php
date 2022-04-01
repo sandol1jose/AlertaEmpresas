@@ -5,6 +5,10 @@ function CrearSesion($IDCliente, $Nombres, $Apellidos, $Correo, $Empresa){
 		session_start();//inicio de sesion
 	}
 	
+	//Color de cuenta
+    $rand = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
+    $color = '#'.$rand[rand(0,15)].$rand[rand(0,15)].$rand[rand(0,15)].$rand[rand(0,15)].$rand[rand(0,15)].$rand[rand(0,15)];
+
 	/*if($IDCliente == -1){
 		$IDCliente = BuscarIDCliente($Correo);
 	}*/
@@ -13,7 +17,8 @@ function CrearSesion($IDCliente, $Nombres, $Apellidos, $Correo, $Empresa){
 			'Nombres'=>$Nombres,
 			'Apellidos'=>$Apellidos,
 			'Correo'=>$Correo,
-			'Empresa'=>$Empresa
+			'Empresa'=>$Empresa,
+			'ColorCuenta'=>$color
 	);
 	$_SESSION['Cliente'] = $arrayCliente;
 }

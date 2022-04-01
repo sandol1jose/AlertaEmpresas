@@ -8,35 +8,93 @@ set_time_limit(50000);
 $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/Archivos de Ayuda PHP/conexion.php');
 
+$Anuncio_Constitucion = [
+    "Capital: ",
+    "Comienzo de operaciones: ",
+    "Domicilio: ",
+    "Objeto social: "
+];
+$Anuncio_Nombramientos = [
+    "Adm. Mancom.: ",
+    "Adm. Unico: ",
+    "ADM.UNICO: ",
+    "APODERAD.SOL: ",
+    "Apo.Sol.: ",
+    "Adm. Solid.: ",
+    "Apoderado: ",
+    "Auditor: ",
+    "Cons.Del.Sol: ",
+    "Consejero: ",
+    "Liquidador: ",
+    "Presidente: ",
+    "SecreNoConsj: ",
+    "Secretario: ",
+    "Vicepresid.: ",
+    "VsecrNoConsj: ",
+    "VsecrNoConsj: ",
+    "Liquidador M: ",
+    "R.L.C.Perma.: ",
+    "Apo.Man.Soli: ",
+    "Apo.Manc.: ",
+    "ACCIONISTA UNICO",
+    "CONS. DELEG.: ",
+    "Represent.143 RRM.: ",
+    "Co.De.Ma.So: ",
+    "Pre.No.Ejec.: ",
+    "ADM.SOLIDAR.: ",
+    "LiquiSoli: ",
+    "Representan: ",
+    "Soc.Prof.: "
+];
+$AumentoCapital = [
+    "Resultante Desembolsado",
+    "Resultante Suscrito",
+    "Capital", 
+    "Desembolsado",
+    "Suscrito"
+];
+$ReduccionCapital = [
+    "Importe reducción",
+    "Resultante Suscrito"
+];
+$EmpresarioIndividual = [
+    "Fecha de Comienzo de Operaciones: ",
+    "Objeto Social: ",
+    "Domicilio: ",
+    "Población: ",
+    "Provincia: ",
+    "Estado Civil",
+    "Régimen Matrimonial"
+];
 $Anuncios = [
-    "Ceses/Dimisiones. " => NULL,
-    "Constitución. " => NULL,
-    "Empresario Individual. " => NULL,
-    "Primera sucursal de sociedad extranjera" => NULL,
+    "Ceses/Dimisiones. " => $Anuncio_Nombramientos,
+    "Constitución. " => $Anuncio_Constitucion,
+    "Empresario Individual. " => $EmpresarioIndividual,
+    "Primera sucursal de sociedad extranjera" => $Anuncio_Constitucion,
     "Datos registrales. " => NULL,
-    "Declaración de unipersonalidad. " => NULL,
-    "DECLARACION DE UNIPERSONALIDAD" => NULL, //Para "otros conceptos" 
+    "Declaración de unipersonalidad. " => ["Socio único: "],
+    "DECLARACION DE UNIPERSONALIDAD" => $Anuncio_Nombramientos, //Para "otros conceptos" 
     "Sociedad unipersonal. " => ["Cambio de identidad del socio único: "], 
     "Pérdida del caracter de unipersonalidad. " => NULL,
-    "Cancelaciones de oficio de nombramientos. " => NULL,
-    "Nombramientos. " => NULL,
-    "Reelecciones. " => NULL, //No se procesa nada
-    "Revocaciones" => NULL,
-    "Modificaciones estatutarias. " => NULL,
-    "Ampliación de capital" => NULL,
-    "Reducción de capital" => NULL,
-    "Disolución. " => NULL,
+    "Cancelaciones de oficio de nombramientos. " => $Anuncio_Nombramientos,
+    "Nombramientos. " => $Anuncio_Nombramientos,
+    "Reelecciones. " => $Anuncio_Nombramientos, //No se procesa nada
+    "Revocaciones" => $Anuncio_Nombramientos,
+    "Modificaciones estatutarias. " => ["Artículo de los Estatutos"],
+    "Ampliación de capital" => $AumentoCapital,
+    "Reducción de capital" => $ReduccionCapital,
+    "Disolución. " => ["Fusion", "Voluntaria", "Escision"],
     "Extinción" => NULL,
     "Cambio de domicilio social. " => NULL,
     "Cambio de objeto social. " => NULL,
     "Cambio de denominación social. " => NULL,
     "Transformación de sociedad. " => ["Denominación y forma adoptada: "],
     "Ampliacion del objeto social. " => NULL,
-    "Página web de la sociedad. " => NULL,
-    "Modificación de poderes. " => NULL,
+    "Página web de la sociedad. " => ["Nueva página web", "Creación de la página web corporativa"],
+    "Modificación de poderes. " => $Anuncio_Nombramientos,
     "Otros conceptos: " => NULL,
-    "Fe de erratas: " => NULL,
-    "Fusión por absorción. " => NULL
+    "Fusión por absorción. " => NULL,
+    "Situación concursal. " => NULL,
 ];
 
 $filter = [
@@ -45,7 +103,6 @@ $filter = [
             ["anuncio_borme.anuncio" => ['$regex' => "Cambio de denominación social"]],
             ["anuncio_borme.anuncio" => ['$regex' => "Transformación de sociedad"]]
         ]
-    
     //"anuncio_borme.anuncio" => ['$regex' => "Cambio de denominación social"]//,
     //"anuncio_borme.anuncio" => ['$regex' => "Transformación de sociedad"]
 ];
@@ -61,7 +118,7 @@ $database = $conexion->Conectar();
 $collection = $database->empresas;
 
 $Options = [
-    'limit' => 2500
+    'limit' => 80000
     //'projection' => ['anuncio_borme.anuncio' => 1, 'nombre_comercial' => 1]
 ];
 $Result = $collection->find($filter, $Options)->toArray();

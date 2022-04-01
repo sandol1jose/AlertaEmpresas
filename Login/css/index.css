@@ -1,0 +1,160 @@
+/*.Base{
+    position: relative;
+}
+
+
+.Cuadro1{
+    position: absolute;
+    width: 751px;
+    height: 108px;
+    background: #3F388D;
+    left: 790px;
+    top: -269px;
+    transform: rotate(-45deg);
+}
+*/
+
+
+.grid-container3 {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 100%;
+
+    /*gap: 0px;
+    background-color: #2196F3;*/
+}
+
+.grid-container3 > div {
+    /*background-color: rgba(255, 255, 255, 0.8);*/
+    border: 0px solid black;
+}
+
+.item1{
+    margin-left: 100px;
+    margin-top: 50px;
+    margin-bottom: 70px;
+}
+
+
+.Formularios{
+    height: 100%;
+    width: 420px;
+    box-shadow: 0px 10px 20px 5px rgba(63, 56, 141, 0.35);
+    border-radius: 5px;
+}
+
+.divBotones{
+    text-align: center;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-content: stretch;
+    align-items: center;
+    border-bottom: 1px solid #D6D6D6;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 20px;
+    padding-top: 5px;
+}
+
+.boton{
+    background: transparent;
+    height: 50px;
+    width: 150px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    color: #343435;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 19px;
+}
+
+.boton:hover{
+    color: #3F388D;
+    transform: scale(0.98, 0.98);
+}
+
+
+.divdatos{
+    margin: 15px;
+}
+
+
+.TituloDatos{
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.TituloCampo{
+    font-size: 14px;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+.InputGeneral{
+    width: 89%;
+}
+
+.divVinculo1{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+/*
+.divVinculo{
+    text-align: center;
+    margin-top: 15px;
+}*/
+
+.BotonGeneral{
+    width: 99%;
+    margin-bottom: 50px;
+}
+
+.BotonGeneral:disabled{
+    background: #949494;
+    color: #646464;
+}
+
+.BotonGeneral:hover:disabled{
+    background: #949494;
+    color: #646464;
+    transform: scale(1, 1);
+}
+
+.ImagenContrasenia{
+    margin-top: 10px;
+}
+
+
+
+/*Parte del adorno*/
+.item2{
+    /*margin-top: 120.5px;*/
+    background-image: url('../../imagenes/Group 29.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: 18%;
+    margin-left: 100px;
+    /*margin-bottom: 70px;*/
+}
+
+.divAdorno{
+    background-color: white;
+    border: 0px solid black;
+    height: 300px;
+    width: 300px;
+    border-radius: 40px;
+    padding: 15px;
+}
+
+.parrafo{
+    font-family: 'Roboto-Light';
+    margin-top: 10px;
+    font-size: 14px;
+}

@@ -60,6 +60,7 @@ db.empresas2.aggregate([{ $project: { index: { $indexOfArray: [ "$Directivos.dat
 
 Ordenar documentos por fecha
 db.control.find().sort({fecha: -1}).pretty();
+db.control.find().sort({fecha: -1}).limit(1).pretty();
 
 
 

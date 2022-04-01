@@ -1,6 +1,4 @@
 <?php
-//require 'Archivos de Ayuda PHP/conexion.php';
-//require_once($_SERVER['DOCUMENT_ROOT'] . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
 $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
 
@@ -39,7 +37,8 @@ $Anuncio_Nombramientos = [
     "Pre.No.Ejec.: ",
     "ADM.SOLIDAR.: ",
     "LiquiSoli: ",
-    "Representan: "
+    "Representan: ",
+    "Soc.Prof.: "
 ];
 $AumentoCapital = [
     "Resultante Desembolsado",
@@ -92,17 +91,18 @@ $Anuncios = [
     "Situación concursal. " => NULL,
 ];
 
+
 $id = $_GET["id"];
 $nombre_comercial = $_GET["name"];
 /*
-$id = "6231594e6ec53be0065871f5";
-$nombre_comercial = "PLASEX SL.";*/
+$id = "623158bd6ec53be006580a29";
+$nombre_comercial = "DC INGENIEROS Y SERVICIOS SOCIEDAD LIMITADA PROFESIONAL.";*/
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();
 
 //Consultado si existe cambios de nombre en archivos diferentes
-$nombre_comercial2 = str_replace(".", "", $nombre_comercial);
+/*$nombre_comercial2 = str_replace(".", "", $nombre_comercial);
 $nombre_comercial2 = str_replace(",", "", $nombre_comercial2);
 $nombre_comercial2 = str_replace(" ", "", $nombre_comercial2);
 
@@ -116,7 +116,6 @@ if(count($Result) > 0){
     if($Result[0]["id_empresasa_emisora"] == $id){
         $nombre_comercial2 = $Result[0]["empresa_receptora"];
     }
-
 
     //Se esta buscando por Empresa receptora
     $id_emisora = $Result[0]["id_empresasa_emisora"];
@@ -155,32 +154,36 @@ if(count($Result) > 0){
     $Result = $database->empresas->findOne($busqueda2);
     $id = $Result["_id"];
     $nombre_comercial = $Result["nombre_comercial"];
-}
+}*/
 
 
 
-
-
-$filter = [ "_id" => new MongoDB\BSON\ObjectID($id), "activo" => ['$ne' => 0 ] ];
-$collection = $database->empresas;
-$collection2 = $database->empresas;
-$Result = $collection->find($filter)->toArray();
-
+//Ordernar Anuncios_BORME
 $DocumentoEntero;
 $numero_borme;
 $fecha_borme;
 $nombre_comercial;
-$Result = array_reverse($Result);
-foreach($Result as $res){
-    $anuncio_borme = $res["anuncio_borme"];
-    if(isset($res["actualizado"])){
-        $Actualizado = $res["actualizado"];
-    }else{
-        $Actualizado = 0;
-    }
-    $nombre_comercial = $res["nombre_comercial"];
-    $DocumentoEntero = $res; 
-    if($Actualizado == 0){//Si los datos no estan actualizados
+
+//$filter = [ "_id" => new MongoDB\BSON\ObjectID($id), "activo" => ['$ne' => 0 ] ];
+$filter = ["nombre_comercial" => $nombre_comercial];
+//$collection = $database->empresas;
+$collection = $database->anuncios;
+$Result = $collection->find($filter)->toArray();
+
+$anuncio_borme = $Result["anuncio_borme"];
+if(isset($Result["actualizado"])){
+    $Actualizado = $Result["actualizado"];
+}else{
+    $Actualizado = 0;
+}
+$nombre_comercial = $Result["nombre_comercial"];
+if($Actualizado == 0){//Si los datos no estan actualizados
+    $anuncio_borme = OrdenarArray($anuncio_borme);
+    $DocumentoEntero = $Result;
+    $DocumentoEntero["anuncio_borme"] = $anuncio_borme;
+    $filter2 = [ "_id" => new MongoDB\BSON\ObjectID($id)];
+    $Result = $collection->UpdateOne($filter2, ['$set' => ["anuncio_borme" => $anuncio_borme]]);
+    
         foreach($anuncio_borme as $anuncio){
             $numero_borme = $anuncio["numero"];
             $fecha_borme = $anuncio["fecha"];
@@ -190,13 +193,62 @@ foreach($Result as $res){
         }
         //Documento actualizado = 1
         $document = ['$set' => [ "actualizado" => 1]];
-        $Result = $collection2->updateOne($filter, $document);
-        header('Location: PruebaConsulta.php?id=' . $id);
-    }else{
-        //echo "Los datos ya estan actualizados";
-        header('Location: PruebaConsulta.php?id=' . $id);
-    }
+        $Result = $collection->updateOne($filter, $document);
+        header('Location: PantallaConsulta.php?id=' . $id);
+
+}else{
+    //echo "Los datos ya estan actualizados";
+    header('Location: PantallaConsulta.php?id=' . $id);
 }
+
+//Funcion que ordena el array
+function OrdenarArray($Array){
+    $Array = iterator_to_array($Array);
+    foreach ($Array as $key => $row) {
+        $aux[$key] = intval(strval($row["numero"]));
+    }
+    array_multisort($aux, SORT_ASC, $Array);
+    return $Array;
+}
+
+/*
+    $DocumentoEntero;
+    $numero_borme;
+    $fecha_borme;
+    $nombre_comercial;
+    if($Result->getModifiedCount() == 1){
+        $collection = $database->empresas;
+        $Result = $collection->find($filter)->toArray();
+        //$Result = array_reverse($Result);
+        foreach($Result as $res){
+            $anuncio_borme = $res["anuncio_borme"];
+
+            if(isset($res["actualizado"])){
+                $Actualizado = $res["actualizado"];
+            }else{
+                $Actualizado = 0;
+            }
+            $nombre_comercial = $res["nombre_comercial"];
+            $DocumentoEntero = $res; 
+            if($Actualizado == 0){//Si los datos no estan actualizados
+                foreach($anuncio_borme as $anuncio){
+                    $numero_borme = $anuncio["numero"];
+                    $fecha_borme = $anuncio["fecha"];
+                    $Texto_anuncio_borme = $anuncio["anuncio"];
+                    ProcesarNivel($Texto_anuncio_borme, $Anuncios, 1, NULL);
+                    GuardarResultados();
+                }
+                //Documento actualizado = 1
+                $document = ['$set' => [ "actualizado" => 1]];
+                $Result = $collection->updateOne($filter, $document);
+                header('Location: PantallaConsulta.php?id=' . $id);
+            }else{
+                //echo "Los datos ya estan actualizados";
+                header('Location: PantallaConsulta.php?id=' . $id);
+            }
+        }
+    }
+*/
 
 $Array_Nivel1; //Guardará el parrafo seccionado como Array
 function ProcesarNivel($Texto, $ArrayAnuncios, $Nivel, $PalabraNivel1){
@@ -217,7 +269,7 @@ function ProcesarNivel($Texto, $ArrayAnuncios, $Nivel, $PalabraNivel1){
     }
    
    
-    for($i=0; $i<strlen($Texto); $i++){//Declaración de unipersonalidad. //
+    for($i=0; $i<strlen($Texto); $i++){
         $cadena1 = $cadena1 . $Texto[$i];
         if($i+1 < strlen($Texto)){
 
@@ -376,11 +428,11 @@ function GuardarResultados(){
         }
         //Actualizando los datos
         global $filter;
-        global $collection2;
+        global $collection;
         global $nombre_comercial;
         global $DocumentoEntero;
 
-        $Result = $collection2->findOne($filter);
+        $Result = $collection->findOne($filter);
         $nombre_comercial = $Result["nombre_comercial"];
         $DocumentoEntero = $Result;
     }
@@ -391,7 +443,7 @@ function Constitucion($DatosRegistrales, $arr, $FechaInscripcion){
     global $numero_borme;
     global $fecha_borme;
     global $filter;
-    global $collection2;
+    global $collection;
 
     $dateNew = DateTime::createFromFormat('d/m/y', $FechaInscripcion)->format('Y/m/d');
     $FechaMilis = new MongoDB\BSON\UTCDatetime(strtotime($dateNew . " 00:00:00")*1000);
@@ -409,7 +461,7 @@ function Constitucion($DatosRegistrales, $arr, $FechaInscripcion){
     ];
     
     $document = ['$set' => [ "Constitucion" => $Array_Constitucion]];
-    $Result = $collection2->updateOne($filter, $document);
+    $Result = $collection->updateOne($filter, $document);
 }
 
 function Constitucion2($Datos_Registrales, $Valor, $FechaInscripcion){
@@ -427,7 +479,7 @@ function PrimeraSucursalExtranjera($DatosRegistrales, $Valor, $FechaInscripcion,
     global $numero_borme;
     global $fecha_borme;
     global $filter;
-    global $collection2;
+    global $collection;
 
     $dateNew = DateTime::createFromFormat('d/m/y', $FechaInscripcion)->format('Y/m/d');
     $FechaMilis = new MongoDB\BSON\UTCDatetime(strtotime($dateNew . " 00:00:00")*1000);
@@ -446,7 +498,7 @@ function PrimeraSucursalExtranjera($DatosRegistrales, $Valor, $FechaInscripcion,
     ];
     
     $document = ['$set' => [ "Constitucion" => $Array_Constitucion]];
-    $Result = $collection2->updateOne($filter, $document);
+    $Result = $collection->updateOne($filter, $document);
 }
 
 function DeclaracionUnipersonal2($Datos_Registrales, $Valor, $FechaInscripcion){
@@ -460,17 +512,17 @@ function DeclaracionUnipersonal2($Datos_Registrales, $Valor, $FechaInscripcion){
 
 function DeclaracionUnipersonal($Valor){
     global $filter;
-    global $collection2;
+    global $collection;
     $SocioUnico = Trimear($Valor["Socio único"]);
     $documentUpdate = ['$set' => ["socio_unico" => $SocioUnico]];
-    $Result = $collection2->updateOne($filter, $documentUpdate);
+    $Result = $collection->updateOne($filter, $documentUpdate);
 }
 
 function PerdidaUnipersonalidad($Datos_Registrales, $Valor, $FechaInscripcion){
     global $filter;
-    global $collection2;
+    global $collection;
     global $DocumentoEntero;
-    $Result = $collection2->find($filter)->toArray();
+    $Result = $collection->find($filter)->toArray();
 
     $SocioUnico_Actual = NULL;
     if(isset($Result[0]["socio_unico"])){
@@ -488,17 +540,17 @@ function PerdidaUnipersonalidad($Datos_Registrales, $Valor, $FechaInscripcion){
 
         if($Posicion >= 0){
             $documentUpdate = ['$set' => ["Directivos.".$Posicion.".datos.hasta" => $FechaMilis]];
-            $Result = $collection2->updateOne($filter, $documentUpdate);
+            $Result = $collection->updateOne($filter, $documentUpdate);
         }
 
         $documentUpdate = ['$set' => ["socio_unico" => ""]];
-        $Result = $collection2->updateOne($filter, $documentUpdate);
+        $Result = $collection->updateOne($filter, $documentUpdate);
     }
 }
 
 function ModificacionPoderes($Datos_Registrales, $Valor, $FechaInscripcion){
     global $filter;
-    global $collection2;
+    global $collection;
     global $DocumentoEntero;
 
     $dateNew = DateTime::createFromFormat('d/m/y', $FechaInscripcion)->format('Y/m/d');
@@ -512,7 +564,7 @@ function ModificacionPoderes($Datos_Registrales, $Valor, $FechaInscripcion){
             $Posicion = indexOfArray_Varios($DocumentoEntero["Directivos"], $lis, $Relacion);
             //$Posicion = indexOfArray($lis, "Directivos.datos.entidad");
             $documentUpdate = ['$set' => ["Directivos.".$Posicion.".datos.hasta" => $FechaMilis]];
-            $Result = $collection2->updateOne($filter, $documentUpdate);
+            $Result = $collection->updateOne($filter, $documentUpdate);
         }    
     }
 
@@ -543,18 +595,18 @@ function ModificacionPoderes($Datos_Registrales, $Valor, $FechaInscripcion){
             if($IndiceArray == -1){
                 //No existe el nombramiento
                 $document2 = ['$addToSet' => [ "Directivos" => $array_individual]];
-                $Result = $collection2->updateOne($filter, $document2);
+                $Result = $collection->updateOne($filter, $document2);
             }else{
                 //Si ya existe el nombramiento
                 $filtro2 = ["Directivos.datos.entidad" => $lis];
-                $Result = $collection2->findOne($filtro2, ['projection' => ["Directivos.datos.hasta.$" => 1]]);
+                $Result = $collection->findOne($filtro2, ['projection' => ["Directivos.datos.hasta.$" => 1]]);
                 $FechaHasta = $Result["Directivos"][0]["datos"]["hasta"];
                 if($FechaHasta == ""){
                     $documentUpdate = ['$set' => ["Directivos.".$IndiceArray.".datos.hasta" => ""]];
-                    $Result = $collection2->updateOne($filter, $documentUpdate);
+                    $Result = $collection->updateOne($filter, $documentUpdate);
                 }else{
                     $document2 = ['$addToSet' => [ "Directivos" => $array_individual]];
-                    $Result = $collection2->updateOne($filter, $document2);
+                    $Result = $collection->updateOne($filter, $document2);
                 }
             }
         }   
@@ -586,7 +638,7 @@ function Nombramientos2($Datos_Registrales, $Valor, $FechaInscripcion){
 
 function Nombramientos3($Datos_Registrales, $Valor, $FechaInscripcion){
     global $filter;
-    global $collection2;
+    global $collection;
     global $DocumentoEntero;
 
     $dateNew = DateTime::createFromFormat('d/m/y', $FechaInscripcion)->format('Y/m/d');
@@ -618,7 +670,7 @@ function Nombramientos3($Datos_Registrales, $Valor, $FechaInscripcion){
             if($IndiceArray == -1){
                 //No existe el nombramiento, agregamos uno nuevo
                 $document2 = ['$addToSet' => [ "Directivos" => $array_individual]];
-                $Result = $collection2->updateOne($filter, $document2);
+                $Result = $collection->updateOne($filter, $document2);
             }else{
                 //Si hay nombramiento con ese nombre y "relación"
                 $DesdeAnterior = $DocumentoEntero["Directivos"][$IndiceArray]["datos"]["desde"];
@@ -630,10 +682,10 @@ function Nombramientos3($Datos_Registrales, $Valor, $FechaInscripcion){
                             "Directivos.".$IndiceArray.".datos.hasta" => ""
                         ]
                     ];
-                    $Result = $collection2->updateOne($filter, $documentUpdate);
+                    $Result = $collection->updateOne($filter, $documentUpdate);
                 }else{
                     $documentUpdate = ['$set' => ["Directivos.".$IndiceArray.".datos.hasta" => ""]];
-                    $Result = $collection2->updateOne($filter, $documentUpdate);
+                    $Result = $collection->updateOne($filter, $documentUpdate);
                 }
             }
         }   
@@ -642,9 +694,9 @@ function Nombramientos3($Datos_Registrales, $Valor, $FechaInscripcion){
 
 function SociedadUnipersonal($Datos_Registrales, $Valor, $FechaInscripcion){
     global $filter;
-    global $collection2;
+    global $collection;
     global $DocumentoEntero;
-    $Result = $collection2->find($filter)->toArray();
+    $Result = $collection->find($filter)->toArray();
 
     $SocioUnico_Actual = NULL;
     if(isset($Result[0]["socio_unico"])){
@@ -663,7 +715,7 @@ function SociedadUnipersonal($Datos_Registrales, $Valor, $FechaInscripcion){
     if($Posicion >= 0){
         //Ya existe un registro en "Directivos"
         $documentUpdate = ['$set' => ["Directivos.".$Posicion.".datos.hasta" => $FechaMilis]];
-        $Result = $collection2->updateOne($filter, $documentUpdate);
+        $Result = $collection->updateOne($filter, $documentUpdate);
     
         Nombramientos3($Datos_Registrales, $ArrayNuevo, $FechaInscripcion);
     }else{
@@ -672,7 +724,7 @@ function SociedadUnipersonal($Datos_Registrales, $Valor, $FechaInscripcion){
     }
 
     $documentUpdate = ['$set' => ["socio_unico" => $SocioUnico_Nuevo]];
-    $Result = $collection2->updateOne($filter, $documentUpdate);
+    $Result = $collection->updateOne($filter, $documentUpdate);
 
 }
 
@@ -701,7 +753,7 @@ function Ceses_Dimisiones($Datos_Registrales, $Valor, $FechaInscripcion){
 
     //GUARDANDO LOS DATOS DEL CESE Y DIMISION
     global $filter;
-    global $collection2;
+    global $collection;
 
     $dateNew = DateTime::createFromFormat('d/m/y', $FechaInscripcion)->format('Y/m/d');
     $FechaMilis = new MongoDB\BSON\UTCDatetime(strtotime($dateNew . " 00:00:00")*1000);
@@ -724,7 +776,7 @@ function Ceses_Dimisiones($Datos_Registrales, $Valor, $FechaInscripcion){
             ];
             /*$array_individual["datos"] = $arrayEntidad;
             $document2 = ['$addToSet' => [ "Cese_Dimisiones" => $array_individual]];
-            $Result = $collection2->updateOne($filter, $document2);*/
+            $Result = $collection->updateOne($filter, $document2);*/
             Cese_Dimision_Update($lis, $FechaMilis, $arrayEntidad);
         }   
     }
@@ -733,7 +785,7 @@ function Ceses_Dimisiones($Datos_Registrales, $Valor, $FechaInscripcion){
 }
 
 function Cese_Dimision_Update($Directivo, $Fecha_Cese, $ArrayCompleto){
-    global $collection2;
+    global $collection;
     global $filter;
     global $DocumentoEntero;
 
@@ -751,18 +803,18 @@ function Cese_Dimision_Update($Directivo, $Fecha_Cese, $ArrayCompleto){
             "datos" => $ArrayCompleto
         ];        
         $document2 = ['$addToSet' => [ "Directivos" => $ArrayDirectivo]];
-        $Result = $collection2->updateOne($filter, $document2);
+        $Result = $collection->updateOne($filter, $document2);
     }else{
         //Si hay nombramiento con ese nombre y relacion
         $documentUpdate = ['$set' => ["Directivos.".$IndiceArray.".datos.hasta" => $Fecha_Cese]];
-        $Result = $collection2->updateOne($filter, $documentUpdate);
+        $Result = $collection->updateOne($filter, $documentUpdate);
     }
 }
 
 function CancelacionOficioNombramiento($Valor, $FechaInscripcion){
     //GUARDANDO LOS DATOS DEL CESE Y DIMISION
     global $filter;
-    global $collection2;
+    global $collection;
     global $DocumentoEntero;
 
     $dateNew = DateTime::createFromFormat('d/m/y', $FechaInscripcion)->format('Y/m/d');
@@ -795,10 +847,10 @@ function CancelacionOficioNombramiento($Valor, $FechaInscripcion){
                 ];
 
                 $document2 = ['$addToSet' => [ "Directivos" => $ArrayDirectivo]];
-                $Result = $collection2->updateOne($filter, $document2);
+                $Result = $collection->updateOne($filter, $document2);
             }else{
                 $documentUpdate = ['$set' => ["Directivos.".$IndiceArray.".datos.hasta" => $Fecha_Cese]];
-                $Result = $collection2->updateOne($filter, $documentUpdate);
+                $Result = $collection->updateOne($filter, $documentUpdate);
             }
         }   
     }
@@ -806,21 +858,21 @@ function CancelacionOficioNombramiento($Valor, $FechaInscripcion){
 
 function CambioDomicilio($Valor, $Ruta){
     global $filter;
-    global $collection2;
+    global $collection;
     foreach($Valor as $clave=>$Direccion_Nueva){
         $documentUpdate = ['$set' => [$Ruta => $Direccion_Nueva]];
-        $Result = $collection2->updateOne($filter, $documentUpdate);
+        $Result = $collection->updateOne($filter, $documentUpdate);
     }
 }
 
 function CambioDenominacionSocial_Anterior($Valor, $String){
     global $filter;
-    global $collection2;
+    global $collection;
     global $nombre_comercial;
 
     $nombre_comercial = $nombre_comercial;
 
-    $Result = $collection2->findOne($filter, ['projection' => ['denominaciones_sociales' => 1, '_id' => 0]]);
+    $Result = $collection->findOne($filter, ['projection' => ['denominaciones_sociales' => 1, '_id' => 0]]);
     $Denominaciones = "";
     if(count($Result) != 0){
         $Denominaciones = $Result["denominaciones_sociales"];
@@ -839,23 +891,23 @@ function CambioDenominacionSocial_Anterior($Valor, $String){
 
             //Actualizando "denominaciones_sociales"
             $documentUpdate = ['$set' => ["denominaciones_sociales" => $Denominaciones]];
-            $Result = $collection2->updateOne($filter, $documentUpdate);
+            $Result = $collection->updateOne($filter, $documentUpdate);
 
             //Actualizando "nombre_comercial"
             $documentUpdate = ['$set' => ["nombre_comercial" => $DenominacionNueva]];
-            $Result = $collection2->updateOne($filter, $documentUpdate);
+            $Result = $collection->updateOne($filter, $documentUpdate);
         }
     }
 }
 
 function CambioDenominacionSocial($Valor, $String){
     global $filter;
-    global $collection2;
+    global $collection;
     global $nombre_comercial;
 
     $nombre_comercial = $nombre_comercial;
 
-    $Result = $collection2->findOne($filter, ['projection' => ['denominaciones_sociales' => 1, '_id' => 0]]);
+    $Result = $collection->findOne($filter, ['projection' => ['denominaciones_sociales' => 1, '_id' => 0]]);
     $Denominaciones = "";
     if(count($Result) != 0){
         $Denominaciones = $Result["denominaciones_sociales"];
@@ -880,7 +932,7 @@ function CambioDenominacionSocial($Valor, $String){
             //Si el nombre comercial no existe ya en denominaciones_sociales
 
             //Actualizando "denominaciones_sociales"
-            //$Result = $collection2->updateOne($filter, $documentUpdate);
+            //$Result = $collection->updateOne($filter, $documentUpdate);
 
             //Actualizando "nombre_comercial"
 
@@ -898,56 +950,65 @@ function CambioDenominacionSocial($Valor, $String){
                     "id_nombre_comercial" => $id_nombre_comercial_nuevo
                 ]
             ];
-            $Result = $collection2->updateOne($filter, $documentUpdate);
+            $Result = $collection->updateOne($filter, $documentUpdate);
         }
     }
 }
 
 function AmpliaciónObjetoSocial($Valor){
     global $filter;
-    global $collection2;
+    global $collection;
     global $nombre_comercial;
 
-    $Result = $collection2->findOne($filter, ['projection' => ['Constitucion.datos.Objeto social' => 1, '_id' => 0]]);
-    $ObjetoSocial_Actual = $Result["Constitucion"]["datos"]["Objeto social"];
-    if(strpos(strtoupper($ObjetoSocial_Actual), strtoupper($Valor["Ampliacion del objeto social"])) === false){
-        //Si no se ha actualizado el Objeto Social
-        $ObjetoSocial_Actual = $ObjetoSocial_Actual . ". " . $Valor["Ampliacion del objeto social"];
+    $Result = $collection->findOne($filter, ['projection' => ['Constitucion.datos.Objeto social' => 1, '_id' => 0]]);
+    
+    $ObjetoSocial_Actual = "";
+    if(isset($Result["Constitucion"]["datos"]["Objeto social"])){
+        if(strpos(strtoupper($ObjetoSocial_Actual), strtoupper($Valor["Ampliacion del objeto social"])) === false){
+            //Si no se ha actualizado el Objeto Social
+            $ObjetoSocial_Actual = $ObjetoSocial_Actual . ". " . $Valor["Ampliacion del objeto social"];
+        }
+    }else{
+        //No existia el objeto social
+        $ObjetoSocial_Actual = $Valor["Ampliacion del objeto social"];
+    }
+
+    if($ObjetoSocial_Actual != ""){
         //Actualizando "Objeto social"
         $documentUpdate = ['$set' => ["Constitucion.datos.Objeto social" => $ObjetoSocial_Actual]];
-        $Result = $collection2->updateOne($filter, $documentUpdate);
+        $Result = $collection->updateOne($filter, $documentUpdate);
     }
 }
 
 function CambioCapital($Valor){
     global $filter;
-    global $collection2;
+    global $collection;
     $ResultanteSuscrito = Trimear($Valor["Resultante Suscrito"]);
     //Actualizando "Capital"
     $documentUpdate = ['$set' => ["Constitucion.datos.Capital" => $ResultanteSuscrito]];
-    $Result = $collection2->updateOne($filter, $documentUpdate);
+    $Result = $collection->updateOne($filter, $documentUpdate);
 }
 
 function Extincion($FechaInscripcion){
     global $filter;
-    global $collection2;
+    global $collection;
 
     $dateNew = DateTime::createFromFormat('d/m/y', $FechaInscripcion)->format('Y/m/d');
     $FechaMilis = new MongoDB\BSON\UTCDatetime(strtotime($dateNew . " 00:00:00")*1000);
 
     //Actualizando "Extincion"
     $documentUpdate = ['$set' => ["extincion" => $FechaMilis]];
-    $Result = $collection2->updateOne($filter, $documentUpdate);
+    $Result = $collection->updateOne($filter, $documentUpdate);
 }
 
 function Paginaweb($Valor){
     global $filter;
-    global $collection2;
+    global $collection;
     foreach($Valor as $val){
         $PaginaWeb = Trimear($val);
         //Actualizando "Capital"
         $documentUpdate = ['$set' => ["pagina_web" => $PaginaWeb]];
-        $Result = $collection2->updateOne($filter, $documentUpdate);
+        $Result = $collection->updateOne($filter, $documentUpdate);
     }
 }
 
@@ -966,7 +1027,7 @@ function Trimear($Texto){
 
 function indexOfArray($Busqueda, $Ruta){
     //Busca el índice donde se encuentra un array
-    global $collection2;
+    global $collection;
     global $filter;
     //ACTUALIZANDO LA FECHA DEL DIRECTIVO
     $ArrayBusqueda = [
@@ -979,7 +1040,7 @@ function indexOfArray($Busqueda, $Ruta){
             '$match' => $filter
         ]
     ];
-    $Result2 = $collection2->aggregate($ArrayBusqueda)->ToArray();
+    $Result2 = $collection->aggregate($ArrayBusqueda)->ToArray();
     return $Result2[0]['index'];
 }
 
@@ -1037,63 +1098,4 @@ function eliminar_acentos($cadena){
     return $cadena;
 }
 
-?>
-
-
-<?php
-    
-
-
-    function Nombramientos($DatosRegistrales, $arr, $Nombre, $clave1, $clave2){
-        global $numero_borme;
-        global $fecha_borme;
-        global $filter;
-        global $collection2;
-
-        //Sustrayendo solo la fecha
-        $FechaInscripcion = substr($DatosRegistrales, strlen($DatosRegistrales)-9, strlen($DatosRegistrales));
-        $FechaInscripcion = trim($FechaInscripcion, ')');
-        $FechaInscripcion = str_ireplace(".", "/", $FechaInscripcion);
-        $FechaInscripcion = str_ireplace(" ", "0", $FechaInscripcion);
-        $dateNew = DateTime::createFromFormat('d/m/y', $FechaInscripcion)->format('Y/m/d');
-        $FechaMilis = new MongoDB\BSON\UTCDatetime(strtotime($dateNew . " 00:00:00")*1000);
-
-        //Sustrayendo solo los datos registrales
-        $DatosRegistrales = substr($DatosRegistrales, 0, strlen($DatosRegistrales)-10);
-        $DatosRegistrales = trim($DatosRegistrales, " ");
-
-        $arraysEntidades = [];
-        foreach($arr as $clave=>$valor){
-            $Palabra = $clave;
-            $Cadena = $valor;
-            $Lista = explode(";", $Cadena);
-
-            foreach($Lista as $lis){
-                $lis = trim($lis, ":");
-                $lis = trim($lis, " ");
-                $arrayEntidad = [
-                    $clave1 => $lis,
-                    $clave2 => $Palabra
-                ];
-                array_push($arraysEntidades, $arrayEntidad);
-                
-            }
-        }
-        echo "-------------------------------------------------------------<br><br>";
-
-        $Array_Nombramientos = [
-            "numero_borme" => $numero_borme,
-            "fecha_borme" => $fecha_borme,
-            "datos_registrales" => $DatosRegistrales,
-            "fecha_incripcion" => $FechaMilis,
-            "entidades" => $arraysEntidades
-        ];
-
-        var_dump($Array_Nombramientos);
-        
-        $document2 = ['$addToSet' => [ $Nombre => $Array_Nombramientos]];
-        $Result = $collection2->updateOne($filter, $document2);
-        var_dump($Result);
-    }
-    
 ?>

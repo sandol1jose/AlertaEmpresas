@@ -1,0 +1,239 @@
+@import url(fonts.css);
+
+iframe{
+    width: 100%;
+    border-style: none;
+}
+
+body{
+    margin: 0;
+    font-family: 'Roboto';
+}
+
+
+.Cabecera_Arriba{
+    width: 100%;
+    height: 65px;
+    align-items: center;
+
+    /*Alinear 3 divs horizontalmente*/
+    display: flex;                  /* establish flex container */
+    flex-direction: row;            /* default value; can be omitted */
+    flex-wrap: nowrap;              /* default value; can be omitted */
+    justify-content: space-between; /* switched from default (flex-start, see below) */
+}
+
+.DivTitulo{
+    text-align: left;
+    padding-left: 10px;
+}
+
+.TituloPrincipal{
+    /*font-size: 30px;*/
+    font-size: 190%;
+    color: #343435;
+}
+
+
+
+
+
+
+
+
+.DivBoton{
+    text-align: right;
+    padding-right: 25px;
+}
+
+.Boton{
+    background-color: transparent;
+    height: 40px;
+    width: 90px;
+    outline: none;
+    border: 2px solid #343435;   
+    padding: 0px;
+    cursor: pointer;
+    background: none;
+
+    color: #343435;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+}
+
+.Boton:hover{
+    background: #343435;
+    color: white;
+    transform: scale(0.98, 0.98);
+}
+
+.BotonCuenta{
+    /*background-color: transparent;*/
+    height: 40px;
+    width: 40px; 
+    padding: 0px;
+    border: 0px;   
+    cursor: pointer;
+    border-radius: 30px 30px 30px 30px;
+
+    color: white;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 19px;
+
+    margin-right: 10px;
+}
+
+.BotonCuenta:hover{
+    background: #343435;
+    color: white;
+    transform: scale(0.98, 0.98);
+}
+
+
+
+
+
+
+.Cabecera_Abajo{
+    width: 100%;
+    height: 39px;
+    background: #343435;
+    /*Alinear 3 divs horizontalmente*/
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-content: stretch;
+    align-items: stretch;
+    flex-direction: column;
+}
+
+.Vinculos{
+    text-align: right;
+}
+
+.BotonesVinculos{
+    color: white;
+    text-decoration: none;
+    padding-right: 25px;
+    font-size: 15px;
+}
+
+.BotonesVinculos:hover{
+    color: #b9b9b9;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.DivTituloGrande{
+    height: 70px;
+    background-color: #3F388D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Titulo2{
+    font-size: 30px;
+    color: white;
+}
+
+.divSubtitulo2{
+    border-bottom: 1px solid black;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    display: flex;
+}
+
+.Subtitulo2{
+    color: #C41C1C;
+    font-family: 'Roboto-Bold';
+    margin-bottom: 10px;
+}
+
+.BotonGeneral{
+    background: #3F388D;
+    height: 50px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    color: white;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+}
+
+.BotonGeneral:hover{
+    background: #483bd1;
+    transform: scale(0.98, 0.98);
+}
+
+
+
+/*IMPUT*/
+.InputGeneral{
+    background-color: transparent;
+    height: 40px;
+    outline: none;
+    border: 1px solid #CBCBCB;
+    padding-left: 18px;
+    padding-right: 18px;
+    font-size: 16px;
+    line-height: 19px;
+    border-radius: 5px 5px 5px 5px;
+    user-select: none;
+}
+
+.InputGeneral:focus{
+    border: 1px solid #8603AB;
+}
+
+
+.inputVinculos{
+    text-decoration: none;
+}
+
+
+.parrafo1{
+    font-family: 'Roboto-Light';
+    font-size: 16px;
+}
+
+
+
+
+
+/*PIE DE LA PAGINA*/
+.PieArriba{
+    height: 150px;
+    background-color: #0C0741;
+}
+
+.PieAbajo{
+    height: 55px;
+    background-color: #343435;
+}
