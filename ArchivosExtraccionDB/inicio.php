@@ -60,7 +60,7 @@
         //var Departamento = $('#Departamento').val();
         $.ajax({
 			type: "POST",
-			url: "BuscarInformacion.php",
+			url: "BuscarInformacion.php?tipo=1",
 			data: {'fecha': fecha},
 			dataType: "html",
 			beforeSend: function(){
@@ -71,12 +71,12 @@
 				console.log("error petición ajax");
 			},
 			success: function(data){
-                if(data != ""){
+                /*if(data != ""){
                     console.log(data);
                     numero = numero + parseInt(data);
-                }
+                }*/
                 var dataActual = document.getElementById("txtSalida").innerHTML;
-                document.getElementById("txtSalida").innerHTML = (dataActual + "<br> " + numero);
+                document.getElementById("txtSalida").innerHTML = (dataActual + "<br> " + data);
                 contador2++;
                 console.log(contador2 + " - terminamos " + fecha);  
 			}

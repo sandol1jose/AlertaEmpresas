@@ -4,6 +4,7 @@ $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
 
 $id_Empresa = $_GET["id"];
+//$id_Empresa = "62509df865260000c00a685e";
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();
@@ -15,33 +16,42 @@ $Directivos = null;
 $DocumentoEntero;
 $Anuncios_Borme;
 
-Consultar();
-
-function Consultar(){
-    global $collection;
-    global $Directivos;
-    global $DocumentoEntero;
-    global $Anuncios_Borme;
-    global $id_Empresa;
-
+try{
     $filter = [ "_id" => new MongoDB\BSON\ObjectID($id_Empresa) ];
-    $Result = $collection->find($filter, ["anuncio_borme" => 0, 'typeMap' => ['array' => 'array']])->toArray();
-    //$Result = $collection->find($filter, ["anuncio_borme" => 0])->toArray();
-
-    foreach($Result as $res){
-        if(isset($res->Directivos)){
-            $Directivos = $res->Directivos;
-            $Directivos = OrdenarArray($Directivos);
-        }
-        
-        $DocumentoEntero = json_decode(json_encode($res), true);
-        $Anuncios_Borme = array_reverse(json_decode(json_encode($res->anuncio_borme), true));
-    }
-
+}catch(Exception $e){
+    header('Location: index.php');
 }
+
+//$Result = $collection->find($filter, ["anuncio_borme" => 0, 'typeMap' => ['array' => 'array']])->toArray();
+$Result = $collection->findOne($filter, ["anuncio_borme" => 0]);
+
+if($Result == NULL){
+    header('Location: index.php');
+}
+$Result = iterator_to_array($Result);
+if(isset($Result['Directivos'])){
+    $Directivos = $Result['Directivos'];
+    $Directivos = OrdenarArray($Directivos);
+}
+
+$DocumentoEntero = $Result;
+$Sucursal = "";
+if(isset($DocumentoEntero["sucursal"])){
+    $Sucursal = " (" . $DocumentoEntero["sucursal"] . ")";
+}
+
+//$Anuncios_Borme = array_reverse(json_decode(json_encode($res->anuncio_borme), true));
+$Anuncios_Borme = NULL;
+if($_SESSION['AnuncioBorme']["id"] == $id_Empresa){
+    $Anuncios_Borme = $_SESSION['AnuncioBorme']["anuncio_borme"];
+}
+//$Anuncios_Borme = array_reverse(iterator_to_array($Result['anuncio_borme']));
+$Anuncios_Borme = array_reverse($Anuncios_Borme);
+
 
 //Funcion que ordena el array por fecha
 function OrdenarArray($Array){
+    $Array = iterator_to_array($Array);
     foreach ($Array as $key => $row) {
         $aux[$key] = intval(strval($row->fecha));
     }
@@ -71,7 +81,7 @@ function OrdenarArray($Array){
     <div class="TituloEmpresa">
         <img src="imagenes/edificio.png" alt="" width="18px">
         <span style="color: white">Empresa</span><br>
-        <span class="Titulo2"><?php echo trim($DocumentoEntero["nombre_comercial"], "."); ?></span>
+        <span class="Titulo2"><?php echo $DocumentoEntero["nombre_comercial"] . $Sucursal; ?></span>
     </div>
 </div>
 
@@ -85,7 +95,7 @@ function OrdenarArray($Array){
             
             <span class="txtTitulo"><b>Nombre Comercial: </b></span>
             <span class="txtparrafo"><?php if(isset($DocumentoEntero["nombre_comercial"])) 
-            echo  $DocumentoEntero["nombre_comercial"]?></span><br><br>
+            echo  $DocumentoEntero["nombre_comercial"] . $Sucursal?></span><br><br>
 
             <span class="txtTitulo"><b>Objeto social: </b></span>
             <span class="txtparrafo"><?php if(isset($DocumentoEntero["Constitucion"]["datos"]["Objeto social"])) 
@@ -99,17 +109,28 @@ function OrdenarArray($Array){
             <span class="txtparrafo"><?php if(isset($DocumentoEntero["Constitucion"]["datos"]["Domicilio"])) 
             echo  $DocumentoEntero["Constitucion"]["datos"]["Domicilio"]?></span><br><br>
 
+            <span class="txtTitulo"><b>Provincia: </b></span>
+            <span class="txtparrafo"><?php if(isset($DocumentoEntero["provincia"])) 
+            echo  $DocumentoEntero["provincia"]?></span><br><br>
+
             <span class="txtTitulo"><b>Fecha constitución: </b></span>
             <span class="txtparrafo">
                 <?php 
                     if(isset($DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"])){
                         $Fecha = $DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"];
-                        $Fecha = DateTime::createFromFormat('d.m.y', $Fecha)->format('d/m/Y');
-                        echo $Fecha;
-                    } 
+                        if($Fecha != "AUTORIZACION POLICIAL"){//Si no AUTORIZACION POLICIAL
+                            //$Fecha = $DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"];
+                            $Fecha = DateTime::createFromFormat('d.m.y', $Fecha)->format('d/m/Y');
+                            echo $Fecha;
+                        }else{
+                            $Fecha = $DocumentoEntero["Constitucion"]["fecha_incripcion"];
+                            $Fecha = date("d/m/Y", strval($Fecha)/1000);
+                            //$Fecha = DateTime::createFromFormat('d.m.y', $Fecha)->format('d/m/Y');
+                            echo $Fecha;
+                        }
+                    }
                 ?>
-            </span>
-            <br><br>
+            </span><br><br>
 
             <span name="btn_alertas" id="btn_alertas">
                 <?php VerificarSeguimiento(); ?>
@@ -230,7 +251,7 @@ function OrdenarArray($Array){
 
 <div class="divAnuncios">
     <div class="divSubtitulo2">
-        <span class="Subtitulo2">Anuncion en Boletín Oficial (BORME)</span><br>
+        <span class="Subtitulo2">Anuncios en Boletín Oficial (BORME)</span><br>
     </div>
 
     <table>
@@ -239,7 +260,8 @@ function OrdenarArray($Array){
                 <td class="tdFecha">
                     <?php 
                     setlocale(LC_ALL, 'es_ES');
-                    $fecha = $anuncio["fecha"]['$date']['$numberLong'];
+                    //$fecha = $anuncio["fecha"]['$date']['$numberLong'];
+                    $fecha = $anuncio["fecha"];
                     echo date("d/m/Y", strval($fecha)/1000);
                     ?>
                 </td>

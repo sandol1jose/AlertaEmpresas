@@ -74,6 +74,13 @@ foreach($Result["alertas"] as $alerta){
     $Nombre_empresa = $Result["nombre_comercial"];
     $Correo = $_SESSION["Cliente"]["Correo"];
 
+    $sucursal = "";
+    $sucursal2 = "";
+    if(isset($Result["sucursal"])){
+        $sucursal = "&sucursal=" . $Result["sucursal"];
+        $sucursal2 = " (" . $Result["sucursal"] . ")";
+    }
+
     $check = '';
     if($alerta["estado"] == true){
         $check = 'checked';
@@ -87,7 +94,11 @@ foreach($Result["alertas"] as $alerta){
                 <span class="slider round"></span>    
                 </label>
             </td>
-            <td class="tdNombreEmpresa"><a href="../MostrarEmpresa.php?id=<?php echo $id_empresa; ?>&name=<?php echo $Nombre_empresa; ?>"><?php echo $Nombre_empresa; ?></a></td>
+            <td class="tdNombreEmpresa">
+                <a href="../MostrarEmpresa.php?id=<?php echo $id_empresa; echo $sucursal; ?>">
+                    <?php echo $Nombre_empresa . $sucursal2; ?>
+                </a>
+            </td>
             <td class="tdInptNumber"><input class="inptNumber" type="number" value="<?php echo $alerta["cantidad"]; ?>" min="0" max="10"></td>
         </tr>
 <?php

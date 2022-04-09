@@ -1,10 +1,8 @@
 <?php
 
-$tiempo_inicio = microtime(true);
+//$tiempo_inicio = microtime(true);
 set_time_limit(50000);
 
-//require '../Archivos de Ayuda PHP/conexion.php';
-//require '../mongodb/vendor/autoload.php';
 $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/Archivos de Ayuda PHP/conexion.php');
 
@@ -44,7 +42,10 @@ $Anuncio_Nombramientos = [
     "ADM.SOLIDAR.: ",
     "LiquiSoli: ",
     "Representan: ",
-    "Soc.Prof.: "
+    "Soc.Prof.: ",
+    "Con.delegado: ",
+    "Con.Delegado: ",
+    "Cons.del.man: "
 ];
 $AumentoCapital = [
     "Resultante Desembolsado",
@@ -97,67 +98,101 @@ $Anuncios = [
     "Situación concursal. " => NULL,
 ];
 
-$filter = [
-    '$or' => 
-        [
-            ["anuncio_borme.anuncio" => ['$regex' => "Cambio de denominación social"]],
-            ["anuncio_borme.anuncio" => ['$regex' => "Transformación de sociedad"]]
-        ]
-    //"anuncio_borme.anuncio" => ['$regex' => "Cambio de denominación social"]//,
-    //"anuncio_borme.anuncio" => ['$regex' => "Transformación de sociedad"]
-];
-//$filter = ["nombre_comercial" => ['$regex' => "SERGIO ESCRIG SOCIEDAD LIMITADA."] ];
-//$conexion = new Conexion();
-/*$connection = new MongoDB\Client('mongodb://localhost:27017');
-$database = $connection->alertaempresas;
-//$database = $conexion->Conectar();
-$collection = $database->empresas;*/
-
-$conexion = new Conexion();
-$database = $conexion->Conectar();
-$collection = $database->empresas;
-
-$Options = [
-    'limit' => 80000
-    //'projection' => ['anuncio_borme.anuncio' => 1, 'nombre_comercial' => 1]
-];
-$Result = $collection->find($filter, $Options)->toArray();
-
-echo count($Result) . "<br><br>";
-
-$ID_EmpresaEmisora;
-$Nombre_EmpresaEmisora;
-$Tipo_Anuncio; // 1 = Transformación de sociedad, 2 = Cambio de denominación social
+/*
+    $filter = [
+        '$or' => 
+            [
+                ["anuncio_borme.anuncio" => ['$regex' => "Cambio de denominación social"]],
+                ["anuncio_borme.anuncio" => ['$regex' => "Transformación de sociedad"]]
+            ]*/
+        //"anuncio_borme.anuncio" => ['$regex' => "Cambio de denominación social"]//,
+        //"anuncio_borme.anuncio" => ['$regex' => "Transformación de sociedad"]
+    //];
+    //$filter = ["nombre_comercial" => ['$regex' => "SERGIO ESCRIG SOCIEDAD LIMITADA."] ];
+    //$conexion = new Conexion();
+    /*$connection = new MongoDB\Client('mongodb://localhost:27017');
+    $database = $connection->alertaempresas;
+    //$database = $conexion->Conectar();
+    $collection = $database->empresas;
+*/
+$collection = NULL;
+$collection2 = NULL;
+$NombreActual_Empresa;
+$IDActual_Empresa;
+//$Tipo_Anuncio; // 1 = Transformación de sociedad, 2 = Cambio de denominación social
 $DocumentoEntero;
-foreach($Result as $res){
-    $anuncio_borme = $res["anuncio_borme"];
-    foreach($anuncio_borme as $anuncio){
-        //$Texto_anuncio_borme = $res["anuncio_borme"][0]["anuncio"];
-        $Texto_anuncio_borme = $anuncio["anuncio"];
-        $Tipo_Anuncio = 1;
-        if(!(strpos($Texto_anuncio_borme, "Cambio de denominación social") === false)){
-            $Tipo_Anuncio = 2;
-            $Marca = strpos($Texto_anuncio_borme, "Cambio de denominación social");
-        }else{
-            $Marca = strpos($Texto_anuncio_borme, "Transformación de sociedad");
-        }
-
-        $Texto_anuncio_borme = substr($Texto_anuncio_borme, $Marca);
-        $Lista = explode(" Datos registrales. ", $Texto_anuncio_borme);
-        $Texto_anuncio_borme = $Lista[0];
-
-        if(!(strpos($Texto_anuncio_borme, "Cambio de denominación social") === false) || 
-        !(strpos($Texto_anuncio_borme, "Transformación de sociedad") === false) ){
-            $ID_EmpresaEmisora = $res["_id"];
-            $Nombre_EmpresaEmisora = $res["nombre_comercial"];
-            ProcesarNivel($Texto_anuncio_borme, $Anuncios, 1, NULL);
-            OrientarResultados();
-        }
-    }
-}
-GuardarDatos();
-
 $Array_Nivel1; //Guardará el parrafo seccionado como Array
+
+//UnirCambiosDeNombre(2);
+function UnirCambiosDeNombre($tipo){
+    global $Anuncios;
+    global $collection;
+    global $collection2;
+    global $NombreActual_Empresa;
+    global $IDActual_Empresa;
+
+    $conexion = new Conexion();
+    $database = $conexion->Conectar();
+
+    //Para que pueda usarse diariamente o cuando se requiera unir todos
+    $collection = NULL;
+    if($tipo == 1){
+        $collection = $database->anuncios_dia;
+    }else if($tipo == 2){
+        $collection = $database->anuncios;
+    }
+
+    $collection2 = $database->cambios_nombres2;
+    
+    $filter = [
+        '$or' => 
+            [
+                ["anuncio" => ['$regex' => "Cambio de denominación social"]],
+                ["anuncio" => ['$regex' => "Transformación de sociedad"]]
+            ]
+    ];
+
+    $Options = [
+        'limit' => 80000
+        //'projection' => ['anuncio_borme.anuncio' => 1, 'nombre_comercial' => 1]
+    ];
+    $Result = $collection->find($filter, $Options)->toArray();
+
+    echo count($Result) . "<br><br>";
+
+    foreach($Result as $res){
+        //$anuncio_borme = $res["anuncio_borme"];
+        //$anuncio_borme = $res;
+        //foreach($anuncio_borme as $anuncio){
+            //$Texto_anuncio_borme = $res["anuncio_borme"][0]["anuncio"];
+            $Texto_anuncio_borme = $res["anuncio"];
+            //$Tipo_Anuncio = 1;
+            /*if(!(strpos($Texto_anuncio_borme, "Cambio de denominación social") === false)){
+                //$Tipo_Anuncio = 2;
+                $Marca = strpos($Texto_anuncio_borme, "Cambio de denominación social");
+            }else{
+                $Marca = strpos($Texto_anuncio_borme, "Transformación de sociedad");
+            }*/
+
+            //$Texto_anuncio_borme = substr($Texto_anuncio_borme, $Marca);
+            $Lista = explode(" Datos registrales. ", $Texto_anuncio_borme);
+            $Texto_anuncio_borme = $Lista[0];
+
+            if(!(strpos($Texto_anuncio_borme, "Cambio de denominación social") === false) || 
+            !(strpos($Texto_anuncio_borme, "Transformación de sociedad") === false) ){
+                //$ID_EmpresaEmisora = $res["_id"];
+                $NombreActual_Empresa = $res["nombre_comercial"];
+                $IDActual_Empresa = $res["_id"];
+                ProcesarNivel($Texto_anuncio_borme, $Anuncios, 1, NULL);
+                OrientarResultados();
+            }
+        //}
+    }
+    //GuardarDatos();
+}
+
+
+
 function ProcesarNivel($Texto, $ArrayAnuncios, $Nivel, $PalabraNivel1){
     $cadena1 = NULL;
     $cadena2 = NULL;
@@ -190,15 +225,17 @@ function ProcesarNivel($Texto, $ArrayAnuncios, $Nivel, $PalabraNivel1){
                         $cadena2 = str_replace($Comparador, "", $cadena2);
                         $cadena1 = "";
                         if($Nivel1_String != NULL){
-                            if($Nivel == 1 && $Niverl2_Array != NULL){
-                                ProcesarNivel($cadena2, $Niverl2_Array, 2, $Nivel1_String);
-                            }else{
-                                CrearArray_Nivel2($Nivel1_String, $cadena2, $PalabraNivel1);
-                            }   
+                            if($Nivel1_String == "Cambio de denominación social. " || $Nivel1_String == "Transformación de sociedad. "){
+                                if($Nivel == 1 && $Niverl2_Array != NULL){
+                                    ProcesarNivel($cadena2, $Niverl2_Array, 2, $Nivel1_String);
+                                }else{
+                                    CrearArray_Nivel2($Nivel1_String, $cadena2, $PalabraNivel1);
+                                }  
+                            } 
                             $Nivel1_String = $Comparador;
                             $cadena2 = NULL;
                             $cadena1 = NULL;
-                            $i = strlen($Texto);
+                            //$i = strlen($Texto);
                             break;
                         }
                         $Nivel1_String = $Comparador;
@@ -224,7 +261,8 @@ function ProcesarNivel($Texto, $ArrayAnuncios, $Nivel, $PalabraNivel1){
 
 function CrearArray_Nivel2($Titulo, $Texto, $PalabraNivel1){
     global $Array_Nivel1;
-    if($PalabraNivel1 == NULL) $PalabraNivel1 = $Titulo; //Esto es para "Datos Registrales"
+    if($Titulo == NULL) $Titulo = $PalabraNivel1;
+    if($PalabraNivel1 == NULL) $PalabraNivel1 = $Titulo;
     $Titulo = Trimear($Titulo);
     $Texto = Trimear($Texto);
     $Array_Nivel2 = [$Titulo => $Texto];
@@ -264,30 +302,86 @@ function OrientarResultados(){
 
 $ArrayDeInsercion;
 function CambioDenominacionSocial($Valor, $Busqueda){
-    global $ID_EmpresaEmisora;
-    global $Nombre_EmpresaEmisora; 
-    global $Tipo_Anuncio;
-    global $ArrayDeInsercion;
-    $EmpresaReceptora = $Valor[$Busqueda];
-    $EmpresaReceptora = str_replace(".", "", $EmpresaReceptora);
-    $EmpresaReceptora = str_replace(",", "", $EmpresaReceptora);
-    $EmpresaReceptora = str_replace(" ", "", $EmpresaReceptora);
+    //global $ID_EmpresaEmisora;
+    global $NombreActual_Empresa; 
+    global $collection2;
+    global $IDActual_Empresa;
+    /*global $Tipo_Anuncio;
+    global $ArrayDeInsercion;*/
+    $NombreNuevo_Empresa = $Valor[$Busqueda];
+    $NombreNuevo_Empresa = trim($NombreNuevo_Empresa, " ");
+    $NombreNuevo_Empresa = trim($NombreNuevo_Empresa, ".");
 
-    $ArrayDeInsercion[] = [
-        'empresa_receptora' => $EmpresaReceptora,
-        'empresa_emisora' => $Nombre_EmpresaEmisora,
+    $NombreActual_Empresa = trim($NombreActual_Empresa, " ");
+    $NombreActual_Empresa = trim($NombreActual_Empresa, ".");
+    /*$NombreNuevo_Empresa = str_replace(".", "", $NombreNuevo_Empresa);
+    $NombreNuevo_Empresa = str_replace(",", "", $NombreNuevo_Empresa);
+    $NombreNuevo_Empresa = str_replace(" ", "", $NombreNuevo_Empresa);*/
+
+    $filtro = ["otros_nombres" => $NombreActual_Empresa];
+    $Result = $collection2->findOne($filtro);
+
+    if($Result == NULL){
+        //No hay ningun registros
+        $Documento = [
+            'nombre_original' => $NombreActual_Empresa,
+            'idempresa_original' =>  new MongoDB\BSON\ObjectID($IDActual_Empresa),
+            'otros_nombres' => [
+                $NombreActual_Empresa,
+                $NombreNuevo_Empresa
+            ]
+        ];
+        $Result = $collection2->insertOne($Documento);
+    }else{
+        //Ya existe un registro solo le agregaremos
+        $actualizar = 
+        [
+            '$addToSet' => [ "otros_nombres" => $NombreNuevo_Empresa]
+        ];
+        $Result = $collection2->updateOne($filtro, $actualizar);
+    }
+
+
+    /*$ArrayDeInsercion[] = [
+        'empresa_receptora' => $NombreNuevo_Empresa,
+        'empresa_emisora' => $NombreActual_Empresa,
         'id_empresasa_emisora' => $ID_EmpresaEmisora,
         'tipo_anuncio' => $Tipo_Anuncio
     ];
+    $Documento = [
+        'nombre_original' => $NombreActual_Empresa,
+        'otros_nombres' => [
+            $NombreActual_Empresa,
+            $NombreNuevo_Empresa
+        ]
+    ];*/
+
+    //$filtro = ["otros_nombres" => $NombreNuevo_Empresa];
+    //$filtro = ["otros_nombres" => ['$elemMatch' => ['$eq' => $NombreNuevo_Empresa]]];
+
+    /*$actualizar = 
+    [
+        '$set' => ["nombre_original" => $NombreActual_Empresa],
+        '$addToSet' => [ "otros_nombres" => [$NombreNuevo_Empresa,$NombreActual_Empresa]]
+    ];
+
+    global $database;
+    $collection = $database->cambios_nombres2;
+    $Result1 = $collection->findOneAndUpdate($filtro, $actualizar, ['upsert' => true]);*/
+
+    /*global $database;
+    $collection = $database->cambios_nombres2;
+    $Result = $collection->insertOne($Documento);*/
 }
 
+/*
 function GuardarDatos(){
     global $ArrayDeInsercion;
     global $database;
-    $collection = $database->cambios_nombres;
+    $collection = $database->cambios_nombres2;
     $Result = $collection->insertMany($ArrayDeInsercion);
     var_dump($Result);
-}
+}*/
 
 
 
@@ -343,11 +437,11 @@ function eliminar_acentos($cadena){
     return $cadena;
 }
 
-
+/*
 $tiempo_fin = microtime(true);
 $tiempo = $tiempo_fin - $tiempo_inicio;
 echo "<br><br>";
-echo "Tiempo empleado: " . ($tiempo_fin - $tiempo_inicio);
+echo "Tiempo empleado: " . ($tiempo_fin - $tiempo_inicio);*/
 
 
 ?>

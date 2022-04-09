@@ -3,6 +3,7 @@ Indices MONGODB:
 https://nelsoncode.medium.com/como-buscar-por-frase-especifica-b%C3%BAsqueda-de-texto-en-mongodb-efc848236a97
 Consulta Like con Index
 db.teachers.find( { $text: { $search: "\"Nelson\"" } } );
+db.teachers.createIndex( { profesor: "text", edad: "text" } )
 
 
 Rendimiento PHP
@@ -80,3 +81,20 @@ $collection->find($query, [
         'description' => 1,
     ]
 ];
+
+
+
+
+
+
+Crear un indice con clave unica
+db.anuncios2.createIndex({numid: 1}, {unique: true})
+
+
+
+BUSCAR LAS NUEVAS EMPRESAS
+db.getCollection('anuncios2').find({$and:[
+{"tipo": "Constitución"},
+{"fecha": {"$eq": new Date("2022-04-07")}}
+]
+})

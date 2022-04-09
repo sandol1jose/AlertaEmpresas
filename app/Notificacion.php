@@ -1,14 +1,64 @@
 <?php
 /*Archivo que enviará las notificaciones a los correos de las empresas que estan siendo seguidas
 por algunos Clientes*/
+//Notificar();
 function Notificar(){
 	$root = str_replace('\\', '/', dirname(__DIR__));
 	require_once($root . '/Archivos de Ayuda PHP/conexion.php');
-	//require_once('../Archivos de Ayuda PHP/conexion.php');
+	echo "Estamos por enviar los correos\n\n";
 
 	$conexion = new Conexion();
 	$database = $conexion->Conectar();
-	$collection = $database->NuevasEmpresasDia;
+	$collection = $database->anuncios_dia;
+	$Anuncios = $collection->find()->toArray();
+
+	//Agrupando los anuncios por empresa
+	$Anuncios_Agrupados = NULL;
+	foreach($Anuncios as $anuncio){
+		$id_nombre_comercial = $anuncio["id_nombre_comercial"];
+		$Anuncios_Agrupados[$id_nombre_comercial][] = $anuncio;
+	}
+
+	foreach($Anuncios_Agrupados as $res){
+		//Buscamos a la empresa para ver sus alertas
+		$id_nombre_comercial = $res[0]["id_nombre_comercial"];
+		$filter = [ '$or' => [
+			["id_nombre_comercial" => $id_nombre_comercial ],
+			["id_denominaciones_sociales" => $id_nombre_comercial ]
+			]
+		];
+		$collection2 = $database->empresas;
+		$Empresa = $collection2->findOne($filter);
+
+		if($Empresa != NULL && isset($Empresa["alertas"])){
+			$anuncios = NULL;
+			foreach($res as $newBorme){
+				$anuncios = $anuncios . $newBorme["tipo"] . "<br>";
+				$anuncios = $anuncios . $newBorme["anuncio"] . "<br><br>";
+			}
+	
+			$Correos = NULL;
+			foreach($Empresa["alertas"] as $alerta){
+				if($alerta["estado"] == true){
+					//Si la alerta esta activa
+					$Correos[] = $alerta["correo_cliente"];
+				}
+			}
+			if($Correos != NULL){
+				EnviarEmail($Correos, $anuncios, $Empresa["nombre_comercial"]);
+				//echo $anuncios;
+			}
+		}
+	}
+}
+
+/*function Notificar(){
+	$root = str_replace('\\', '/', dirname(__DIR__));
+	require_once($root . '/Archivos de Ayuda PHP/conexion.php');
+
+	$conexion = new Conexion();
+	$database = $conexion->Conectar();
+	$collection = $database->anuncios_dia;
 	$Result = $collection->find()->toArray();
 
 	foreach($Result as $res){
@@ -16,7 +66,8 @@ function Notificar(){
 		$bormes_agregados = $res["bormes_agregados"];
 		$nombre_empresa = $res["nombre_empresa"];
 
-		$collection = $database->empresas_diario;
+		//$collection = $database->empresas_diario;
+		$collection = $database->empresas;
 		$filter = ["_id" => new MongoDB\BSON\ObjectID($id_Empresa)];
 		$Result2 = $collection->findOne($filter);
 
@@ -41,7 +92,7 @@ function Notificar(){
 		var_dump($Correos);
 		EnviarEmail($Correos, $anuncios, $nombre_empresa);
 	}
-}
+}*/
 ?>
 
 <?php

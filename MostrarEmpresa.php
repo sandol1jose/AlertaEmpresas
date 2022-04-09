@@ -1,6 +1,7 @@
 <?php
-$root = str_replace('\\', '/', dirname(__DIR__));
-require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
+    session_start();//inicio de sesion
+    $root = str_replace('\\', '/', dirname(__DIR__));
+    require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
 
 $Anuncio_Constitucion = [
     "Capital: ",
@@ -38,7 +39,11 @@ $Anuncio_Nombramientos = [
     "ADM.SOLIDAR.: ",
     "LiquiSoli: ",
     "Representan: ",
-    "Soc.Prof.: "
+    "Soc.Prof.: ",
+    "Con.delegado: ",
+    "Con.Delegado: ",
+    "Cons.del.man: ",
+    "D. Gerente: "
 ];
 $AumentoCapital = [
     "Resultante Desembolsado",
@@ -91,29 +96,37 @@ $Anuncios = [
     "Situación concursal. " => NULL,
 ];
 
+/*$_GET["id"] = "624f8211280b0000c600b93b";
+$_GET["sucursal"] = "EN CANARIAS";*/
 
 $id = $_GET["id"];
-$nombre_comercial = $_GET["name"];
-/*
-$id = "623158bd6ec53be006580a29";
-$nombre_comercial = "DC INGENIEROS Y SERVICIOS SOCIEDAD LIMITADA PROFESIONAL.";*/
-
+//$id = "625098fc65260000c006ad36";
+//$id = "624c98d2e07900000003dbcf";
 $conexion = new Conexion();
 $database = $conexion->Conectar();
+$Result = $database->anuncios->findOne([ "_id" => new MongoDB\BSON\ObjectID($id)]);
+$nombre_comercial = $Result["nombre_comercial"];
+$Result = NULL;
 
-//Consultado si existe cambios de nombre en archivos diferentes
-/*$nombre_comercial2 = str_replace(".", "", $nombre_comercial);
-$nombre_comercial2 = str_replace(",", "", $nombre_comercial2);
-$nombre_comercial2 = str_replace(" ", "", $nombre_comercial2);
+/*
+    $nombre_comercial2 = str_replace(".", "", $nombre_comercial);
+    $nombre_comercial2 = str_replace(",", "", $nombre_comercial2);
+    $nombre_comercial2 = str_replace(" ", "", $nombre_comercial2);
+    $filtro1 = [ '$or' => [
+        ["empresa_receptora" => $nombre_comercial2], 
+        ["id_empresasa_emisora" => new MongoDB\BSON\ObjectID($id)] 
+    ]];
+    $filtro1 = [ '$or' => [
+        ["empresa_receptora" => $nombre_comercial2], 
+        ["empresa_emisora" => $nombre_comercial] 
+    ]];
+    $Result = $database->cambios_nombres->find($filtro1)->toArray();
 
-$filtro1 = [ '$or' => [
-    ["empresa_receptora" => $nombre_comercial2], 
-    ["id_empresasa_emisora" => new MongoDB\BSON\ObjectID($id)] 
-]];
-$Result = $database->cambios_nombres->find($filtro1)->toArray();
-
-if(count($Result) > 0){
-    if($Result[0]["id_empresasa_emisora"] == $id){
+    if(count($Result) > 0){
+    /*if($Result[0]["id_empresasa_emisora"] == $id){
+        $nombre_comercial2 = $Result[0]["empresa_receptora"];
+    }*/
+    /*if($Result[0]["empresa_emisora"] == $nombre_comercial){
         $nombre_comercial2 = $Result[0]["empresa_receptora"];
     }
 
@@ -154,23 +167,166 @@ if(count($Result) > 0){
     $Result = $database->empresas->findOne($busqueda2);
     $id = $Result["_id"];
     $nombre_comercial = $Result["nombre_comercial"];
-}*/
+    }
+*/
+
+//Consultado si existe cambios de nombre en archivos diferentes
+$filter = ["otros_nombres" => $nombre_comercial];
+$Result = $database->cambios_nombres->findOne($filter);
+
+$anuncio_borme = NULL; //Juntará todos los anuncios borme
+$anuncio_borme_numid = NULL; //Juntará todos los anuncios borme (Solo los numid)
+$filter = NULL;
+$Result_anuncios = NULL;
+$primer_nombre_comercial = NULL;
+$nombre_original = NULL;
+$provincia = NULL;
+if($Result != NULL){
+    //Si hay registro en "cambio_nombres"
+    foreach($Result["otros_nombres"] as $otro_nombre){//Buscamos entre todos los nombres
+        if(isset($_GET["sucursal"])){
+            $filter = ["nombre_comercial" => $otro_nombre, "sucursal" => $_GET["sucursal"]];
+        }else{
+            $filter = ["nombre_comercial" => $otro_nombre];
+        }
+        $Result_anuncios = $database->anuncios->find($filter)->toArray();
+        foreach($Result_anuncios as $anuncio){//Traemos todos los anuncios encontrados con ese nombre
+            $anuncio_borme[] = [
+                "borme" => $anuncio["borme"],
+                "numero" => $anuncio["numero"],
+                "numid" => $anuncio["numid"],
+                "fecha" => $anuncio["fecha"],
+                "tipo" => $anuncio["tipo"],
+                "anuncio" => $anuncio["anuncio"]
+            ];
+
+            $anuncio_borme_numid[] = [
+                "numid" => $anuncio["numid"]
+            ];
+        }
+        if($Result_anuncios != NULL){
+            $provincia = $Result_anuncios[0]["provincia"];
+        }
+    }
+    $nombre_original = Id_DeNombre($Result["nombre_original"]);
+    //$primer_nombre_comercial = $Result["otros_nombres"][count($Result["otros_nombres"])-1];
+    $primer_nombre_comercial = $nombre_original;
+    $id_primer_nombre_comercial = Id_DeNombre($primer_nombre_comercial);
+}else{
+    /*$filtro = [ "_id" => new MongoDB\BSON\ObjectID($id), "activo" => ['$ne' => 0 ] ];*/
+    if(isset($_GET["sucursal"])){
+        $filter = ["nombre_comercial" => $nombre_comercial, "sucursal" => $_GET["sucursal"]];
+    }else{
+        $filter = ["nombre_comercial" => $nombre_comercial];
+    }
+    
+    $collection2 = $database->anuncios;
+    $Result_anuncios = $collection2->find($filter)->toArray();
+
+    foreach($Result_anuncios as $res){
+        $anuncio_borme[] = [
+            "borme" => $res["borme"],
+            "numero" => $res["numero"],
+            "numid" => $res["numid"],
+            "fecha" => $res["fecha"],
+            "tipo" => $res["tipo"],
+            "anuncio" => $res["anuncio"]
+        ];
+
+        $anuncio_borme_numid[] = $res["numid"];
+    }
+    $nombre_original = Id_DeNombre($Result_anuncios[0]["nombre_comercial"]);
+    $primer_nombre_comercial = $Result_anuncios[0]["nombre_comercial"];
+    $id_primer_nombre_comercial = Id_DeNombre($primer_nombre_comercial);
+    $provincia = $Result_anuncios[0]["provincia"];
+}
+$anuncio_borme = OrdenarArray($anuncio_borme); //Ordenamos los anuncios
 
 
 
-//Ordernar Anuncios_BORME
-$DocumentoEntero;
-$numero_borme;
-$fecha_borme;
-$nombre_comercial;
+//BUSCAMOS SI EXISTE LA EMPRESA EN LA COLECCION "EMPRESAS"
+$collection = $database->empresas;
+if(isset($_GET["sucursal"])){
+    $filter = ["nombre_original" => $nombre_original, "sucursal" => $_GET["sucursal"]];
+}else{
+    $filter = ["nombre_original" => $nombre_original];
+}
 
-//$filter = [ "_id" => new MongoDB\BSON\ObjectID($id), "activo" => ['$ne' => 0 ] ];
-$filter = ["nombre_comercial" => $nombre_comercial];
-//$collection = $database->empresas;
-$collection = $database->anuncios;
-$Result = $collection->find($filter)->toArray();
+$Result_Empresas = $collection->findOne($filter);
 
-$anuncio_borme = $Result["anuncio_borme"];
+if($Result_Empresas != NULL){
+    //Si existe la empresa
+    $CantidadAnunciosEmpresa = count(iterator_to_array($Result_Empresas["anuncio_borme"]));
+    $CantidadAnuncios_Actuales = count($anuncio_borme);
+
+    if($CantidadAnunciosEmpresa != $CantidadAnuncios_Actuales){
+        //Actualizamos la empresa por que hay anuncios nuevos
+        $filter = ["nombre_original" => $nombre_original];
+        $DocumentoEmpresa = [
+            '$set' => [
+            "nombre_original" => $nombre_original,
+            "nombre_comercial" => $primer_nombre_comercial,
+            "id_nombre_comercial" => $id_primer_nombre_comercial,
+            "anuncio_borme" => $anuncio_borme_numid//Guardamos solo los numid de anuncios
+            ],
+
+            '$unset' => [
+                "Directivos" => "",
+                "denominaciones_sociales" => "",
+                "id_denominaciones_sociales" => "",
+                "actualizado" => "",
+                "Constitucion" => "",
+                "socio_unico" => ""
+            ]
+        ];
+
+        $options = [
+            'upsert' => true,
+            'returnDocument' => MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER
+        ];
+        $Result = $collection->findOneAndUpdate($filter, $DocumentoEmpresa,  $options);
+    }else{
+        $Result = $Result_Empresas;
+    }
+    $id = $Result_Empresas["_id"];
+}else{
+    //Creamos una nueva empresa
+    if(isset($_GET["sucursal"])){
+        $DocumentoEmpresa = [
+            "_id" => new MongoDB\BSON\ObjectID($id),
+            "nombre_original" => $nombre_original,
+            "nombre_comercial" => $primer_nombre_comercial,
+            "id_nombre_comercial" => $id_primer_nombre_comercial,
+            "provincia" => $provincia,
+            "sucursal" => $_GET["sucursal"],
+            "anuncio_borme" => $anuncio_borme_numid//Guardamos solo los numid de anuncios
+        ];
+    }else{
+        $DocumentoEmpresa = [
+            "_id" => new MongoDB\BSON\ObjectID($id),
+            "nombre_original" => $nombre_original,
+            "nombre_comercial" => $primer_nombre_comercial,
+            "id_nombre_comercial" => $id_primer_nombre_comercial,
+            "provincia" => $provincia,
+            "anuncio_borme" => $anuncio_borme_numid//Guardamos solo los numid de anuncios
+        ];
+    }
+
+    $Result = $collection->insertOne($DocumentoEmpresa);
+    $id = $Result->getInsertedId();
+    $Result = $DocumentoEmpresa;
+}
+
+$filter = ["_id" => new MongoDB\BSON\ObjectID($id)];
+
+$_SESSION['AnuncioBorme'] = [
+    "id" => $id,
+    "anuncio_borme" => $anuncio_borme
+];
+
+
+
+
 if(isset($Result["actualizado"])){
     $Actualizado = $Result["actualizado"];
 }else{
@@ -178,32 +334,24 @@ if(isset($Result["actualizado"])){
 }
 $nombre_comercial = $Result["nombre_comercial"];
 if($Actualizado == 0){//Si los datos no estan actualizados
-    $anuncio_borme = OrdenarArray($anuncio_borme);
-    $DocumentoEntero = $Result;
-    $DocumentoEntero["anuncio_borme"] = $anuncio_borme;
-    $filter2 = [ "_id" => new MongoDB\BSON\ObjectID($id)];
-    $Result = $collection->UpdateOne($filter2, ['$set' => ["anuncio_borme" => $anuncio_borme]]);
-    
-        foreach($anuncio_borme as $anuncio){
-            $numero_borme = $anuncio["numero"];
-            $fecha_borme = $anuncio["fecha"];
-            $Texto_anuncio_borme = $anuncio["anuncio"];
-            ProcesarNivel($Texto_anuncio_borme, $Anuncios, 1, NULL);
-            GuardarResultados();
-        }
-        //Documento actualizado = 1
-        $document = ['$set' => [ "actualizado" => 1]];
-        $Result = $collection->updateOne($filter, $document);
-        header('Location: PantallaConsulta.php?id=' . $id);
-
+    foreach($anuncio_borme as $anuncio){
+        $numero_borme = $anuncio["numero"];
+        $fecha_borme = $anuncio["fecha"];
+        $Texto_anuncio_borme = $anuncio["anuncio"];
+        ProcesarNivel($Texto_anuncio_borme, $Anuncios, 1, NULL);
+        GuardarResultados();
+    }
+    //Documento actualizado = 1
+    $document = ['$set' => [ "actualizado" => 1]];
+    $Result = $collection->updateOne($filter, $document);
+    header('Location: PantallaConsulta.php?id=' . $id);
 }else{
-    //echo "Los datos ya estan actualizados";
     header('Location: PantallaConsulta.php?id=' . $id);
 }
 
 //Funcion que ordena el array
 function OrdenarArray($Array){
-    $Array = iterator_to_array($Array);
+    //$Array = iterator_to_array($Array);
     foreach ($Array as $key => $row) {
         $aux[$key] = intval(strval($row["numero"]));
     }
@@ -281,7 +429,7 @@ function ProcesarNivel($Texto, $ArrayAnuncios, $Nivel, $PalabraNivel1){
                     }
                     if(!(strpos(strtoupper($cadena1), strtoupper($Comparador)) === false)){ //Se encontró una coicidencia en Nivel 1
                         $cadena2 = $cadena1;
-                        $cadena2 = str_replace($Comparador, "", $cadena2);
+                        $cadena2 = str_replace(strtoupper($Comparador), "", strtoupper($cadena2));
                         $cadena1 = "";
                         if($Nivel1_String != NULL){
                             if($Nivel == 1 && $Niverl2_Array != NULL){
@@ -614,7 +762,7 @@ function ModificacionPoderes($Datos_Registrales, $Valor, $FechaInscripcion){
 }
 
 function Nombramientos2($Datos_Registrales, $Valor, $FechaInscripcion){
-    echo "Nombramientos<br>";
+    /*echo "Nombramientos<br>";
     foreach($Valor as $Clave => $valor){
         $Lista = explode(";", $valor);
         if(count($Lista) == 1){
@@ -632,7 +780,7 @@ function Nombramientos2($Datos_Registrales, $Valor, $FechaInscripcion){
     }
 
     echo "Fuente: Boletín Oficial del Registro Mercantil<br>";
-    echo "Fecha inscripcion: " . $FechaInscripcion . " " . $Datos_Registrales . "<br><br><br>";
+    echo "Fecha inscripcion: " . $FechaInscripcion . " " . $Datos_Registrales . "<br><br><br>";*/
 
 }
 
@@ -878,7 +1026,8 @@ function CambioDenominacionSocial_Anterior($Valor, $String){
         $Denominaciones = $Result["denominaciones_sociales"];
     }
     
-    $DenominacionNueva = $Valor[$String] . ".";
+    //$DenominacionNueva = $Valor[$String] . ".";
+    $DenominacionNueva = $Valor[$String];
 
     if(strtoupper($nombre_comercial) != strtoupper($DenominacionNueva)){
         if(strpos(strtoupper($Denominaciones), strtoupper($nombre_comercial)) === false){
@@ -905,21 +1054,20 @@ function CambioDenominacionSocial($Valor, $String){
     global $collection;
     global $nombre_comercial;
 
-    $nombre_comercial = $nombre_comercial;
+
 
     $Result = $collection->findOne($filter, ['projection' => ['denominaciones_sociales' => 1, '_id' => 0]]);
-    $Denominaciones = "";
+    $Denominaciones = NULL;
     if(count($Result) != 0){
         $Denominaciones = $Result["denominaciones_sociales"];
     }
 
     $DenominacionNueva = trimear($Valor[$String]);
-    $DenominacionNueva = $DenominacionNueva . ".";
+    //$DenominacionNueva = $DenominacionNueva . ".";
+    $DenominacionNueva = $DenominacionNueva;
 
     if(strtoupper($nombre_comercial) != strtoupper($DenominacionNueva)){
-        $nombre_comercial2 = str_replace(".", "", $nombre_comercial);
-        $nombre_comercial2 = str_replace(",", "", $nombre_comercial2);
-        $nombre_comercial2 = str_replace(" ", "", $nombre_comercial2);
+        $nombre_comercial2 = Id_DeNombre($nombre_comercial);
 
         $encontrado = 0;
         foreach($Denominaciones as $denominacion){
@@ -1096,6 +1244,13 @@ function eliminar_acentos($cadena){
     );
     
     return $cadena;
+}
+
+function Id_DeNombre($Nombre){
+    $IdNombre = str_replace(".", "", $Nombre);
+    $IdNombre = str_replace(",", "", $IdNombre);
+    $IdNombre = str_replace(" ", "", $IdNombre);
+    return $IdNombre;
 }
 
 ?>

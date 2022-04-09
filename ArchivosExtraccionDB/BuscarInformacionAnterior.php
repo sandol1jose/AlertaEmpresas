@@ -6,13 +6,11 @@ ini_set('memory_limit', '512M');
 
 $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/Archivos de Ayuda PHP/conexion.php');
-require_once($root . '/Librerias/pdfparser-master/alt_autoload.php-dist');//Clase para pasar pdf a texto plano
-require_once($root . '/app/Notificacion.php');
-require_once($root . '/ArchivosExtraccionDB/UnirCambiosDeNombre.php');
+include "../Librerias/pdfparser-master/alt_autoload.php-dist"; //Clase para pasar pdf a texto plano
 //include 'scraping.php';
 
+
 //date_default_timezone_set("Europe/Madrid");
-date_default_timezone_set("America/Guatemala");
 
 //Codigo para que ignore la alerta cuando no existe un archivo
 set_error_handler("warning_handler", E_WARNING);
@@ -27,40 +25,36 @@ $ArrayInsertador = NULL; //Almacenará 20 registros para almacenar de 20 en 20
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();
-$collection = $database->anuncios2;
+$collection = $database->anuncios;
 
-//$_GET["tipo"] = 1;
-if(isset($_GET["tipo"])){
-    //$_POST["fecha"] = '20090102';
-    $_POST["fecha"] = '20220407';
-    $fechaActual = $_POST["fecha"];
-    RecorrerXML($fechaActual);
-    //UnirCambiosDeNombre(2); // /ArchivosExtraccionDB/UnirCambiosDeNombre.php
-}else{
-    $collection2 = $database->anuncios_dia;
-    $Result = $collection2->deleteMany([]);
+$fechaActual = $_POST["fecha"];
+//$fechaActual = '20090102';
+//$fechaActual = '20220330';
+RecorrerXML($fechaActual);
 
-    $fecha_Millis = getdate();
-    $fechaActual = NULL;
-    $dia = date("w", $fecha_Millis[0]);
-    if($dia != 0 && $dia != 6){//Verificando que no sea Sabado o Domingo
-        $fechaActual = date("Ymd", $fecha_Millis[0]);
-        RecorrerXML($fechaActual);
-        Notificar(); // /app/Notificacion.php
-        UnirCambiosDeNombre(1); // /ArchivosExtraccionDB/UnirCambiosDeNombre.php
-        unset($fechaActual);
-    }else{
-        echo "es sabado o domingo";
+
+/*//Recorrer fechas
+    $fechaInicio=strtotime($desde);
+    $fechaFin=strtotime($hasta);
+    unset($desde);
+    unset($hasta);
+    for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
+        $dia = date("w", $i);
+        if($dia != 0 && $dia != 6){//Verificando que no sea Sabado o Domingo
+            $fechaActual = date("Ymd", $i);
+            RecorrerXML($fechaActual);
+            unset($fechaActual);
+        }
     }
-}
+*/
 
 $contador = 1;
-//$contadorGeneral = 0;
+$contadorGeneral = 0;
 function RecorrerXML($fecha){
     global $borme;
     global $Provincia;
     global $contador;
-    //global $contadorGeneral;
+    global $contadorGeneral;
     global $ArrayInsertador;
     $xml = ("https://www.boe.es/diario_borme/xml.php?id=BORME-S-" . $fecha);
 
@@ -71,10 +65,10 @@ function RecorrerXML($fecha){
         $documento = simplexml_load_file($xml);
         $diario = $documento->diario->seccion[0]->emisor->item;
     } catch (Exception $e) {
-        echo "El Archivo XML no tiene nada<br>";
+        /*echo "El Archivo XML no tiene nada<br>";
         echo $xml . "<br>";
         echo "<span style='background-color: red;  color: white;'>" . $e->getMessage() . "</span><br><br>";
-        unset($e); 
+        unset($e); */
         //unset($xml); 
     }
 
@@ -88,15 +82,13 @@ function RecorrerXML($fecha){
                     $Provincia = strval($dia->titulo);
                     $borme = strval($dia["id"]);
                     $URL = "https://www.boe.es" . $dia->urlPdf;
+                    //$URL = "https://boe.es/borme/dias/2009/01/22/pdfs/BORME-A-2009-14-39.pdf";
                     //echo $URL . " / ";
                     ConvertirATexto($URL, $fecha);
                     if($ArrayInsertador != NULL){
                         if(count($ArrayInsertador) > 0){
                             global $collection;
                             $Result1 = $collection->insertMany($ArrayInsertador);
-                            if(!isset($_GET["tipo"])){
-                                NuevosAnunciosPorDia($ArrayInsertador);
-                            }
                             $ArrayInsertador = NULL;
                         }
                     }
@@ -106,29 +98,23 @@ function RecorrerXML($fecha){
                         echo "<span style='background-color: green; color: white;'>Son iguales</span><br>";
                     }else{
                         echo "<span style='background-color: red;  color: white;'>NO SON IGUALES</span><br>";
-                    }
-                    echo "AnunciosEscraping: " . $AnunciosScraping . "<br>";   
-                    $contadorGeneral = $contadorGeneral +  $contador;*/
-                    if(!isset($_GET["tipo"])){
-                        echo $URL . "\n";
-                    }else{
-                        echo $URL . "<br>";
-                        echo "Anuncios: " . $contador . "<br><br>"; 
-                    }
+                    }*/
+                    //echo "Anuncios: " . $contador . "<br>"; 
+                    $contadorGeneral = $contadorGeneral +  $contador;
+                    //echo "AnunciosEscraping: " . $AnunciosScraping . "<br><br>";    
                     unset($URL);
                     unset($dia);         
                 }
             }catch(Exception $e){
-                echo "Error al abrir el archivo PDF<br>";
+                /*echo "Error al abrir el archivo PDF<br>";
                 $URL = "https://www.boe.es" . $dia->urlPdf;
                 echo $URL . "<br>";
                 echo "<span style='background-color: red;  color: white;'>" . $e->getMessage() . "</span><br><br>";
-                unset($e); 
+                unset($e); */
                 //unset($xml); 
-                $ArrayInsertador = NULL;
             }
         }
-        //echo $contadorGeneral;
+        echo $contadorGeneral;
         unset($diario); 
         unset($documento);
         
@@ -143,18 +129,19 @@ function RecorrerXML($fecha){
         }*/
 
         global $database;
+        //$filtro = [ "_id" => new MongoDB\BSON\ObjectID("62240d2cc69d280981437b15") ];
         $FechaMilis = new MongoDB\BSON\UTCDatetime(strtotime($fecha . " 00:00:00")*1000);
         $documentInsert = [
             "archivo_actualizado" => $xml,
             "fecha" => $FechaMilis
         ];
-        $collection3 = $database->control;
-        $Result = $collection3->insertOne($documentInsert);
+        $collection2 = $database->control;
+        $Result = $collection2->insertOne($documentInsert);
 
 
-        echo "FIN DEL SUMARIO";
+        /*echo "FIN DEL SUMARIO";
         echo "---------------------------------------------------<br><br><br><br>";
-        unset($xml);
+        unset($xml);*/
     }
 }
 
@@ -190,9 +177,13 @@ function RecorrerTexto($texto, $fecha){
 
     //Verificando si existe la linea Verificable en https://www.boe.es
     $Inicio = 7;
+    //$LineaProvincia = 6;
     if(strpos($lineas[2], "https://www.boe.es") == true){
+        //$LineaProvincia = 7;
         $Inicio = 8;
     }
+
+    //$Provincia = $lineas[$LineaProvincia];
 
     //echo "<pre>";
     for($i=$Inicio; $i<count($lineas); $i++){
@@ -428,9 +419,6 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha, $Sucu
     if(count($ArrayInsertador) == 50){
         global $collection;
         $Result1 = $collection->insertMany($ArrayInsertador);
-        if(!isset($_GET["tipo"])){
-            NuevosAnunciosPorDia($ArrayInsertador);
-        }
         $ArrayInsertador = NULL;
     }
 
@@ -458,35 +446,6 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha, $Sucu
 }
 
 
-function NuevosAnunciosPorDia($ArrayInsertador){
-    /*Guarda en una colllection nueva, las empresas que se agregaron el dia de hoy*/
-        //Agregando el registro de nueva empresa agregadas en el dia
-        global $collection2;
-        //if($Result1 != null){
-            //if(isset($Result1["alertas"])){
-                /*
-                    $filtro = ["id_nombre_comercial" => $id_NombreEmpresa];
-                    $Result1 = $collection->findOne($filtro);
-                    $id_Empresa = $Result1["_id"];
-
-                    $filtro = ["_id" => new MongoDB\BSON\ObjectID($id_Empresa)];
-
-                    $actualizar = 
-                    [
-                        '$set' => [
-                            "nombre_empresa" => $NombreEmpresa,
-                            "id_empresa" => new MongoDB\BSON\ObjectID($id_Empresa),
-                        ],
-                        
-                        '$addToSet' => 
-                        [ "bormes_agregados" => $NumeroEntrada]
-                    ];
-                    $Result = $collection2->findOneAndUpdate($filtro, $actualizar, ['upsert' => true]);
-                */
-                $Result = $collection2->insertMany($ArrayInsertador);
-            //}
-        //}
-}
 
 /*
 function separartexto($texto){
