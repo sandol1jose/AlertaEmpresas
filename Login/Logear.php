@@ -21,7 +21,7 @@ session_start();
 	}else{
         //correo no existe
         $_SESSION['Alerta'] = "EmailIsNotExist";
-        header('Location: index.php');
+        header('Location: index.php?email=' . $Correo);
 	}
 
 	//$modo es para verificar si el usuario ya tiene todos sus datos o no
@@ -51,7 +51,7 @@ session_start();
         }else{
             //contraseña incorrecta
             $_SESSION['Alerta'] = "passIncorrect";
-            header('Location: index.php');
+            header('Location: index.php?email=' . $email);
         }
 	}
 ?>

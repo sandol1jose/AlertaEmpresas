@@ -42,6 +42,7 @@
 			
 		if($Result->getModifiedCount() == 1){
 			//SE AGREGO CORRECTAMENTE
+			$_SESSION["VERIFICACIONEXITO"] = 1;
 			header('Location: ../Login/VerificacionExito.php'); 
 		}else{
 			echo "ocurrio un error";

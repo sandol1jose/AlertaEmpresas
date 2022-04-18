@@ -1,6 +1,6 @@
 <?php
 
-//$tiempo_inicio = microtime(true);
+$tiempo_inicio = microtime(true);
 set_time_limit(50000);
 
 $root = str_replace('\\', '/', dirname(__DIR__));
@@ -45,7 +45,12 @@ $Anuncio_Nombramientos = [
     "Soc.Prof.: ",
     "Con.delegado: ",
     "Con.Delegado: ",
-    "Cons.del.man: "
+    "Cons.del.man: ",
+    "D. Gerente: ",
+    "MRO.COMS.CTR: ",
+    "SEC.COMS.CTR: ",
+    "PRE.COMS.CTR: ",
+    "AUDIT.CUENT.: "
 ];
 $AumentoCapital = [
     "Resultante Desembolsado",
@@ -70,6 +75,7 @@ $EmpresarioIndividual = [
 $Anuncios = [
     "Ceses/Dimisiones. " => $Anuncio_Nombramientos,
     "Constitución. " => $Anuncio_Constitucion,
+    "Apertura de sucursal. " => $Anuncio_Constitucion,
     "Empresario Individual. " => $EmpresarioIndividual,
     "Primera sucursal de sociedad extranjera" => $Anuncio_Constitucion,
     "Datos registrales. " => NULL,
@@ -142,7 +148,7 @@ function UnirCambiosDeNombre($tipo){
         $collection = $database->anuncios;
     }
 
-    $collection2 = $database->cambios_nombres2;
+    $collection2 = $database->cambios_nombres;
     
     $filter = [
         '$or' => 
@@ -199,7 +205,7 @@ function ProcesarNivel($Texto, $ArrayAnuncios, $Nivel, $PalabraNivel1){
     $Nivel1_String = NULL; //Guarda la palabra clave Nivel 1 encontrada
     $Niverl2_Array = NULL; //Guarda el array Nivel 2 de la palabra clave encontrada
 
-    $ArrayBusquedas;
+    $ArrayBusquedas = NULL;
     if($Nivel == 1){
         foreach($ArrayAnuncios as $Arrayanuncio=>$valor){
             if(!(strpos($Texto, $Arrayanuncio) === false)){
@@ -210,51 +216,52 @@ function ProcesarNivel($Texto, $ArrayAnuncios, $Nivel, $PalabraNivel1){
         $ArrayBusquedas =  $ArrayAnuncios;
     }
 
-
-    for($i=0; $i<strlen($Texto); $i++){//Declaración de unipersonalidad. //
-        $cadena1 = $cadena1 . $Texto[$i];
-        if($i+1 < strlen($Texto)){
-            if(($Texto[$i-1] == ":" || $Texto[$i-1] == ".") && ($Texto[$i] == " ")){//solo busca cuando halla espacios
-                foreach($ArrayBusquedas as $Arrayanuncio=>$valor){
-                    $Comparador = $Arrayanuncio;
-                    if(is_numeric($Comparador)){//Si no es un numero
-                        $Comparador = $valor;
-                    }
-                    if(!(strpos($cadena1, $Comparador) === false)){ //Se encontró una coicidencia en Nivel 1
-                        $cadena2 = $cadena1;
-                        $cadena2 = str_replace($Comparador, "", $cadena2);
-                        $cadena1 = "";
-                        if($Nivel1_String != NULL){
-                            if($Nivel1_String == "Cambio de denominación social. " || $Nivel1_String == "Transformación de sociedad. "){
-                                if($Nivel == 1 && $Niverl2_Array != NULL){
-                                    ProcesarNivel($cadena2, $Niverl2_Array, 2, $Nivel1_String);
-                                }else{
-                                    CrearArray_Nivel2($Nivel1_String, $cadena2, $PalabraNivel1);
-                                }  
-                            } 
+    if($ArrayBusquedas != NULL){
+        for($i=0; $i<strlen($Texto); $i++){//Declaración de unipersonalidad. //
+            $cadena1 = $cadena1 . $Texto[$i];
+            if($i+1 < strlen($Texto)){
+                if(($Texto[$i-1] == ":" || $Texto[$i-1] == ".") && ($Texto[$i] == " ")){//solo busca cuando halla espacios
+                    foreach($ArrayBusquedas as $Arrayanuncio=>$valor){
+                        $Comparador = $Arrayanuncio;
+                        if(is_numeric($Comparador)){//Si no es un numero
+                            $Comparador = $valor;
+                        }
+                        if(!(strpos($cadena1, $Comparador) === false)){ //Se encontró una coicidencia en Nivel 1
+                            $cadena2 = $cadena1;
+                            $cadena2 = str_replace($Comparador, "", $cadena2);
+                            $cadena1 = "";
+                            if($Nivel1_String != NULL){
+                                if($Nivel1_String == "Cambio de denominación social. " || $Nivel1_String == "Transformación de sociedad. "){
+                                    if($Nivel == 1 && $Niverl2_Array != NULL){
+                                        ProcesarNivel($cadena2, $Niverl2_Array, 2, $Nivel1_String);
+                                    }else{
+                                        CrearArray_Nivel2($Nivel1_String, $cadena2, $PalabraNivel1);
+                                    }  
+                                } 
+                                $Nivel1_String = $Comparador;
+                                $cadena2 = NULL;
+                                $cadena1 = NULL;
+                                //$i = strlen($Texto);
+                                break;
+                            }
                             $Nivel1_String = $Comparador;
-                            $cadena2 = NULL;
-                            $cadena1 = NULL;
-                            //$i = strlen($Texto);
+                            $Niverl2_Array = $valor;
+                            $Nivel1_String_Siguiente = $Comparador;
                             break;
                         }
-                        $Nivel1_String = $Comparador;
-                        $Niverl2_Array = $valor;
-                        $Nivel1_String_Siguiente = $Comparador;
-                        break;
                     }
                 }
+            }else{//Para el ultimo archivo
+                $cadena2 = $cadena1;
+                if($Nivel == 1 && $Niverl2_Array != NULL){
+                    ProcesarNivel($cadena2, $Niverl2_Array, 2, $Nivel1_String);
+                }else{
+                    CrearArray_Nivel2($Nivel1_String, $cadena2, $PalabraNivel1);
+                }
+                $Nivel1_String = NULL;
+                $cadena2 = NULL;
+                $cadena1 = NULL; 
             }
-        }else{//Para el ultimo archivo
-            $cadena2 = $cadena1;
-            if($Nivel == 1 && $Niverl2_Array != NULL){
-                ProcesarNivel($cadena2, $Niverl2_Array, 2, $Nivel1_String);
-            }else{
-                CrearArray_Nivel2($Nivel1_String, $cadena2, $PalabraNivel1);
-            }
-            $Nivel1_String = NULL;
-            $cadena2 = NULL;
-            $cadena1 = NULL; 
         }
     }
 }
@@ -285,18 +292,21 @@ function CrearArray_Nivel2($Titulo, $Texto, $PalabraNivel1){
 function OrientarResultados(){
     global $Array_Nivel1;
 
-    foreach($Array_Nivel1 as $Clave => $Valor){
-        switch($Clave){
-            case "Cambio de denominacion social":
-                CambioDenominacionSocial($Valor, "Cambio de denominación social");
-                break;
-            case "Transformacion de sociedad":
-                CambioDenominacionSocial($Valor, "Denominación y forma adoptada");
-                break;
-            default:
-                break;
+    if($Array_Nivel1 != NULL){
+        foreach($Array_Nivel1 as $Clave => $Valor){
+            switch($Clave){
+                case "Cambio de denominacion social":
+                    CambioDenominacionSocial($Valor, "Cambio de denominación social");
+                    break;
+                case "Transformacion de sociedad":
+                    CambioDenominacionSocial($Valor, "Denominación y forma adoptada");
+                    break;
+                default:
+                    break;
+            }
         }
     }
+
     $Array_Nivel1 = NULL;
 }
 
@@ -437,11 +447,11 @@ function eliminar_acentos($cadena){
     return $cadena;
 }
 
-/*
+
 $tiempo_fin = microtime(true);
 $tiempo = $tiempo_fin - $tiempo_inicio;
 echo "<br><br>";
-echo "Tiempo empleado: " . ($tiempo_fin - $tiempo_inicio);*/
+echo "Tiempo empleado: " . ($tiempo_fin - $tiempo_inicio);
 
 
 ?>

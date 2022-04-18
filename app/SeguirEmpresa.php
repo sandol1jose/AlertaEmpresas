@@ -5,12 +5,18 @@ session_start();//inicio de sesion
 $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/Archivos de Ayuda PHP/conexion.php');
 
-//require_once('../Archivos de Ayuda PHP/conexion.php');
-
 $idEmpresa = $_POST["idEmpresa"];
 $Correo = $_POST["Correo"];
-$position = $_POST["position"];
+$position = $_POST["position"]; //Posicion en el array del cliente
 $tipo = $_POST["tipo"];
+
+$LimiteEmpresas = 10; //Indica cuantas empresas puedo seguir
+
+/*
+$idEmpresa = "6250993165260000c006ddc3";
+$Correo = "sandol1jose@gmail.com";
+$position = 2;
+$tipo = 1;*/
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();
@@ -18,10 +24,9 @@ $database = $conexion->Conectar();
 //Actualizando al Cliente
 $filter = ["email" => $Correo];
 
-
-$estado = true;
-if($tipo == 2){ //Activar Notificacion
-    $estado = false;
+$estado = true; //Activar Notificacion
+if($tipo == 2){
+    $estado = false; //Desactivar Notificacion
 }
 
 
@@ -29,7 +34,6 @@ if($position == -1){//Si la alerta no esta creada
     $document = [
         '$addToSet' => [
             "alertas" => [
-                "cantidad" => 10,
                 "id_empresa" => new MongoDB\BSON\ObjectID($idEmpresa),
                 "estado" => $estado
             ]
@@ -44,18 +48,47 @@ if($position == -1){//Si la alerta no esta creada
 }
 
 $collection = $database->Clientes;
-$Result = $collection->updateOne($filter, $document);
+if($position == -1){//Si la alerta no esta creada
+    $Result = $collection->findOne($filter);
+    if(isset($Result["alertas"])){
+        $Alertas = iterator_to_array($Result["alertas"]);
+        
+        /*//Verificara las alertas activas
+        $contadorAlertasActivas = 0;
+        foreach($Alertas as $alerta){
+            if($alerta["estado"] == true){
+                $contadorAlertasActivas++;
+            }
+        }*/
+
+        if(count($Alertas) < $LimiteEmpresas){
+            $Result = $collection->updateOne($filter, $document);
+        }else{
+            echo 2; //llego al limite de notificaciones
+            exit();
+        }
+    }else{
+        $Result = $collection->updateOne($filter, $document);
+    }
+}else{
+    $Result = $collection->findOne($filter);
+    if(isset($Result["alertas"][$position])){
+        $Result = $collection->updateOne($filter, $document);
+    }else{
+        $Result = NULL;
+    }
+}
+
 
 //Actualizando a la empresa
 $filter = ["_id" => new MongoDB\BSON\ObjectID($idEmpresa) ];
 $collection = $database->empresas;
 $Posicion_Empresa = indexOfArray($Correo, "alertas.correo_cliente");
 
-if($position == -1){//Si la alerta no esta creada
+if($Posicion_Empresa === NULL){//Si la alerta no esta creada
     $document = [
         '$addToSet' => [
             "alertas" => [
-                "cantidad" => 10,
                 "correo_cliente" => $Correo,
                 "estado" => $estado
             ]
@@ -69,17 +102,30 @@ if($position == -1){//Si la alerta no esta creada
     ];
 }
 
-$Result2 = $collection->updateOne($filter, $document);
+if($Result != NULL){
+    /*Si existe la alerta en cliente entonces la agregramos */
+    $Result2 = $collection->updateOne($filter, $document);
+}else{
+    /*Si no existe la alerta en cliente quiere decir que la hemos eliminado por lo tanto
+    no hay que crear una nueva*/
+    $Result2 = NULL;
+}
 
-if($Result->getModifiedCount() == 1 && $Result2->getModifiedCount() == 1){
-    if(isset($_POST["desde"])){//Se esta consultado este archivo desde Cuenta/index.php
-        echo 1;//Exito
-    }else{//Se esta consultado este archivo desde PruebaConsulta.php
-        echo VerificarSeguimiento();
+
+if($Result != NULL && $Result2 != NULL){
+    if($Result->getModifiedCount() == 1 && $Result2->getModifiedCount() == 1){
+        if(isset($_POST["desde"])){//Se esta consultado este archivo desde Cuenta/index.php
+            echo 1;//Exito
+        }else{//Se esta consultado este archivo desde PruebaConsulta.php
+            echo VerificarSeguimiento();
+        }
+    }else{
+        echo 0;//Algo Salio Mal
     }
 }else{
-    echo 0;//Algo Salio Mal
+    echo VerificarSeguimiento();
 }
+
 
 function VerificarSeguimiento(){
     global $database;

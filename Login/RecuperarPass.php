@@ -2,13 +2,12 @@
 session_start();
 ?>
 
+<?php include '../templates/encabezadoBlack.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Recuperara password</title>
-	<script src="../js/general.js"></script>
-	<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/RecuperarPass.css">
 </head>
 <body>
 
@@ -22,26 +21,30 @@ session_start();
 	}
 ?>
 
+<div class="divBase">
+	<b>Recuperar contraseña</b>
 
-<p>Recuperar contraseña</p>
-
-	<img src="../imagenes/jingle-keys.gif" width="199px">
+	<!--
+	<img src="../imagenes/jingle-keys.gif" width="100px">-->
 
 	<p>Enviaremos un codigo a tu correo:</p>
 
 	<form action="../app/RecuperarPass.php" method="POST" >
-		
-		<input type="email" name="Email" id="Email" placeholder="Escribe tu correo" autocomplete="off" required>
-		
+		<input class="inputGeneral" type="email" name="Email" id="Email" placeholder="Escribe tu correo" autocomplete="off" required>
+		<br><br>
+		<input class="BotonGeneral2"  type="submit" name="" value="Recuperar" onclick="CambiarImagen();">
+
 		<div  class="DivContenedorImagen">
 			<div id="DivImg2" style="display: none;">
+				<br>
 				<img class="imgCargando" src="../imagenes/Cargando6Recorte.gif" height="30px">
 			</div>
 		</div>
-
-		
-		<input  type="submit" name="" value="Enviar codigo" onclick="CambiarImagen();">
 	</form>
+</div>
+
+<?php include '../templates/footer.php'; ?>	
+
 </body>
 </html>
 

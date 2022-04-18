@@ -43,7 +43,11 @@ $Anuncio_Nombramientos = [
     "Con.delegado: ",
     "Con.Delegado: ",
     "Cons.del.man: ",
-    "D. Gerente: "
+    "D. Gerente: ",
+    "MRO.COMS.CTR: ",
+    "SEC.COMS.CTR: ",
+    "PRE.COMS.CTR: ",
+    "AUDIT.CUENT.: "
 ];
 $AumentoCapital = [
     "Resultante Desembolsado",
@@ -68,6 +72,7 @@ $EmpresarioIndividual = [
 $Anuncios = [
     "Ceses/Dimisiones. " => $Anuncio_Nombramientos,
     "Constitución. " => $Anuncio_Constitucion,
+    "Apertura de sucursal. " => $Anuncio_Constitucion,
     "Empresario Individual. " => $EmpresarioIndividual,
     "Primera sucursal de sociedad extranjera" => $Anuncio_Constitucion,
     "Datos registrales. " => NULL,
@@ -100,7 +105,7 @@ $Anuncios = [
 $_GET["sucursal"] = "EN CANARIAS";*/
 
 $id = $_GET["id"];
-//$id = "625098fc65260000c006ad36";
+//$id = "62509deb65260000c00a6043";
 //$id = "624c98d2e07900000003dbcf";
 $conexion = new Conexion();
 $database = $conexion->Conectar();
@@ -210,7 +215,7 @@ if($Result != NULL){
     }
     $nombre_original = Id_DeNombre($Result["nombre_original"]);
     //$primer_nombre_comercial = $Result["otros_nombres"][count($Result["otros_nombres"])-1];
-    $primer_nombre_comercial = $nombre_original;
+    $primer_nombre_comercial = $Result["nombre_original"];
     $id_primer_nombre_comercial = Id_DeNombre($primer_nombre_comercial);
 }else{
     /*$filtro = [ "_id" => new MongoDB\BSON\ObjectID($id), "activo" => ['$ne' => 0 ] ];*/
@@ -507,7 +512,10 @@ function GuardarResultados(){
         switch($Clave){
             case "Constitucion":
                 Constitucion($Datos_Registrales, $Valor, $FechaInscripcion);
-                Constitucion2($Datos_Registrales, $Valor, $FechaInscripcion);
+                //Constitucion2($Datos_Registrales, $Valor, $FechaInscripcion);
+                break;
+            case "Apertura de sucursal":
+                Constitucion($Datos_Registrales, $Valor, $FechaInscripcion);
                 break;
             case "Empresario Individual":
                 PrimeraSucursalExtranjera($Datos_Registrales, $Valor, $FechaInscripcion, "Empresario Individual");

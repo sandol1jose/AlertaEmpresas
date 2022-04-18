@@ -66,6 +66,11 @@ th{
 
 .BotonGeneral{
     width: 230px;
+    background-color: #259908;
+}
+
+.BotonGeneral:hover{
+    background-color: #52d431;
 }
 
 
@@ -110,4 +115,10 @@ th{
 
 .txtTipo{
     color: #3F388D;
+}
+
+
+
+.imgMap:hover{
+    transform: scale(1.5, 1.5);
 }

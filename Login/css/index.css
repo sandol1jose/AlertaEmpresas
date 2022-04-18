@@ -116,11 +116,6 @@
     margin-bottom: 50px;
 }
 
-.BotonGeneral:disabled{
-    background: #949494;
-    color: #646464;
-}
-
 .BotonGeneral:hover:disabled{
     background: #949494;
     color: #646464;

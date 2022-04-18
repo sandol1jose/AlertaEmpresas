@@ -1,40 +1,50 @@
 <?php
 
-    $email = $_GET["email"];
+	if(!isset($_GET["email"])){
+		header('Location: ../Login/index.php');
+	}
 
+    $email = $_GET["email"];
 ?>
+<?php include '../templates/encabezadoBlack.php'; ?>
 
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Email no verificado</title>
+
+	<link rel="stylesheet" type="text/css" href="css/EmailNoVerificado.css">
 </head>
 <body>
 
-	<h5>Email no verificado</h5>
+<div class="divBase">
 
-	<h2>Necesita <br> verificacion</h2>
+	
+	<span class="Titulo"><b>Email no verificado</b></span>
+	<img src="../imagenes/Error.png" width="20px">
 
-	<p>Tu correo electronico no ha sido verificado</p>
+	<p>Necesita verificacion</p>
 
-	<img src="../imagenes/ErorConfirm.gif" width="150px">
+	<span>Escribe tu correo</span><br>
+
+	
 
 	<form action="../app/ReenviarEmail.php" method="POST" >
 
-		<input type="email" name="Email" id="Email" autocomplete="off" required value="<?php echo $email; ?>">
-		<span>Escribe tu correo</span>
+		<input class="InputGeneral" type="email" name="Email" id="Email" autocomplete="off" required value="<?php echo $email; ?>">
+		<br>
 
+		<br>
+		<input class="BotonGeneral2" type="submit" name="" value="Reenviar codigo" onclick="CambiarImagen();">
+		<br><br>
 		<a style="font-size: 13px;" href="Verificacion.php?email=<?php echo $email; ?>">-Tengo un código-</a>
-
-		<input type="submit" name="" value="Reenviar codigo" onclick="CambiarImagen();">
 	</form>
 
 	<div id="DivImg2" style="display: none;">
-		<img src="../imagenes/Cargando6Recorte.gif" width="100px">
-		<h6>cargando...</h6>
-		<br><br>
+		<img src="../imagenes/Cargando6Recorte.gif" width="30px">
 	</div>
-
+</div>	
+<?php include '../templates/footer.php'; ?>	
 </body>
 </html>
 
@@ -42,10 +52,11 @@
 
 <script>
 	function CambiarImagen(){
-		console.log("Cambiando");
-		$("#DivForm").hide();
-		$("#DivimgError").hide();
-
-		$("#DivImg2").show();
+		var email = document.getElementById("Email").value;
+		if(email != ""){
+			$("#DivForm").hide();
+			$("#DivimgError").hide();
+			$("#DivImg2").show();
+		}
 	}
 </script>

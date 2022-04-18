@@ -9,6 +9,7 @@ require_once($root . '/Archivos de Ayuda PHP/conexion.php');
     if(!isset($_SESSION["Correo"])){
         $_SESSION["Alerta"] = "CodCaducate"; 
         header('Location: ../Login/index.php');
+        exit();
     }
 
     $Correo = $_SESSION["Correo"];
@@ -52,7 +53,7 @@ require_once($root . '/Archivos de Ayuda PHP/conexion.php');
             //SE CAMBIO CORRECTAMENTE LA CONTRASEÑA
             unset($_SESSION["Correo"]);//Borramos la sesion de correo
             $_SESSION["Alerta"] = "passUpdate"; //Pass actualizada correctamente
-            header('Location: ../Login/index.php');
+            header('Location: ../Login/index.php?email=' . $Correo);
         }else{
             echo "ocurrio un error";
         }

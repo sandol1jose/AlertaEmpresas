@@ -1,0 +1,26 @@
+.BotonGeneral2{
+    width: 100px;
+}
+
+.divBase{
+    margin-top: 50px;
+    margin-bottom: 70px;
+}
+
+.InputGeneral{
+    width: 300px;
+}
+
+.divSeguridad{
+    margin-top: 10px;
+    min-height: 15px;
+    width: 180px;
+}
+
+.divSeguridad2{
+    display: flex;
+}
+
+.textoSeguridad{
+    padding-left: 10px;
+}

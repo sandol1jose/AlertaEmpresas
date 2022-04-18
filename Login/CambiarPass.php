@@ -1,16 +1,24 @@
 <?php
 session_start();
+
+if(!isset($_SESSION["Correo"])){
+	header('Location: index.php');
+}
+
 ?>
+
 
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Restablecer su contraseña</title>
-	<script src="../js/general.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="css/CambiarPass.css">
 </head>
 <body>
+
+<?php include '../templates/encabezadoBlack.php'; ?>
+
 
 <?php
 	if(isset($_SESSION["Alerta"])){
@@ -24,32 +32,28 @@ session_start();
 	}
 ?>
 
+<div class="divBase">
 	<p>Restablecer su contraseña</p>
 
     <form method="POST" action="../app/CambiarPass.php">
         
         <p class="parrafo1">Copie el código de restablecimiento de su correo electrónico y péguelo a continuación.</p>
 
-        <input placeholder="Codigo" style="text-transform:uppercase" type="text" name="codigo" id="codigo" autocomplete="off" required><br>
-        <input placeholder="Contraseña nueva" onkeyup="verificarContrasenia();" type="password" name="pass" id="pass" autocomplete="off" required><br>
-        <input placeholder="Confirmar contraseña" onkeyup="verificarContrasenia();" type="password" name="pass2" id="pass2" autocomplete="off" required>
+        <input class="InputGeneral" placeholder="Codigo" style="text-transform:uppercase" type="text" name="codigo" id="codigo" autocomplete="off" required><br>
+        <br>
+		<input class="InputGeneral" placeholder="Contraseña nueva" onkeyup="verificarContrasenia();" type="password" name="pass" id="pass" autocomplete="off" required><br>
+        <br>
+		<input class="InputGeneral" placeholder="Confirmar contraseña" onkeyup="verificarContrasenia();" type="password" name="pass2" id="pass2" autocomplete="off" required>
 
-        <div class="gridDiv">
-            <div class="grid-container">
-                <div class="grid-item item1"></div>
-                
-                <div class="grid-item item2">
-                    <img id="IMGSeguridad" name="IMGSeguridad" src="../imagenes/Seguridad4.png" width="40px;">
-                </div>
 
-                <div class="grid-item item3">
-                    <span id="txtSeguridadpass" style="font-size: 12px; font-weight: normal;"></span>
-                </div>  
-            </div>
-        </div>
-    
-        
-        <p>Recuerda utilizar mayúsculas, minúsculas, 
+		<div class="divSeguridad">
+			<div class="divSeguridad2">
+			<img id="IMGSeguridad" name="IMGSeguridad" src="../imagenes/Seguridad4.png" width="40px;">
+			<div class="textoSeguridad" id="txtSeguridadpass" style="font-size: 12px; font-weight: normal;"></div>
+			</div>
+		</div>
+  
+        <p>Recuerda utilizar mayúsculas, minúsculas, <br>
         números y mínimo 8 caracteres para que tu contraseña sea segura</p>
         
         <div id="DivImg2" style="display: none;">
@@ -57,9 +61,13 @@ session_start();
             <span>Cargando</span>
         </div>
 
-        <input disabled type="submit" name="btn" id="btn" value="Siguiente" onclick="CambiarImagen();">
+        <input class="BotonGeneral2" disabled type="submit" name="btn" id="btn" value="Siguiente" onclick="CambiarImagen();">
 
     </form>
+
+</div>
+
+<?php include '../templates/footer.php'; ?>
 
 </body>
 </html>
@@ -74,7 +82,7 @@ session_start();
             if(pass1 == pass2){
 				console.log("Las contraseñas son iguales");
 				if(Puntuacion == 100){
-					alertsweetalert2('Contraseña correcta', '', 'success');
+					//alertsweetalert2('Contraseña correcta', '', 'success');
                 	document.getElementById("btn").disabled = false;
 					$("#btn").focus();
 				}else{

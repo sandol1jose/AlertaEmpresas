@@ -29,12 +29,12 @@ EnviarEmail($Email, $collection);
 		<p>Ha solicitado restablecer su contraseña para la cuenta de AlertaEmpresas asociada con esta 
 		dirección de correo electrónico (".$Email."). Para obtener el código de 
 		restablecimiento de contraseña, por favor copie este código y péguelo en la aplicación:</p>
-		<H1>".$Pass."</H1><br><br>
+		<H1>".$Pass."</H1>
 		<p>Si no realizó la solicitud, puede ignorar este correo electrónico y no hacer nada. 
 		Otro usuario probablemente ingresó su dirección de correo electrónico por error al 
-		intentar restablecer una contraseña.</p><br>
+		intentar restablecer una contraseña.</p>
 		<p>Alerta Empresas</p>
-		<p>https://www.alertaempresas.com/</p>
+		<a href='https://www.alertaempresas.com/'>https://www.alertaempresas.com/</a>
 		</body>
 		</html>";
 		
@@ -65,6 +65,7 @@ EnviarEmail($Email, $collection);
 		
 			//Content
 			$mail->isHTML(true);                                  //Set email format to HTML
+			$mail->CharSet = 'UTF-8';   
 			$mail->Subject = 'Instrucciones para cambiar su clave de Alerta Empresas';
 			$mail->Body    = $message;
 			//$mail->AltBody = 'Enviado desde 000webhost.com';

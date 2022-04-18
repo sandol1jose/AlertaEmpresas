@@ -12,6 +12,7 @@
     margin-left: 40px;
     margin-right: 40px;
     margin-bottom: 100px;
+    min-height: 40px;
 }
 
 td{
@@ -28,13 +29,27 @@ td{
     transform: scale(0.55, 0.55);
 }
 
-.tdInptNumber{
+.tdButton{
     text-align: center; 
 }
 
-.inptNumber{
-    text-align: center; 
-    width: 35px;
+.btnEliminar{
+    background: #ec0303;
+    height: 25px;
+    width: 60px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    color: white;
+    font-size: 12px;
+}
+        
+.btnEliminar:hover{
+    background: #810505;
+    transform: scale(0.98, 0.98);
 }
 
 
@@ -43,4 +58,11 @@ td{
     margin-top: 20px;
     font-size: 14px;
     color: rgba(52, 52, 53, 0.5);
+}
+
+
+
+
+.BotonGeneral{
+    width: 150px;
 }

@@ -5,6 +5,11 @@ if(isset($_SESSION["Cliente"])){
 	header('Location: ../');
 }
 
+$Email = "";
+if(isset($_GET["email"])){
+	$Email = $_GET["email"];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -38,6 +43,10 @@ if(isset($_SESSION["Cliente"])){
 			echo "<script> alertsweetalert2('El código ha caducado', '', 'error'); </script>";
 		}
 
+		if(strcmp($Alerta, 'CorreoYaExiste') === 0){
+			echo "<script> alertsweetalert2('Error', 'El correo ya existe', 'error'); </script>";
+		}
+
 		unset($_SESSION["Alerta"]);
 	}
 ?>
@@ -66,7 +75,7 @@ if(isset($_SESSION["Cliente"])){
 					<div class="TituloCampo">Usuario</div>
 
 					<div>
-						<input class="InputGeneral" type="email" name="email" id="email" placeholder="Introduce tu email o usuario" autocomplete="off" required>
+						<input class="InputGeneral" type="email" name="email" id="email" placeholder="Introduce tu email o usuario" autocomplete="off" value="<?php echo $Email; ?>" required>
 					</div>
 
 					<div class="TituloCampo">Contraseña</div>

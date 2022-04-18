@@ -1,0 +1,5 @@
+En windows
+https://eleternoaprendizsite.wordpress.com/2017/05/16/primera-entrada-del-blog/
+
+En Linux
+http://ualmtorres.github.io/howtos/MongoDBPHP/#:~:text=Conexi%C3%B3n%20a%20MongoDB,a%20la%20MongoDB%20PHP%20Library.

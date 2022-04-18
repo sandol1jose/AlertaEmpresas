@@ -13,6 +13,11 @@ class Conexion{
         return $connection->alertaempresas;//seleccionando la base de datos
     }
 
+    public function IniciarSesion(){
+        $connection = new MongoDB\Client('mongodb://localhost:27017');
+        return $connection->startSession();
+    }
+
     public function Insertar($document, $collectionString, $database){
         $collection = $database->$collectionString;//Seleccionando una coleccion
         return $collection->insertOne($document);

@@ -1,17 +1,18 @@
 <?php
 session_start();
 ?>
+<?php include '../templates/encabezadoBlack.php'; ?>
 
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Verificacion</title>
 
-	<script src="../js/general.js"></script>
-	<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/Verificacion.css">
 </head>
 <body>
+
+
 
 <?php
 	if(!isset($_GET['email'])){
@@ -29,29 +30,25 @@ session_start();
 	}
 ?>
 
-
-
-
-<p class="parrafo1">Enviamos un código a tu correo electrónico</p>	
+<div class="divBase">
 
 	
-
-
-<form action="../app/VerificarEmail.php" method="POST">
-
-	
-	<input style="text-transform:uppercase" autocomplete="off" class="Input" placeholder="0000" type="text" name="codigo" id="codigo">
-
-	<input hidden type="text" name="email" id="email" value="<?php echo $Correo; ?>">
-
+	<p class="parrafo1">Enviamos un código a tu correo electrónico</p>	
 	<div class="divTextoAviso">
 		<p class="TextoAviso">Por favor ingresa el código enviado 
 			a <b> <?php echo $Correo; ?> </b> para verificarlo</p>
 	</div>
-	
-	
-	<input class="BotonGuardar" type="submit" name="" value="Siguiente">
-</form>
+
+	<form action="../app/VerificarEmail.php" method="POST">
+		<input class="InputGeneral" style="text-transform:uppercase" autocomplete="off" class="Input" placeholder="0000" type="text" name="codigo" id="codigo">
+		<input hidden type="text" name="email" id="email" value="<?php echo $Correo; ?>"><br><br>
+		<input class="BotonGeneral2" type="submit" name="" value="Siguiente">
+	</form>
+
+</div>
+
+
+<?php include '../templates/footer.php'; ?>
 
 </body>
 </html>

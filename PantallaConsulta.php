@@ -40,13 +40,71 @@ if(isset($DocumentoEntero["sucursal"])){
     $Sucursal = " (" . $DocumentoEntero["sucursal"] . ")";
 }
 
+//Sacando la informacion
+$NombreComercial = "No disponible";
+$ObjetoSocial = "No disponible";
+$Capital = "No disponible";
+$Provincia = "No disponible";
+$Provincia = "No disponible";
+$Direccion1 = "No disponible";
+$Direccion2 = "No disponible";
+$FechaConstitucion = "No disponible";
+$PaginaWeb = "No disponible";
+$Denominaciones_anteriores = NULL;
+
+if(isset($DocumentoEntero["nombre_comercial"]))
+$NombreComercial = $DocumentoEntero["nombre_comercial"] . $Sucursal;
+
+if(isset($DocumentoEntero["Constitucion"]["datos"]["Objeto social"]))
+$ObjetoSocial = ucwords(strtolower($DocumentoEntero["Constitucion"]["datos"]["Objeto social"]), ".");
+
+if(isset($DocumentoEntero["Constitucion"]["datos"]["Capital"]))
+$Capital = $DocumentoEntero["Constitucion"]["datos"]["Capital"];
+
+if(isset($DocumentoEntero["provincia"]))
+$Provincia = $DocumentoEntero["provincia"];
+
+if(isset($DocumentoEntero["Constitucion"]["datos"]["Domicilio"])){
+    $Direccion1 = $DocumentoEntero["Constitucion"]["datos"]["Domicilio"];
+    $Direccion2 = $DocumentoEntero["Constitucion"]["datos"]["Domicilio"] . " " . $Provincia . " España";
+}
+    
+if(isset($DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"])){
+    $FechaConstitucion = $DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"];
+    if($FechaConstitucion != "AUTORIZACION POLICIAL"){//Si no AUTORIZACION POLICIAL
+        //$Fecha = $DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"];
+        $FechaConstitucion = DateTime::createFromFormat('d.m.y', $FechaConstitucion)->format('d/m/Y');
+        //echo $Fecha;
+    }else{
+        $FechaConstitucion = $DocumentoEntero["Constitucion"]["fecha_incripcion"];
+        $FechaConstitucion = date("d/m/Y", strval($FechaConstitucion)/1000);
+        //$Fecha = DateTime::createFromFormat('d.m.y', $Fecha)->format('d/m/Y');
+        //echo $Fecha;
+    }
+}
+
+if(isset($DocumentoEntero["pagina_web"]))
+$PaginaWeb = $DocumentoEntero["pagina_web"];
+
+if(isset($DocumentoEntero["denominaciones_sociales"]))
+$Denominaciones_anteriores = iterator_to_array($DocumentoEntero["denominaciones_sociales"]);
+
+
+
+
 //$Anuncios_Borme = array_reverse(json_decode(json_encode($res->anuncio_borme), true));
 $Anuncios_Borme = NULL;
 if($_SESSION['AnuncioBorme']["id"] == $id_Empresa){
     $Anuncios_Borme = $_SESSION['AnuncioBorme']["anuncio_borme"];
 }
-//$Anuncios_Borme = array_reverse(iterator_to_array($Result['anuncio_borme']));
-$Anuncios_Borme = array_reverse($Anuncios_Borme);
+
+if($Anuncios_Borme != NULL){
+    //$Anuncios_Borme = array_reverse(iterator_to_array($Result['anuncio_borme']));
+    $Anuncios_Borme = array_reverse($Anuncios_Borme);
+}else{
+    header('Location: index.php');
+}
+
 
 
 //Funcion que ordena el array por fecha
@@ -81,7 +139,7 @@ function OrdenarArray($Array){
     <div class="TituloEmpresa">
         <img src="imagenes/edificio.png" alt="" width="18px">
         <span style="color: white">Empresa</span><br>
-        <span class="Titulo2"><?php echo $DocumentoEntero["nombre_comercial"] . $Sucursal; ?></span>
+        <span class="Titulo2"><?php echo $NombreComercial; ?></span>
     </div>
 </div>
 
@@ -94,43 +152,45 @@ function OrdenarArray($Array){
             </div>
             
             <span class="txtTitulo"><b>Nombre Comercial: </b></span>
-            <span class="txtparrafo"><?php if(isset($DocumentoEntero["nombre_comercial"])) 
-            echo  $DocumentoEntero["nombre_comercial"] . $Sucursal?></span><br><br>
+            <span class="txtparrafo"><?php echo $NombreComercial; ?></span><br><br>
 
             <span class="txtTitulo"><b>Objeto social: </b></span>
-            <span class="txtparrafo"><?php if(isset($DocumentoEntero["Constitucion"]["datos"]["Objeto social"])) 
-            echo  "<br>" . $DocumentoEntero["Constitucion"]["datos"]["Objeto social"];?></span><br><br>
+            <span class="txtparrafo"><?php echo $ObjetoSocial;?></span><br><br>
             
             <span class="txtTitulo"><b>Capital social: </b></span>
-            <span class="txtparrafo"><?php if(isset($DocumentoEntero["Constitucion"]["datos"]["Capital"])) 
-            echo  $DocumentoEntero["Constitucion"]["datos"]["Capital"]?></span><br><br>
+            <span class="txtparrafo"><?php echo $Capital; ?></span><br><br>
             
             <span class="txtTitulo"><b>Dirección: </b></span>
-            <span class="txtparrafo"><?php if(isset($DocumentoEntero["Constitucion"]["datos"]["Domicilio"])) 
-            echo  $DocumentoEntero["Constitucion"]["datos"]["Domicilio"]?></span><br><br>
+            <span class="txtparrafo">
+                <?php echo  $Direccion1; ?>
+                <?php if($Direccion1 != "No disponible"){ ?>
+                    <a href="https://maps.google.com/maps?saddr=&daddr=<?php echo $Direccion2 ?>&hl=es" target="_blank">
+                    <img class="imgMap" src="imagenes/mapa.png" alt="" width="17px">
+                    </a>
+                <?php }?>
+            </span><br><br>
 
             <span class="txtTitulo"><b>Provincia: </b></span>
-            <span class="txtparrafo"><?php if(isset($DocumentoEntero["provincia"])) 
-            echo  $DocumentoEntero["provincia"]?></span><br><br>
+            <span class="txtparrafo"><?php echo $Provincia; ?></span><br><br>
 
             <span class="txtTitulo"><b>Fecha constitución: </b></span>
-            <span class="txtparrafo">
-                <?php 
-                    if(isset($DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"])){
-                        $Fecha = $DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"];
-                        if($Fecha != "AUTORIZACION POLICIAL"){//Si no AUTORIZACION POLICIAL
-                            //$Fecha = $DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"];
-                            $Fecha = DateTime::createFromFormat('d.m.y', $Fecha)->format('d/m/Y');
-                            echo $Fecha;
-                        }else{
-                            $Fecha = $DocumentoEntero["Constitucion"]["fecha_incripcion"];
-                            $Fecha = date("d/m/Y", strval($Fecha)/1000);
-                            //$Fecha = DateTime::createFromFormat('d.m.y', $Fecha)->format('d/m/Y');
-                            echo $Fecha;
-                        }
-                    }
-                ?>
-            </span><br><br>
+            <span class="txtparrafo"><?php echo $FechaConstitucion; ?></span><br><br>
+
+            <?php if(isset($DocumentoEntero["pagina_web"])){ ?>
+                <span class="txtTitulo"><b>Página web: </b></span>
+                <span class="txtparrafo"><a href="<?php echo $PaginaWeb; ?>"><?php echo $PaginaWeb; ?></a></span><br><br>
+            <?php } ?>
+
+            <?php if($Denominaciones_anteriores != NULL){ ?>
+                <span class="txtTitulo"><b>También llamada: </b></span><br>
+                <ul>
+                    <?php foreach($Denominaciones_anteriores as $Denominacion){ ?>
+                        <li><span class="txtparrafo"><?php echo $Denominacion; ?></span></li>
+                    <?php } ?>
+                </ul>
+            <?php } ?>
+            <br>
+            
 
             <span name="btn_alertas" id="btn_alertas">
                 <?php VerificarSeguimiento(); ?>
@@ -159,7 +219,7 @@ function OrdenarArray($Array){
                 $datos = $directivo->datos;
                 ?>
                 <tr>
-                    <td class="tdDirect"><?php echo ucwords(strtolower($datos->entidad)); ?></td>
+                    <td class="tdDirect"><?php echo mb_convert_case($datos->entidad, MB_CASE_TITLE, "UTF-8"); ?></td>
                     <td class="tdDirect tdcenter"><?php echo $datos->relacion; ?></td>
                     <?php 
                         $fecha_formateada = "";
@@ -359,16 +419,23 @@ function VerificarSeguimiento(){
 				console.log("error petición ajax");
 			},
 			success: function(data){
-                if(data != "0"){
+                console.log(data);
+                if(data == "0"){
+                    document.getElementById("btn_alertas").innerHTML = `<?php echo VerificarSeguimiento(); ?>`;
+                    alertsweetalert2('No se pudieron activar las notificaciones', '', 'error');
+                }else if(data == "2"){
+                    document.getElementById("btn_alertas").innerHTML = `<?php echo VerificarSeguimiento(); ?>`;
+                    alertsweetalert2('Has llegado al limite de notificaciones', '', 'error');
+                }else{
                     document.getElementById("btn_alertas").innerHTML = data;
                     if(tipo == 1){
                         alertsweetalert2('Se han activado las notificaciones para ésta empresa', '', 'success');
                     }else{
                         alertsweetalert2('Se han desactivado las notificaciones para ésta empresa', '', 'info');
                     }
-                }else{
-                    alertsweetalert2('No se pudieron activar las notificaciones', '', 'error');
                 }
+            
+
 			}
 		});
     }

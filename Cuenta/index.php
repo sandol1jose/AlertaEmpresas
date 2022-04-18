@@ -52,69 +52,74 @@ $Result = $collection->findOne($filter);
     <span class="Subtitulo2">Empresas que sigues</span>
 </div>
     
-
-<?php
-if(isset($Result["alertas"])){
-?>
 <div class="divTabla">
-    <table>
-        <tr>
-            <th>Estado</th>
-            <th>Empresa</th>
-            <th>Alertas</th>
-        </tr>
 
-<?php
-$Position = 0;
-foreach($Result["alertas"] as $alerta){
-    $collection = $database->empresas;
-    $id_empresa = $alerta["id_empresa"];
-    $filter = [ "_id" => new MongoDB\BSON\ObjectID($id_empresa) ];
-    $Result = $collection->findOne($filter);
-    $Nombre_empresa = $Result["nombre_comercial"];
-    $Correo = $_SESSION["Cliente"]["Correo"];
+    <?php
+    if(isset($Result["alertas"])){
+    ?>
 
-    $sucursal = "";
-    $sucursal2 = "";
-    if(isset($Result["sucursal"])){
-        $sucursal = "&sucursal=" . $Result["sucursal"];
-        $sucursal2 = " (" . $Result["sucursal"] . ")";
-    }
+        <table>
+            <tr>
+                <th>Estado</th>
+                <th>Empresa</th>
+                <th>Acción</th>
+            </tr>
 
-    $check = '';
-    if($alerta["estado"] == true){
-        $check = 'checked';
-    }
-?>
-        <tr>
-            <td class="tdCheck">
-                <label class="switch">
-                    <input id="check<?php echo $id_empresa; ?>" type="checkbox" <?php echo $check; ?> 
-                    onClick="SeguirEmpresa('<?php echo $id_empresa; ?>', '<?php echo $Correo; ?>', '<?php echo $Position; ?>');">
-                <span class="slider round"></span>    
-                </label>
-            </td>
-            <td class="tdNombreEmpresa">
-                <a href="../MostrarEmpresa.php?id=<?php echo $id_empresa; echo $sucursal; ?>">
-                    <?php echo $Nombre_empresa . $sucursal2; ?>
-                </a>
-            </td>
-            <td class="tdInptNumber"><input class="inptNumber" type="number" value="<?php echo $alerta["cantidad"]; ?>" min="0" max="10"></td>
-        </tr>
-<?php
-$Position++;
-}?>
+    <?php
+    $Position = 0;
+    foreach($Result["alertas"] as $alerta){
+        $collection = $database->empresas;
+        $id_empresa = $alerta["id_empresa"];
+        $filter = [ "_id" => new MongoDB\BSON\ObjectID($id_empresa) ];
+        $Result = $collection->findOne($filter);
+        $Nombre_empresa = $Result["nombre_comercial"];
+        $Correo = $_SESSION["Cliente"]["Correo"];
 
-    </table>
+        $sucursal = "";
+        $sucursal2 = "";
+        if(isset($Result["sucursal"])){
+            $sucursal = "&sucursal=" . $Result["sucursal"];
+            $sucursal2 = " (" . $Result["sucursal"] . ")";
+        }
 
-    <span class="txtExtra">Éstas son las empresas de las que recibirás alertas en cuanto haya un cambio</span>
+        $check = '';
+        if($alerta["estado"] == true){
+            $check = 'checked';
+        }
+    ?>
+            <tr id="tr_<?php echo $id_empresa; ?>">
+                <td class="tdCheck">
+                    <label class="switch">
+                        <input id="check<?php echo $id_empresa; ?>" type="checkbox" <?php echo $check; ?> 
+                        onClick="SeguirEmpresa('<?php echo $id_empresa; ?>', '<?php echo $Correo; ?>', '<?php echo $Position; ?>');">
+                    <span class="slider round"></span>    
+                    </label>
+                </td>
+                <td class="tdNombreEmpresa">
+                    <a href="../MostrarEmpresa.php?id=<?php echo $id_empresa; echo $sucursal; ?>">
+                        <?php echo $Nombre_empresa . $sucursal2; ?>
+                    </a>
+                </td>
+                <td class="tdButton">
+                    <button class="btnEliminar" onClick="EliminarAlerta('<?php echo $id_empresa; ?>', '<?php echo $Correo; ?>')">Eliminar</button>
+                </td>
+            </tr>
+    <?php
+    $Position++;
+    }?>
 
+        </table>
 
+        <span class="txtExtra">Éstas son las empresas de las que recibirás alertas en cuanto haya un cambio</span>
+
+    <?php }else{ ?>
+
+        <span>No sigues a ninguna empresa</span><br><br>
+        <button class="BotonGeneral" onclick="window.location.href='../index.php'">Buscar Empresas</button>
+
+    <?php } ?>
 
 </div>
-
-<?php } ?>
-
 
 
 
@@ -156,6 +161,31 @@ $Position++;
                     }
                 }else{
                     alertsweetalert2('No se pudieron activar las notificaciones', '', 'error');
+                }
+			}
+		});
+    }
+
+    function EliminarAlerta(idEmpresa, Correo){
+        console.log(idEmpresa);
+        console.log(Correo);
+        
+        $.ajax({
+			type: "POST",
+			url: "../app/EliminarAlerta.php",
+			data: {'idEmpresa': idEmpresa, 'Correo': Correo},
+			dataType: "html",
+			beforeSend: function(){
+                //console.log("Estamos procesando los datos... ");
+			},
+			error: function(){
+				console.log("error petición ajax");
+			},
+			success: function(data){
+                console.log(data);
+                if(data == "1"){
+                    $("#tr_" + idEmpresa).remove();
+                    alertsweetalert2('Eliminaste las alertas de la empresa', '', 'success');
                 }
 			}
 		});

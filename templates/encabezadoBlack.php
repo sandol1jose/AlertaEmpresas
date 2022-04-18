@@ -15,7 +15,7 @@
 <div class="Cabecera">
     <div class="Cabecera_Arriba" style="background-color: #343435;">
         <div class="DivTitulo">
-            <span class="TituloPrincipal" style="color: white;">Alertaempresas.com</span>
+            <a href="<?php echo $Servidor; ?>" class="TituloPrincipal" style="color: white;">Alertaempresas.com</a>
         </div>
     </div>
 </div>

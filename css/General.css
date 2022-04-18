@@ -192,6 +192,39 @@ body{
     transform: scale(0.98, 0.98);
 }
 
+.BotonGeneral:disabled {
+    background: #949494;
+    color: #646464;
+}
+
+
+.BotonGeneral2{
+    background: #3F388D;
+    height: 40px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    color: white;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 19px;
+}
+
+.BotonGeneral2:hover{
+    background: #483bd1;
+    transform: scale(0.98, 0.98);
+}
+
+.BotonGeneral2:disabled {
+    background: #949494;
+    color: #646464;
+}
+
+
 
 
 /*IMPUT*/
@@ -224,6 +257,12 @@ body{
 }
 
 
+
+/* Base para la mayoria de paginas*/
+.divBase{
+    margin-left: 100px;
+    min-height: 350px;
+}
 
 
 

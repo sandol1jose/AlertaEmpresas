@@ -8,12 +8,23 @@
 	include 'EnviarCorreo.php';
 
 	$Correo = $_POST["correo"];
+    $Correo = preg_replace("/\s+/", " ", trim($Correo)); //Quitando espacios de mas
 	$Correo = strtolower($Correo);//Convirtiendo todo el correo a minusculas
 
     $Pass = $_POST["pass"];
     $Nombres = $_POST["nombres"];
+    $Nombres = preg_replace("/\s+/", " ", trim($Nombres)); //Quitando espacios de mas
+
     $Apellidos = $_POST["apellidos"];
-    $Empresa = $_POST["empresa"];
+    $Apellidos = preg_replace("/\s+/", " ", trim($Apellidos)); //Quitando espacios de mas
+
+    if(isset($_POST["empresa"])){
+        $Empresa = $_POST["empresa"];
+        $Empresa = preg_replace("/\s+/", " ", trim($Empresa)); //Quitando espacios de mas
+    }else{
+        $Empresa = NULL;
+    }
+    
     
     $conexion = new Conexion();
     $database = $conexion->Conectar();
@@ -26,7 +37,7 @@
 
         $document = [
             "nombres" => $Nombres,
-            "apellidos" => $Apellidos ,
+            "apellidos" => $Apellidos,
             "email" => $Correo,
             "password" => $PassCifrada,
             "empresa" => $Empresa
@@ -44,6 +55,6 @@
 	}else{
 		//El correo ya existe en la base de datos
 		$_SESSION["Alerta"] = "CorreoYaExiste";
-		header('Location: ../Login/registro.php'); //envia a la página de inicio.
+		header('Location: ../Login/index.php'); //envia a la página de inicio.
 	}
 ?>

@@ -1,0 +1,64 @@
+.DivBusquedas{
+    margin-left: 100px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    min-height: 350px;
+}
+
+a{
+    color: blue;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+a:hover{
+    color: rgb(56, 56, 56);
+}
+
+table{
+    width: 72%;
+    border-spacing: 0px;
+}
+
+tr{
+    height: 30px;
+}
+
+table, tr, td{
+    border: 0px solid black;
+}
+
+table tbody tr:nth-child(even){
+    /*table tbody tr:nth-child(odd){*/
+    background-color: #f1f1f1;
+}
+
+.tdBoton{
+    text-align: right;
+    width: 40px;
+}
+
+.botonVer{
+    background: #259908;
+    height: 25px;
+    width: 40px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    color: white;
+    font-size: 12px;
+}
+    
+.botonVer:hover{
+    background: #52d431;
+    transform: scale(0.98, 0.98);
+}
+
+
+.OtrasDenominaciones{
+    font-size: 13px;
+    color: #4d4d4d;
+}

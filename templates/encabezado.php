@@ -15,7 +15,7 @@
 <div class="Cabecera">
         <div class="Cabecera_Arriba">
             <div class="DivTitulo">
-                <span class="TituloPrincipal">Alertaempresas.com</span>
+                <a href="<?php echo $Servidor; ?>" class="TituloPrincipal">Alertaempresas.com</a>
             </div>
 
             <div class="DivBoton">

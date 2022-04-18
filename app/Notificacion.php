@@ -13,40 +13,42 @@ function Notificar(){
 	$Anuncios = $collection->find()->toArray();
 
 	//Agrupando los anuncios por empresa
-	$Anuncios_Agrupados = NULL;
-	foreach($Anuncios as $anuncio){
-		$id_nombre_comercial = $anuncio["id_nombre_comercial"];
-		$Anuncios_Agrupados[$id_nombre_comercial][] = $anuncio;
-	}
+	if($Anuncios != NULL){
+		$Anuncios_Agrupados = NULL;
+		foreach($Anuncios as $anuncio){
+			$id_nombre_comercial = $anuncio["id_nombre_comercial"];
+			$Anuncios_Agrupados[$id_nombre_comercial][] = $anuncio;
+		}
 
-	foreach($Anuncios_Agrupados as $res){
-		//Buscamos a la empresa para ver sus alertas
-		$id_nombre_comercial = $res[0]["id_nombre_comercial"];
-		$filter = [ '$or' => [
-			["id_nombre_comercial" => $id_nombre_comercial ],
-			["id_denominaciones_sociales" => $id_nombre_comercial ]
-			]
-		];
-		$collection2 = $database->empresas;
-		$Empresa = $collection2->findOne($filter);
+		foreach($Anuncios_Agrupados as $res){
+			//Buscamos a la empresa para ver sus alertas
+			$id_nombre_comercial = $res[0]["id_nombre_comercial"];
+			$filter = [ '$or' => [
+				["id_nombre_comercial" => $id_nombre_comercial ],
+				["id_denominaciones_sociales" => $id_nombre_comercial ]
+				]
+			];
+			$collection2 = $database->empresas;
+			$Empresa = $collection2->findOne($filter);
 
-		if($Empresa != NULL && isset($Empresa["alertas"])){
-			$anuncios = NULL;
-			foreach($res as $newBorme){
-				$anuncios = $anuncios . $newBorme["tipo"] . "<br>";
-				$anuncios = $anuncios . $newBorme["anuncio"] . "<br><br>";
-			}
-	
-			$Correos = NULL;
-			foreach($Empresa["alertas"] as $alerta){
-				if($alerta["estado"] == true){
-					//Si la alerta esta activa
-					$Correos[] = $alerta["correo_cliente"];
+			if($Empresa != NULL && isset($Empresa["alertas"])){
+				$anuncios = NULL;
+				foreach($res as $newBorme){
+					$anuncios = $anuncios . $newBorme["tipo"] . "<br>";
+					$anuncios = $anuncios . $newBorme["anuncio"] . "<br><br>";
 				}
-			}
-			if($Correos != NULL){
-				EnviarEmail($Correos, $anuncios, $Empresa["nombre_comercial"]);
-				//echo $anuncios;
+		
+				$Correos = NULL;
+				foreach($Empresa["alertas"] as $alerta){
+					if($alerta["estado"] == true){
+						//Si la alerta esta activa
+						$Correos[] = $alerta["correo_cliente"];
+					}
+				}
+				if($Correos != NULL){
+					EnviarEmail($Correos, $anuncios, $Empresa["nombre_comercial"]);
+					//echo $anuncios;
+				}
 			}
 		}
 	}
@@ -111,6 +113,7 @@ use PHPMailer\PHPMailer\Exception;
 		<h3>Ha tendio algunos cambios</h3>
 		<p>".$Anuncios_BORME."</p>
 		<p>Alertaempresas.com</p>
+		<a href='https://www.alertaempresas.com/'>https://www.alertaempresas.com/</a>
 		</body>
 		</html>";
 		 
@@ -147,6 +150,7 @@ use PHPMailer\PHPMailer\Exception;
 				$mail->addAddress($correo);                 					//Add a recipient
 				echo $correo . '<br>';
 			}
+			 
 			/*$mail->addAddress('ellen@example.com');                   //Name is optional
 			$mail->addReplyTo('info@example.com', 'Information');
 			$mail->addCC('cc@example.com');
@@ -159,6 +163,7 @@ use PHPMailer\PHPMailer\Exception;
 		
 			//Content
 			$mail->isHTML(true);                                  //Set email format to HTML
+			$mail->CharSet = 'UTF-8';  
 			$mail->Subject = 'Alerta de Cambios en Empresa';
 			$mail->Body    = $message;
 			//$mail->AltBody = 'Enviado desde 000webhost.com';

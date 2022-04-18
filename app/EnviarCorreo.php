@@ -14,7 +14,7 @@ use PHPMailer\PHPMailer\Exception;
 		<body>
 		<h2>Debes confirmar tu correo electrónico</h2>
 		<p>Ingresa el siguiente codigo para verificar tu correo electrónico</p>
-		<H1>".$Codigo."</H1><br><br>
+		<H1>".$Codigo."</H1>
 		<p>Alertaempresas.com</p>
 		</body>
 		</html>";
@@ -55,6 +55,7 @@ use PHPMailer\PHPMailer\Exception;
 		
 			//Content
 			$mail->isHTML(true);                                  //Set email format to HTML
+			$mail->CharSet = 'UTF-8';   
 			$mail->Subject = 'Confirmacion de correo electronico';
 			$mail->Body    = $message;
 			//$mail->AltBody = 'Enviado desde 000webhost.com';

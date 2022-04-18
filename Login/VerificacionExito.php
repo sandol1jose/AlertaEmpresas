@@ -1,27 +1,36 @@
+<?php
+session_start();
+?>
+
+<?php include '../templates/encabezadoBlack.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Verificacion exitosa</title>
-	
-	<script src="../js/general.js"></script>
-	<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="css/Verificacion.css">
 </head>
 <body>
+
+<?php if(isset($_SESSION["VERIFICACIONEXITO"])){ ?>
 
 <script>
 	alertsweetalert2('Accion exitosa', '', 'success'); 
 </script>
+
+<?php 
+unset($_SESSION["VERIFICACIONEXITO"]);
+} ?>
 		
-<p class="Texto2">Verificación exitosa</p>
+<div class="divBase">
 
-<p class="parrafo1">Tu correo electrónico ahora está verificado, ya puedes ingresar a nuestro sistema</p>
-
-<img class="imagen" src="../imagenes/check1.gif">
-
-<form action="index.php">
-	<input type="submit" name="" value="Siguiente">
-</form>
-			
+	<p class="Texto2">Verificación exitosa</p>
+	<img class="imagen" src="../imagenes/check2.png" width="15px">
+	<span class="parrafo1">Tu correo electrónico ahora está verificado, ya puedes ingresar a nuestro sistema</span>
+	<br><br>
+	<button class="BotonGeneral2" onclick="window.location.href='index.php'">Siguiente</button>
+				
+</div>
+<?php include '../templates/footer.php'; ?>
 </body>
 </html>

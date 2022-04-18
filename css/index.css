@@ -90,3 +90,44 @@
 .subtitulo{
     color: #3F388D;
 }
+
+
+
+
+/*TOP 5*/
+.grid-container2 {
+    display: grid;
+    grid-template-columns: 27% 27% 27%;
+    /*grid-template-rows: 400px;*/
+    /*grid-gap: 7%;*/
+    grid-column-gap: 7%;
+    grid-row-gap: 60px;
+    /*background-color: #2196F3;*/
+    height: auto;
+    padding-left: 60px;
+    padding-top: 60px;
+    padding-bottom: 100px;
+    
+}
+
+.grid-container2 > div {
+    /*background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid black;*/
+    text-align: left;
+    font-size: 14px;
+}
+
+.item12{
+    background: #FFFFFF;
+    box-shadow: 0px 10px 20px 5px rgba(63, 56, 141, 0.35);
+    border-radius: 5px;
+    padding-left: 30px;
+    padding-right: 30px;
+    min-height: 400px;
+}
+
+.TituloProvincia{
+    color: #3F388D;
+    font-size: 30px;
+    margin-bottom: 15px;
+}

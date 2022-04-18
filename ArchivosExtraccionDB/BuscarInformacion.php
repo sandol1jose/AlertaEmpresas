@@ -9,10 +9,8 @@ require_once($root . '/Archivos de Ayuda PHP/conexion.php');
 require_once($root . '/Librerias/pdfparser-master/alt_autoload.php-dist');//Clase para pasar pdf a texto plano
 require_once($root . '/app/Notificacion.php');
 require_once($root . '/ArchivosExtraccionDB/UnirCambiosDeNombre.php');
+require_once($root . '/ArchivosExtraccionDB/top5.php');
 //include 'scraping.php';
-
-//date_default_timezone_set("Europe/Madrid");
-date_default_timezone_set("America/Guatemala");
 
 //Codigo para que ignore la alerta cuando no existe un archivo
 set_error_handler("warning_handler", E_WARNING);
@@ -27,12 +25,12 @@ $ArrayInsertador = NULL; //Almacenará 20 registros para almacenar de 20 en 20
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();
-$collection = $database->anuncios2;
+$collection = $database->anuncios;
 
 //$_GET["tipo"] = 1;
 if(isset($_GET["tipo"])){
     //$_POST["fecha"] = '20090102';
-    $_POST["fecha"] = '20220407';
+    //$_POST["fecha"] = '20220407';
     $fechaActual = $_POST["fecha"];
     RecorrerXML($fechaActual);
     //UnirCambiosDeNombre(2); // /ArchivosExtraccionDB/UnirCambiosDeNombre.php
@@ -40,16 +38,23 @@ if(isset($_GET["tipo"])){
     $collection2 = $database->anuncios_dia;
     $Result = $collection2->deleteMany([]);
 
+    //date_default_timezone_set("Europe/Madrid");
+    date_default_timezone_set("America/Guatemala");
+
     $fecha_Millis = getdate();
     $fechaActual = NULL;
     $dia = date("w", $fecha_Millis[0]);
+
+    date_default_timezone_set("UTC");
     if($dia != 0 && $dia != 6){//Verificando que no sea Sabado o Domingo
-        $fechaActual = date("Ymd", $fecha_Millis[0]);
+        $fechaActual = date("Ymd", $fecha_Millis[0] - 86400);
         RecorrerXML($fechaActual);
         Notificar(); // /app/Notificacion.php
         UnirCambiosDeNombre(1); // /ArchivosExtraccionDB/UnirCambiosDeNombre.php
+        Top5Empresas(); // /ArchivosExtraccionDB/top5.php
         unset($fechaActual);
     }else{
+        Top5Empresas(); //Borra las constituciones del dia sabado o domingo
         echo "es sabado o domingo";
     }
 }
