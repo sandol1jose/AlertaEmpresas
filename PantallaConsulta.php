@@ -73,7 +73,11 @@ if(isset($DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"])){
     $FechaConstitucion = $DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"];
     if($FechaConstitucion != "AUTORIZACION POLICIAL"){//Si no AUTORIZACION POLICIAL
         //$Fecha = $DocumentoEntero["Constitucion"]["datos"]["Comienzo de operaciones"];
-        $FechaConstitucion = DateTime::createFromFormat('d.m.y', $FechaConstitucion)->format('d/m/Y');
+        if(strlen($FechaConstitucion) <= 8){
+            $FechaConstitucion = DateTime::createFromFormat('d.m.y', $FechaConstitucion)->format('d/m/Y');
+        }else{
+            $FechaConstitucion = $FechaConstitucion;
+        }
         //echo $Fecha;
     }else{
         $FechaConstitucion = $DocumentoEntero["Constitucion"]["fecha_incripcion"];
@@ -139,7 +143,7 @@ function OrdenarArray($Array){
     <div class="TituloEmpresa">
         <img src="imagenes/edificio.png" alt="" width="18px">
         <span style="color: white">Empresa</span><br>
-        <span class="Titulo2"><?php echo $NombreComercial; ?></span>
+        <span class="Titulo3"><?php echo $NombreComercial; ?></span>
     </div>
 </div>
 
@@ -219,7 +223,7 @@ function OrdenarArray($Array){
                 $datos = $directivo->datos;
                 ?>
                 <tr>
-                    <td class="tdDirect"><?php echo mb_convert_case($datos->entidad, MB_CASE_TITLE, "UTF-8"); ?></td>
+                    <td class="tdDirect tdDirect2"><?php echo mb_convert_case($datos->entidad, MB_CASE_TITLE, "UTF-8"); ?></td>
                     <td class="tdDirect tdcenter"><?php echo $datos->relacion; ?></td>
                     <?php 
                         $fecha_formateada = "";

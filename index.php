@@ -115,7 +115,6 @@ $Top5 = $collection->find([])->toArray();
 </div>
 
 
-
 <?php include 'templates/footer.php'; ?>
 
 </body>

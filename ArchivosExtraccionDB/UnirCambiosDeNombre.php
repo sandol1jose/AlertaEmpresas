@@ -2,6 +2,7 @@
 
 $tiempo_inicio = microtime(true);
 set_time_limit(50000);
+ini_set('memory_limit', '1024M');
 
 $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/Archivos de Ayuda PHP/conexion.php');
@@ -10,7 +11,8 @@ $Anuncio_Constitucion = [
     "Capital: ",
     "Comienzo de operaciones: ",
     "Domicilio: ",
-    "Objeto social: "
+    "Objeto social: ",
+    "Duración: "
 ];
 $Anuncio_Nombramientos = [
     "Adm. Mancom.: ",
@@ -50,7 +52,14 @@ $Anuncio_Nombramientos = [
     "MRO.COMS.CTR: ",
     "SEC.COMS.CTR: ",
     "PRE.COMS.CTR: ",
-    "AUDIT.CUENT.: "
+    "AUDIT.CUENT.: ",
+    "Miem.j.g.p.v: ",
+    "Miem.a.g.p.v: ",
+    "Sec.j.g.p.v: ",
+    "Pres.a.g.p.v: ",
+    "Pres.j.g.p.v: ",
+    "Vpre.j.g.p.v: ",
+    "Adm.conjunto: "
 ];
 $AumentoCapital = [
     "Resultante Desembolsado",
@@ -104,6 +113,7 @@ $Anuncios = [
     "Situación concursal. " => NULL,
 ];
 
+
 /*
     $filter = [
         '$or' => 
@@ -129,7 +139,7 @@ $IDActual_Empresa;
 $DocumentoEntero;
 $Array_Nivel1; //Guardará el parrafo seccionado como Array
 
-//UnirCambiosDeNombre(2);
+///UnirCambiosDeNombre(2);
 function UnirCambiosDeNombre($tipo){
     global $Anuncios;
     global $collection;
@@ -159,7 +169,7 @@ function UnirCambiosDeNombre($tipo){
     ];
 
     $Options = [
-        'limit' => 80000
+        'limit' => 200000
         //'projection' => ['anuncio_borme.anuncio' => 1, 'nombre_comercial' => 1]
     ];
     $Result = $collection->find($filter, $Options)->toArray();
@@ -331,22 +341,36 @@ function CambioDenominacionSocial($Valor, $Busqueda){
     $filtro = ["otros_nombres" => $NombreActual_Empresa];
     $Result = $collection2->findOne($filtro);
 
+
+
     if($Result == NULL){
         //No hay ningun registros
+        $id_nombre_comercialActual = Id_DeNombre($NombreActual_Empresa);
+        $id_nombre_comercialNuevo = Id_DeNombre($NombreNuevo_Empresa);
+
         $Documento = [
             'nombre_original' => $NombreActual_Empresa,
             'idempresa_original' =>  new MongoDB\BSON\ObjectID($IDActual_Empresa),
             'otros_nombres' => [
                 $NombreActual_Empresa,
                 $NombreNuevo_Empresa
+            ],
+            'id_otros_nombres' => [
+                $id_nombre_comercialActual,
+                $id_nombre_comercialNuevo
             ]
         ];
         $Result = $collection2->insertOne($Documento);
     }else{
         //Ya existe un registro solo le agregaremos
+        $id_nombre_comercialNuevo = Id_DeNombre($NombreNuevo_Empresa);
+
         $actualizar = 
         [
-            '$addToSet' => [ "otros_nombres" => $NombreNuevo_Empresa]
+            '$addToSet' => [ 
+                "otros_nombres" => $NombreNuevo_Empresa,
+                "id_otros_nombres" => $id_nombre_comercialNuevo
+            ]
         ];
         $Result = $collection2->updateOne($filtro, $actualizar);
     }
@@ -445,6 +469,13 @@ function eliminar_acentos($cadena){
     );
     
     return $cadena;
+}
+
+function Id_DeNombre($Nombre){
+    $IdNombre = str_replace(".", "", $Nombre);
+    $IdNombre = str_replace(",", "", $IdNombre);
+    $IdNombre = str_replace(" ", "", $IdNombre);
+    return $IdNombre;
 }
 
 

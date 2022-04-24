@@ -122,3 +122,57 @@ th{
 .imgMap:hover{
     transform: scale(1.5, 1.5);
 }
+
+
+
+.Titulo3{
+    font-size: 25px;
+    color: white;
+}
+
+
+
+@media screen and (max-width: 430px) {/*PARA CELULARES*/
+    .grid-container{
+        grid-template-columns: 100%;
+        margin-left: 5%;
+        margin-right: 5%;
+        gap: 50px
+    }   
+
+
+
+    .tablaDirectivos {
+        width: 100%;
+        font-size: 12px;
+        word-break: break-all;
+    }
+    
+
+    .divAnuncios{
+        margin-left: 5%;
+        margin-right: 5%;
+        width: 90%;
+    }
+
+    .tdFecha{
+        writing-mode: vertical-lr;
+    }
+
+    .tdImagen {
+        display: none;
+    }
+
+    .tdDirect2{
+        width: 35%;
+    }
+
+    .TituloEmpresa {
+        margin-left: 10px;
+    }
+
+    .Titulo3 {
+        font-size: 16px;
+    }
+}
+

@@ -7,17 +7,37 @@ use PHPMailer\PHPMailer\Exception;
 		$Codigo = BuscarCodigo($collection, $Email);
 		//$Codigo = 2153;
 		$message = "
-		<html>
-		<head>
-		<title>Confirmación de correo electrónico</title>
-		</head>
-		<body>
-		<h2>Debes confirmar tu correo electrónico</h2>
-		<p>Ingresa el siguiente codigo para verificar tu correo electrónico</p>
-		<H1>".$Codigo."</H1>
-		<p>Alertaempresas.com</p>
-		</body>
-		</html>";
+		<div style='font-family:Helvetica Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif; width: 80%; text-align: center;'>
+		<div style='color:#3F388D;font-size:19px;line-height:32px;
+					border-bottom: 1px solid #d1d1d1;'>
+			Acción requerida: confirma tu cuenta de Alerta Empresas
+		</div>
+		<br>
+	
+		<div style='font-size:16px;line-height:21px;color:#141823; padding-top: 30px;'>
+					!Hola!</div>
+	
+		<div style='font-size:16px;line-height:21px;color:#141823; padding-top: 5px;'>
+		Te registraste recientemente en Alerta Empresas. <br>
+		Para completar tu registro en Alerta Empresas, confirma tu cuenta.</div>
+	
+		<div style='font-size:16px;line-height:21px;color:#141823; padding-top: 30px;'>
+		Ingresa el siguiente código, para verificar tu correo electrónico.</div>
+	
+		<div style='font-size:30px;line-height:50px;color:#141823; 
+		padding-top: 30px; font-weight: bold; padding-bottom: 50px;'>
+		".$Codigo."</div>
+	
+		<div style='sans-serif;font-size:11px;color:#aaaaaa;line-height:16px;
+		border-top: 1px solid #d1d1d1;'>
+		Se envió este mensaje a
+		<a href='mailto:".$Email."'
+		style='color:#3b5998;text-decoration:none'
+		target='_blank'>".$Email."</a> 
+		por pedido tuyo. <br>
+		A fin de proteger tu cuenta, no reenvíes este correo electrónico.
+		</div>
+		</div>";
 		 
 		require '../Librerias/PHPMailer-master/src/Exception.php';
 		require '../Librerias/PHPMailer-master/src/PHPMailer.php';
@@ -35,13 +55,19 @@ use PHPMailer\PHPMailer\Exception;
 			$mail->SMTPAuth   = true;                                   //Enable SMTP authentication
 			$mail->Username   = 'jumpchiquimula@gmail.com';             //SMTP username
 			$mail->Password   = 'jumpchiquimula9899';                  //SMTP password
-			//$mail->Username   = 'soporte@jumpgt.com';             //SMTP username
-			//$mail->Password   = '$6y9KUtAs2sVWF';                  		//SMTP password
+
+			/*$mail->SMTPOptions = array(
+				'ssl' => array(
+					'verify_peer' => false,
+					'verify_peer_name' => false,
+					'allow_self_signed' => true
+				)
+			);*/
 			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
 			//$mail->Port       = 465;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 			$mail->Port       = 587;
 			//Recipients
-			$mail->setFrom('jumpchiquimula@gmail.com', 'Jump GT');
+			$mail->setFrom('jumpchiquimula@gmail.com', 'JUMP');
 			$mail->addAddress($Email);                 					//Add a recipient
 			/*$mail->addAddress('ellen@example.com');                   //Name is optional
 			$mail->addReplyTo('info@example.com', 'Information');
@@ -61,7 +87,8 @@ use PHPMailer\PHPMailer\Exception;
 			//$mail->AltBody = 'Enviado desde 000webhost.com';
 		
 			$mail->send();
-			//echo 'Message has been sent';
+			//echo 'Message has been sent<br>';
+			//echo var_dump($mail);
 		} catch (Exception $e) {
 			//echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 		}

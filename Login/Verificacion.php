@@ -45,6 +45,10 @@ session_start();
 		<input class="BotonGeneral2" type="submit" name="" value="Siguiente">
 	</form>
 
+	<div class="divTextoAviso">
+		<p class="TextoAviso">Si no aparece, revisa la carpeta de spam</p>
+	</div>
+
 </div>
 
 

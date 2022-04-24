@@ -30,7 +30,7 @@ $collection = $database->anuncios;
 //$_GET["tipo"] = 1;
 if(isset($_GET["tipo"])){
     //$_POST["fecha"] = '20090102';
-    //$_POST["fecha"] = '20220407';
+    //$_POST["fecha"] = '20120907';
     $fechaActual = $_POST["fecha"];
     RecorrerXML($fechaActual);
     //UnirCambiosDeNombre(2); // /ArchivosExtraccionDB/UnirCambiosDeNombre.php
@@ -47,7 +47,8 @@ if(isset($_GET["tipo"])){
 
     date_default_timezone_set("UTC");
     if($dia != 0 && $dia != 6){//Verificando que no sea Sabado o Domingo
-        $fechaActual = date("Ymd", $fecha_Millis[0] - 86400);
+        //$fechaActual = date("Ymd", $fecha_Millis[0] - 86400);
+        $fechaActual = date("Ymd", $fecha_Millis[0]);
         RecorrerXML($fechaActual);
         Notificar(); // /app/Notificacion.php
         UnirCambiosDeNombre(1); // /ArchivosExtraccionDB/UnirCambiosDeNombre.php
@@ -74,7 +75,17 @@ function RecorrerXML($fecha){
         //$contents = file_get_contents($xml);
         //Recorriendo xml
         $documento = simplexml_load_file($xml);
-        $diario = $documento->diario->seccion[0]->emisor->item;
+        //$diarios = $documento->diario;
+        $Contador = 0;
+        foreach($documento->diario as $dia){
+            $seccion = $dia->seccion;
+            $nombre = $seccion["nombre"];
+            if($nombre == "SECCIÓN PRIMERA. Empresarios"){
+                break;
+            }
+            $Contador++;
+        }
+        $diario = $documento->diario[$Contador]->seccion[0]->emisor->item;
     } catch (Exception $e) {
         echo "El Archivo XML no tiene nada<br>";
         echo $xml . "<br>";
@@ -88,50 +99,52 @@ function RecorrerXML($fecha){
             //echo strval($dia["id"]) . "<br>";
             //echo $dia->titulo . "<br>";
             //echo $dia->urlPdf . "<br><br>";
-            try{
-                if(strpos($dia->titulo, "ÍNDICE ALFABÉTICO DE SOCIEDADES") === false){
-                    $Provincia = strval($dia->titulo);
-                    $borme = strval($dia["id"]);
-                    $URL = "https://www.boe.es" . $dia->urlPdf;
-                    //echo $URL . " / ";
-                    ConvertirATexto($URL, $fecha);
-                    if($ArrayInsertador != NULL){
-                        if(count($ArrayInsertador) > 0){
-                            global $collection;
-                            $Result1 = $collection->insertMany($ArrayInsertador);
-                            if(!isset($_GET["tipo"])){
-                                NuevosAnunciosPorDia($ArrayInsertador);
+            //if(){
+                try{
+                    if(strpos($dia->titulo, "ÍNDICE ALFABÉTICO DE SOCIEDADES") === false){
+                        $Provincia = strval($dia->titulo);
+                        $borme = strval($dia["id"]);
+                        $URL = "https://www.boe.es" . $dia->urlPdf;
+                        //echo $URL . " / ";
+                        ConvertirATexto($URL, $fecha);
+                        if($ArrayInsertador != NULL){
+                            if(count($ArrayInsertador) > 0){
+                                global $collection;
+                                $Result1 = $collection->insertMany($ArrayInsertador);
+                                if(!isset($_GET["tipo"])){
+                                    NuevosAnunciosPorDia($ArrayInsertador);
+                                }
+                                $ArrayInsertador = NULL;
                             }
-                            $ArrayInsertador = NULL;
                         }
-                    }
 
-                    /*$AnunciosScraping = Escrapear($borme);
-                    if($contador == $AnunciosScraping){
-                        echo "<span style='background-color: green; color: white;'>Son iguales</span><br>";
-                    }else{
-                        echo "<span style='background-color: red;  color: white;'>NO SON IGUALES</span><br>";
+                        /*$AnunciosScraping = Escrapear($borme);
+                        if($contador == $AnunciosScraping){
+                            echo "<span style='background-color: green; color: white;'>Son iguales</span><br>";
+                        }else{
+                            echo "<span style='background-color: red;  color: white;'>NO SON IGUALES</span><br>";
+                        }
+                        echo "AnunciosEscraping: " . $AnunciosScraping . "<br>";   
+                        $contadorGeneral = $contadorGeneral +  $contador;*/
+                        if(!isset($_GET["tipo"])){
+                            echo $URL . "\n";
+                        }else{
+                            echo $URL . "<br>";
+                            echo "Anuncios: " . $contador . "<br><br>"; 
+                        }
+                        unset($URL);
+                        unset($dia);         
                     }
-                    echo "AnunciosEscraping: " . $AnunciosScraping . "<br>";   
-                    $contadorGeneral = $contadorGeneral +  $contador;*/
-                    if(!isset($_GET["tipo"])){
-                        echo $URL . "\n";
-                    }else{
-                        echo $URL . "<br>";
-                        echo "Anuncios: " . $contador . "<br><br>"; 
-                    }
-                    unset($URL);
-                    unset($dia);         
+                }catch(Exception $e){
+                    echo "Error al abrir el archivo PDF<br>";
+                    $URL = "https://www.boe.es" . $dia->urlPdf;
+                    echo $URL . "<br>";
+                    echo "<span style='background-color: red;  color: white;'>" . $e->getMessage() . "</span><br><br>";
+                    unset($e); 
+                    //unset($xml); 
+                    $ArrayInsertador = NULL;
                 }
-            }catch(Exception $e){
-                echo "Error al abrir el archivo PDF<br>";
-                $URL = "https://www.boe.es" . $dia->urlPdf;
-                echo $URL . "<br>";
-                echo "<span style='background-color: red;  color: white;'>" . $e->getMessage() . "</span><br><br>";
-                unset($e); 
-                //unset($xml); 
-                $ArrayInsertador = NULL;
-            }
+            //}
         }
         //echo $contadorGeneral;
         unset($diario); 
@@ -293,7 +306,7 @@ function RecorrerTexto($texto, $fecha){
                 }
             }else if($buscador == "Entrada"){//Buscando Entrada
                 $Entrada = $Entrada . " " . $lineas[$i];
-                if(!(strpos($lineas[$i+1], $NumeroEntrada+1) === false)){
+                if(!(strpos($lineas[$i+1], ($NumeroEntrada+1) . " - ") === false)){
                     GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha, $Sucursal);
                     $Entrada = "";
                     $Sucursal = "";

@@ -6,13 +6,13 @@ require_once($root . '/Archivos de Ayuda PHP/conexion.php');
 function Top5Empresas(){
     $conexion = new Conexion();
     $database = $conexion->Conectar();
-    $collection = $database->anuncios;
+    $collection = $database->anuncios_dia;
 
     date_default_timezone_set("UTC");
 
     $fecha_Millis = getdate();
     $Fecha = date("Y-m-d", $fecha_Millis[0]);
-    $Fecha = "2009-02-05";
+    //$Fecha = "2009-02-05";
     $FechaInsert = new MongoDB\BSON\UTCDatetime(strtotime($Fecha . " 00:00:00")*1000);
     $filtro = [
         "tipo" => "Constitución",

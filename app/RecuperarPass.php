@@ -20,23 +20,40 @@ EnviarEmail($Email, $collection);
 		 
 		$Pass = generarCodigo(5);
 		$message = "
-		<html>
-		<head>
-		<title>Cambio de clave</title>
-		</head>
-		<body>
-		<h2>Este es tu codigo:</h2>
-		<p>Ha solicitado restablecer su contraseña para la cuenta de AlertaEmpresas asociada con esta 
-		dirección de correo electrónico (".$Email."). Para obtener el código de 
-		restablecimiento de contraseña, por favor copie este código y péguelo en la aplicación:</p>
-		<H1>".$Pass."</H1>
-		<p>Si no realizó la solicitud, puede ignorar este correo electrónico y no hacer nada. 
-		Otro usuario probablemente ingresó su dirección de correo electrónico por error al 
-		intentar restablecer una contraseña.</p>
-		<p>Alerta Empresas</p>
-		<a href='https://www.alertaempresas.com/'>https://www.alertaempresas.com/</a>
-		</body>
-		</html>";
+		<div style='font-family:Helvetica Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif; width: 80%; text-align: center;'>
+		<div style='color:#3F388D;font-size:19px;line-height:32px;
+					border-bottom: 1px solid #d1d1d1;'>
+			Restablecimiento de contraseña.
+		</div>
+		<br>
+	
+		<div style='font-size:16px;line-height:21px;color:#141823; padding-top: 30px;'>
+		!Hola!</div>
+	
+		<div style='font-size:16px;line-height:21px;color:#141823; padding-top: 5px;'>
+		Has solicitado restablecer tu contraseña para la cuenta de Alerta Empresas asociada con 
+        esta dirección de correo electrónico (sandoljose@gmail.com). Para 
+        restablecer la contraseña, por favor copie este código y péguelo en la aplicación:</div>
+	
+		<div style='font-size:30px;line-height:50px;color:#141823; 
+		padding-top: 30px; font-weight: bold;'>
+		".$Pass."</div>
+
+        <div style='font-size:16px;line-height:21px;color:#141823; padding-top: 30px; padding-bottom: 50px;'>
+        Si no realizó la solicitud, puede ignorar este correo electrónico y no hacer nada. 
+        Otro usuario probablemente ingresó su dirección de correo electrónico por error al 
+        intentar restablecer una contraseña.</div>
+	
+		<div style='sans-serif;font-size:11px;color:#aaaaaa;line-height:16px;
+		border-top: 1px solid #d1d1d1;'>
+		Se envió este mensaje a
+		<a href='mailto:".$Email."'
+		style='color:#3b5998;text-decoration:none'
+		target='_blank'>".$Email."</a> 
+		por pedido tuyo. <br>
+		A fin de proteger tu cuenta, no reenvíes este correo electrónico.
+		</div>
+		</div>";
 		
 		require '../Librerias/PHPMailer-master/src/Exception.php';
 		require '../Librerias/PHPMailer-master/src/PHPMailer.php';

@@ -7,7 +7,8 @@ $Anuncio_Constitucion = [
     "Capital: ",
     "Comienzo de operaciones: ",
     "Domicilio: ",
-    "Objeto social: "
+    "Objeto social: ",
+    "Duración: "
 ];
 $Anuncio_Nombramientos = [
     "Adm. Mancom.: ",
@@ -47,7 +48,14 @@ $Anuncio_Nombramientos = [
     "MRO.COMS.CTR: ",
     "SEC.COMS.CTR: ",
     "PRE.COMS.CTR: ",
-    "AUDIT.CUENT.: "
+    "AUDIT.CUENT.: ",
+    "Miem.j.g.p.v: ",
+    "Miem.a.g.p.v: ",
+    "Sec.j.g.p.v: ",
+    "Pres.a.g.p.v: ",
+    "Pres.j.g.p.v: ",
+    "Vpre.j.g.p.v: ",
+    "Adm.conjunto: "
 ];
 $AumentoCapital = [
     "Resultante Desembolsado",
@@ -105,7 +113,7 @@ $Anuncios = [
 $_GET["sucursal"] = "EN CANARIAS";*/
 
 $id = $_GET["id"];
-//$id = "62509deb65260000c00a6043";
+//$id = "6261d731d109000007092ed5";
 //$id = "624c98d2e07900000003dbcf";
 $conexion = new Conexion();
 $database = $conexion->Conectar();
@@ -176,7 +184,8 @@ $Result = NULL;
 */
 
 //Consultado si existe cambios de nombre en archivos diferentes
-$filter = ["otros_nombres" => $nombre_comercial];
+$idNombre_comercial = Id_DeNombre($nombre_comercial);
+$filter = ["id_otros_nombres" => $idNombre_comercial];
 $Result = $database->cambios_nombres->findOne($filter);
 
 $anuncio_borme = NULL; //Juntará todos los anuncios borme
@@ -188,11 +197,11 @@ $nombre_original = NULL;
 $provincia = NULL;
 if($Result != NULL){
     //Si hay registro en "cambio_nombres"
-    foreach($Result["otros_nombres"] as $otro_nombre){//Buscamos entre todos los nombres
+    foreach($Result["id_otros_nombres"] as $otro_nombre){//Buscamos entre todos los nombres
         if(isset($_GET["sucursal"])){
-            $filter = ["nombre_comercial" => $otro_nombre, "sucursal" => $_GET["sucursal"]];
+            $filter = ["id_nombre_comercial" => $otro_nombre, "sucursal" => $_GET["sucursal"]];
         }else{
-            $filter = ["nombre_comercial" => $otro_nombre];
+            $filter = ["id_nombre_comercial" => $otro_nombre];
         }
         $Result_anuncios = $database->anuncios->find($filter)->toArray();
         foreach($Result_anuncios as $anuncio){//Traemos todos los anuncios encontrados con ese nombre
@@ -220,9 +229,9 @@ if($Result != NULL){
 }else{
     /*$filtro = [ "_id" => new MongoDB\BSON\ObjectID($id), "activo" => ['$ne' => 0 ] ];*/
     if(isset($_GET["sucursal"])){
-        $filter = ["nombre_comercial" => $nombre_comercial, "sucursal" => $_GET["sucursal"]];
+        $filter = ["id_nombre_comercial" => $idNombre_comercial, "sucursal" => $_GET["sucursal"]];
     }else{
-        $filter = ["nombre_comercial" => $nombre_comercial];
+        $filter = ["id_nombre_comercial" => $idNombre_comercial];
     }
     
     $collection2 = $database->anuncios;
@@ -245,9 +254,50 @@ if($Result != NULL){
     $id_primer_nombre_comercial = Id_DeNombre($primer_nombre_comercial);
     $provincia = $Result_anuncios[0]["provincia"];
 }
+
 $anuncio_borme = OrdenarArray($anuncio_borme); //Ordenamos los anuncios
 
+//Funcion que ordena el array
+function OrdenarArray($Array){
+    //Ordenando primero por anio
+    $ArrayPorAnio = NULL;
+    foreach($Array as $arr){
+        $anio = date("Y", strval($arr["fecha"])/1000);
+        $ArrayPorAnio[$anio][] = $arr;
+    }
 
+    //$Array = iterator_to_array($Array);
+    foreach ($ArrayPorAnio as $key => $row) {
+        $aux[] = intval(strval($key));
+    }
+    array_multisort($aux, SORT_ASC, $ArrayPorAnio);
+    $aux = NULL;
+    
+    $ArrayPorAnio2 = NULL;
+    foreach($ArrayPorAnio as $arranio){
+        foreach ($arranio as $key => $row) {
+            $aux[$key] = intval(strval($row["numero"]));
+        }
+        array_multisort($aux, SORT_ASC, $arranio);
+
+        foreach($arranio as $arr2){
+            $ArrayPorAnio2[] = $arr2;
+        }
+        $aux = NULL;
+    }
+    unset($ArrayPorAnio);
+
+    return $ArrayPorAnio2;
+}
+/*
+function OrdenarArray($Array){
+    //$Array = iterator_to_array($Array);
+    foreach ($Array as $key => $row) {
+        $aux[$key] = intval(strval($row["numero"]));
+    }
+    array_multisort($aux, SORT_ASC, $Array);
+    return $Array;
+}*/
 
 //BUSCAMOS SI EXISTE LA EMPRESA EN LA COLECCION "EMPRESAS"
 $collection = $database->empresas;
@@ -352,16 +402,6 @@ if($Actualizado == 0){//Si los datos no estan actualizados
     header('Location: PantallaConsulta.php?id=' . $id);
 }else{
     header('Location: PantallaConsulta.php?id=' . $id);
-}
-
-//Funcion que ordena el array
-function OrdenarArray($Array){
-    //$Array = iterator_to_array($Array);
-    foreach ($Array as $key => $row) {
-        $aux[$key] = intval(strval($row["numero"]));
-    }
-    array_multisort($aux, SORT_ASC, $Array);
-    return $Array;
 }
 
 /*

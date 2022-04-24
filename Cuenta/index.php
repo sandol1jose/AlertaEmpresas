@@ -48,7 +48,7 @@ $Result = $collection->findOne($filter);
     
 
 
-<div class="divSubtitulo2">
+<div class="divSubtitulo3 divSubtitulo2">
     <span class="Subtitulo2">Empresas que sigues</span>
 </div>
     

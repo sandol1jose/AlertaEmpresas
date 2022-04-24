@@ -24,3 +24,12 @@
 .textoSeguridad{
     padding-left: 10px;
 }
+
+
+
+@media screen and (max-width: 430px) {/*PARA CELULARES*/
+    .InputGeneral {
+        width: 85%;
+    }
+}
+

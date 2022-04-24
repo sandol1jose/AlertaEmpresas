@@ -39,6 +39,7 @@ if(!isset($_SESSION["Correo"])){
         
         <p class="parrafo1">Copie el código de restablecimiento de su correo electrónico y péguelo a continuación.</p>
 
+		<p style="font-size: 11px;">Si no aparece, revisa la carpeta de spam</p>
         <input class="InputGeneral" placeholder="Codigo" style="text-transform:uppercase" type="text" name="codigo" id="codigo" autocomplete="off" required><br>
         <br>
 		<input class="InputGeneral" placeholder="Contraseña nueva" onkeyup="verificarContrasenia();" type="password" name="pass" id="pass" autocomplete="off" required><br>
@@ -64,7 +65,6 @@ if(!isset($_SESSION["Correo"])){
         <input class="BotonGeneral2" disabled type="submit" name="btn" id="btn" value="Siguiente" onclick="CambiarImagen();">
 
     </form>
-
 </div>
 
 <?php include '../templates/footer.php'; ?>

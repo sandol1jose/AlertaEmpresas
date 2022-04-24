@@ -3,14 +3,18 @@
         session_start();//inicio de sesion
     }
     
-    $Servidor = 'http://localhost/AlertaEmpresas/';
+    //$ip = "localhost";
+    $ip = gethostname();
+    $Servidor = 'http://'.$ip.'/AlertaEmpresas/';
 ?>
 
 <script src="<?php echo $Servidor; ?>js/general.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
 
-<link rel="stylesheet" type="text/css" href="<?php echo $Servidor; ?>css/general.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $Servidor; ?>css/General.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $Servidor; ?>css/footer.css">
 
 <div class="Cabecera">
         <div class="Cabecera_Arriba">
@@ -42,7 +46,7 @@
         <div class="Cabecera_Abajo">
             <div class="Vinculos">
                 <a class="BotonesVinculos" href="<?php echo $Servidor ?>">Inicio</a>
-                <a class="BotonesVinculos" href="">Sobre Nosotros</a>
+                <a class="BotonesVinculos" href="">Sobre nosotros</a>
                 <a class="BotonesVinculos" href="">Listado</a>
             </div>
         </div>

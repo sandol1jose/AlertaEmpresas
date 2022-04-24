@@ -66,3 +66,21 @@ td{
 .BotonGeneral{
     width: 150px;
 }
+
+
+@media screen and (max-width: 430px) {/*PARA CELULARES*/
+    .divTabla {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .divSubtitulo3 {
+        margin-left: 5px !important;
+        margin-right: 5px !important;
+    }
+
+    a{
+        font-size: 12px;
+    }
+}
+

@@ -104,18 +104,25 @@ use PHPMailer\PHPMailer\Exception;
 	function EnviarEmail($Correos, $Anuncios_BORME, $Nombre_Empresa){
         
         $message = "
-		<html>
-		<head>
-		<title>Alerta de Cambios en Empresa</title>
-		</head>
-		<body>
-        <h2>".$Nombre_Empresa."</h2>
-		<h3>Ha tendio algunos cambios</h3>
-		<p>".$Anuncios_BORME."</p>
-		<p>Alertaempresas.com</p>
-		<a href='https://www.alertaempresas.com/'>https://www.alertaempresas.com/</a>
-		</body>
-		</html>";
+		<div style='font-family:Helvetica Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif; width: 80%; text-align: center;'>
+		<div style='color:#3F388D;font-size:19px;line-height:32px;
+					border-bottom: 1px solid #d1d1d1;'>
+			Alerta de cambios
+		</div>
+		<br>
+	
+		<div style='font-size:16px;line-height:21px;color:#141823; padding-top: 5px;'>
+		La empresa <b> ".$Nombre_Empresa." </b> ha tenido algunos cambios:</div>
+	
+		<div style='font-size:16px;line-height:21px;color:#141823; padding-top: 30px;
+        padding-bottom: 30px;'>
+		".$Anuncios_BORME."</div>
+	
+		<div style='sans-serif;font-size:11px;color:#aaaaaa;line-height:16px;
+		border-top: 1px solid #d1d1d1;'>
+		A fin de proteger tu cuenta, no reenvíes este correo electrónico.
+		</div>
+		</div>";
 		 
 		require '../Librerias/PHPMailer-master/src/Exception.php';
 		require '../Librerias/PHPMailer-master/src/PHPMailer.php';

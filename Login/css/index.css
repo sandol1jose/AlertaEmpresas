@@ -153,3 +153,25 @@
     margin-top: 10px;
     font-size: 14px;
 }
+
+
+
+
+
+@media screen and (max-width: 430px) {/*PARA CELULARES*/
+    .item2{
+        display: none;
+    }
+
+    .item1{
+        margin-left: 5%;
+    }
+
+    .grid-container3{
+        grid-template-columns: 100%;
+    }
+
+    .Formularios{
+        width: 95%;
+    }
+}

@@ -1,0 +1,14 @@
+.aPieFooter{
+    text-decoration: none;
+    color: white;
+}
+
+.aPieFooter:hover{
+    color: rgb(151, 151, 151);
+}
+
+.PieAbajo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
