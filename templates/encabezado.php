@@ -3,8 +3,8 @@
         session_start();//inicio de sesion
     }
     
-    //$ip = "localhost";
-    $ip = gethostname();
+    $ip = "localhost";
+    //$ip = gethostname();
     $Servidor = 'http://'.$ip.'/AlertaEmpresas/';
 ?>
 

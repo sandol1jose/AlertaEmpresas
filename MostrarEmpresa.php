@@ -55,7 +55,20 @@ $Anuncio_Nombramientos = [
     "Pres.a.g.p.v: ",
     "Pres.j.g.p.v: ",
     "Vpre.j.g.p.v: ",
-    "Adm.conjunto: "
+    "Adm.conjunto: ",
+    "Mro.coms.eje: ",
+    "Pre.coms.eje: ",
+    "Pre.com.aud.: ",
+    "Repr.143 Rrm: ",
+    "Vicepresiden: ",
+    "V- Pre.coms.e: ",
+    "V-Pre.coms.e: ",
+    "Mbro.com.eje: ",
+    "Mbro.com.aud: ",
+    "Pre.coms.liq: ",
+    "Mro.coms.liq: ",
+    "Secr.no Cons: ",
+    "V-Sec No Con: "
 ];
 $AumentoCapital = [
     "Resultante Desembolsado",

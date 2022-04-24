@@ -59,7 +59,7 @@ if(count($Result) != 0){
         //$filter = [ '$text' => [ '$search' => "\"$NombreEmpresa\"" ] ];
         $filter = [ '$text' => ['$search' => $NombreEmpresa ]];
         //$options["nombre_comercial"] = 1;
-        $options["limit"] = 1000;
+        $options["limit"] = 3000;
         $options["projection"] = [
             'nombre_comercial' => 1,
             'id_nombre_comercial' => 1,

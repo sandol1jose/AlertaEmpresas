@@ -138,19 +138,21 @@ use PHPMailer\PHPMailer\Exception;
 		try {
 			//Server settings
 			$mail->SMTPDebug = 0;                      //Enable verbose debug output
-			$mail->isSMTP();                                            //Send using SMTP
-			$mail->Host       = 'smtp.gmail.com';                       //Set the SMTP server to send through
+			//$mail->isSMTP();                                            //Send using SMTP
+			$mail->Host       = 'alertaempresas.com';                       //Set the SMTP server to send through
 			//$mail->Host       = 'smtp.hostinger.com';                       //Set the SMTP server to send through
 			$mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-			$mail->Username   = 'jumpchiquimula@gmail.com';             //SMTP username
-			$mail->Password   = 'jumpchiquimula9899';                  //SMTP password
+			$mail->Username   = 'support@alertaempresas.com';             //SMTP username
+			$mail->Password   = 'Suport7859';                  //SMTP password
 			//$mail->Username   = 'soporte@jumpgt.com';             //SMTP username
 			//$mail->Password   = '$6y9KUtAs2sVWF';                  		//SMTP password
 			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
 			//$mail->Port       = 465;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 			$mail->Port       = 587;
+			$mail->AddCustomHeader("List-Unsubscribe:<mailto:suppport@alertaempresas.com>,
+			<https://alertaempresas.com/app/unsubscribe.php?identifier=>"); 
 			//Recipients
-			$mail->setFrom('jumpchiquimula@gmail.com', 'Jump GT');
+			$mail->setFrom('support@alertaempresas.com', 'Alerta Empresas');
 			
 			//Agregando a todos los correos
 			foreach($Correos as $correo){

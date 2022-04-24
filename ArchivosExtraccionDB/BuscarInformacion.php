@@ -38,8 +38,8 @@ if(isset($_GET["tipo"])){
     $collection2 = $database->anuncios_dia;
     $Result = $collection2->deleteMany([]);
 
-    //date_default_timezone_set("Europe/Madrid");
-    date_default_timezone_set("America/Guatemala");
+    date_default_timezone_set("Europe/Madrid");
+    //date_default_timezone_set("America/Guatemala");
 
     $fecha_Millis = getdate();
     $fechaActual = NULL;

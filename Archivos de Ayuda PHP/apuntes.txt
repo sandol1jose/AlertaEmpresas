@@ -64,13 +64,15 @@ db.control.find().sort({fecha: -1}).pretty();
 db.control.find().sort({fecha: -1}).limit(1).pretty();
 
 db.anuncios.count({$and: [
-        {"fecha": {$gte: new Date("2009-01-01T00:00:00.000Z")}},
-        {"fecha": {$lte: new Date("2009-12-31T00:00:00.000Z")}}
+        {"fecha": {$gte: new Date("2022-01-01T00:00:00.000Z")}},
+        {"fecha": {$lte: new Date("2022-04-22T00:00:00.000Z")}}
 ]})
 
-db.anuncios.find({"fecha": {$eq: new Date("2009-12-31T00:00:00.000Z")}}).sort({numero: -1}).limit(1).pretty();
+db.anuncios.find({"fecha": {$eq: new Date("2022-04-22T00:00:00.000Z")}}, 
+{numero: 1}).sort({numero: -1}).limit(1).pretty();
 
-db.anuncios.find({"fecha": {$eq: new Date("2009-01-02T00:00:00.000Z")}}).sort({numero: 1}).limit(1).pretty();
+db.anuncios.find({"fecha": {$eq: new Date("2009-07-01T00:00:00.000Z")}},
+{numero: 1}).sort({numero: 1}).limit(1).pretty();
 
 
 

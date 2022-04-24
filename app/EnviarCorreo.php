@@ -49,12 +49,12 @@ use PHPMailer\PHPMailer\Exception;
 		try {
 			//Server settings
 			$mail->SMTPDebug = 0;                      //Enable verbose debug output
-			$mail->isSMTP();                                            //Send using SMTP
-			$mail->Host       = 'smtp.gmail.com';                       //Set the SMTP server to send through
+			//$mail->isSMTP();                                            //Send using SMTP
+			$mail->Host       = 'alertaempresas.com';                       //Set the SMTP server to send through
 			//$mail->Host       = 'smtp.hostinger.com';                       //Set the SMTP server to send through
 			$mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-			$mail->Username   = 'jumpchiquimula@gmail.com';             //SMTP username
-			$mail->Password   = 'jumpchiquimula9899';                  //SMTP password
+			$mail->Username   = 'support@alertaempresas.com';             //SMTP username
+			$mail->Password   = 'Suport7859';                  //SMTP password
 
 			/*$mail->SMTPOptions = array(
 				'ssl' => array(
@@ -66,8 +66,10 @@ use PHPMailer\PHPMailer\Exception;
 			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
 			//$mail->Port       = 465;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 			$mail->Port       = 587;
+			$mail->AddCustomHeader("List-Unsubscribe:<mailto:suppport@alertaempresas.com>,
+			<https://alertaempresas.com/app/unsubscribe.php?identifier=".$Email.">"); 
 			//Recipients
-			$mail->setFrom('jumpchiquimula@gmail.com', 'JUMP');
+			$mail->setFrom('support@alertaempresas.com', 'Alerta Empresas');
 			$mail->addAddress($Email);                 					//Add a recipient
 			/*$mail->addAddress('ellen@example.com');                   //Name is optional
 			$mail->addReplyTo('info@example.com', 'Information');
@@ -82,7 +84,7 @@ use PHPMailer\PHPMailer\Exception;
 			//Content
 			$mail->isHTML(true);                                  //Set email format to HTML
 			$mail->CharSet = 'UTF-8';   
-			$mail->Subject = 'Confirmacion de correo electronico';
+			$mail->Subject = 'Confirmación de correo electrónico';
 			$mail->Body    = $message;
 			//$mail->AltBody = 'Enviado desde 000webhost.com';
 		

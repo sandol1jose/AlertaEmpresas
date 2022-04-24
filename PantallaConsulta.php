@@ -182,7 +182,7 @@ function OrdenarArray($Array){
 
             <?php if(isset($DocumentoEntero["pagina_web"])){ ?>
                 <span class="txtTitulo"><b>Página web: </b></span>
-                <span class="txtparrafo"><a href="<?php echo $PaginaWeb; ?>"><?php echo $PaginaWeb; ?></a></span><br><br>
+                <span class="txtparrafo"><a href="<?php echo $PaginaWeb; ?>" target="_blank"><?php echo $PaginaWeb; ?></a></span><br><br>
             <?php } ?>
 
             <?php if($Denominaciones_anteriores != NULL){ ?>
