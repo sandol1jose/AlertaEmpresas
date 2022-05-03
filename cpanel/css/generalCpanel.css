@@ -1,0 +1,135 @@
+.BotonGeneral2{
+    width: 233px;
+}
+
+.divContenedor{
+    /*display: table;*/
+    margin:0px auto;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 10px;
+}
+
+table{
+    min-width: 40%;
+    width: 100%;
+    border-radius: 1em;
+    overflow: hidden;
+    border-collapse: collapse; 
+    border: none;
+}
+
+tr{
+    height: 35px; 
+}
+
+td{
+    padding-left: 15px;
+    padding-right: 15px;
+    border-right: solid 1px #f1f1f1; 
+    border-left: solid 1px #f1f1f1;
+}
+
+.tdInput{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+thead{
+    background-color: #3F388D;
+    color: white;
+    text-align: center;
+}
+
+table tbody tr:nth-child(even){
+    /*table tbody tr:nth-child(odd){*/
+    background-color: #f1f1f1;
+}
+
+.center{
+    text-align: center;
+}
+
+
+
+.btnEliminar{
+    background: #ec0303;
+    height: 25px;
+    width: 60px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    color: white;
+    font-size: 12px;
+}
+        
+.btnEliminar:hover{
+    background: #810505;
+    transform: scale(0.98, 0.98);
+}
+
+
+.botonVer{
+    background: #259908;
+    height: 25px;
+    width: 40px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    color: white;
+    font-size: 12px;
+}
+    
+.botonVer:hover{
+    background: #52d431;
+    transform: scale(0.98, 0.98);
+}
+
+
+.botonAmarillo{
+    background: #ffe600;
+    height: 25px;
+    width: 40px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    color: black;
+    font-size: 12px;
+}
+    
+.botonAmarillo:hover{
+    background: #ffb413;
+    transform: scale(0.98, 0.98);
+}
+
+
+
+/*INPUT Tablas*/
+.InputTablas{
+    background-color: transparent;
+    height: 40px;
+    width: 100%;
+    outline: none;
+    border: 1px solid #CBCBCB;
+    padding-left: 18px;
+    padding-right: 18px;
+    font-size: 16px;
+    line-height: 19px;
+    border-radius: 5px 5px 5px 5px;
+    user-select: none;
+}
+
+.InputTablas:focus{
+    padding-left: 17px;
+    padding-right: 17px;
+    border: 2px solid #8603AB;
+}

@@ -1,0 +1,4 @@
+Options +FollowSymLinks
+RewriteEngine on
+
+RewriteRule ^PantallaConsulta/(.)$ PantallaConsulta.php?name=$1

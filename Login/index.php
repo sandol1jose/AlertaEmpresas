@@ -15,7 +15,6 @@ if(isset($_GET["email"])){
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Inicio de Sesion</title>
 
 	<link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
@@ -51,119 +50,121 @@ if(isset($_GET["email"])){
 	}
 ?>
 
+<div class="divBackGround">
 
-<div class="grid-container3">
-	<div class="item1">
-		<div class="Formularios">
+	<div class="grid-container3">
+		<div class="item1">
+			<div class="Formularios">
 
-			<div class="divBotones">
-				<div class="divBtn_Izquierdo">
-					<button class="boton" onclick="CambiarDiv('Registro')">Registrarse</button>
+				<div class="divBotones">
+					<div class="divBtn_Izquierdo">
+						<button class="boton" onclick="CambiarDiv('Registro')">Registrarse</button>
+					</div>
+					
+					<div class="divBtn_Derecho">
+						<button class="boton" onclick="CambiarDiv('Login')">Iniciar Sesion</button>
+					</div>
 				</div>
-				
-				<div class="divBtn_Derecho">
-					<button class="boton" onclick="CambiarDiv('Login')">Iniciar Sesion</button>
+
+				<div class="divdatos" id="divLogin" style="display: block;">
+					<center>
+						<div class="TituloDatos">Ingresa a tu cuenta</div>
+					</center>
+					<form method="POST" action="Logear.php">
+						
+						<div class="TituloCampo">Usuario</div>
+
+						<div>
+							<input class="InputGeneral" type="email" name="email" id="email" placeholder="Introduce tu email o usuario" autocomplete="off" value="<?php echo $Email; ?>" required>
+						</div>
+
+						<div class="TituloCampo">Contraseña</div>
+						
+						<div>
+							<input class="InputGeneral" type="password" name="password" id="password" placeholder="Introduce tu contraseña"  autocomplete="off" required>			
+						</div>
+
+
+						<div class="divVinculo1">
+							<a class="inputVinculos" href="RecuperarPass.php">He olvidado la contraseña</a><br>
+						</div>
+
+						<input class="BotonGeneral" type="submit" name="enviar" value="Ingresar">
+					</form>
+
+					<!--
+					<div class="divVinculo">
+						<a class="inputVinculos" href="registro.php">Registrarme</a>
+					</div>-->
 				</div>
+
+
+
+				<div class="divdatos" style="display: none;" id="divRegistro">
+					<form method="POST" action="../app/RegistrarUsuario.php">
+						<center>
+						<p>Crea un usuario y contraseña nueva</p>
+						</center>
+
+						<div class="TituloCampo">Nombres *</div>
+						<input class="InputGeneral" type="text" id="nombres" name="nombres" placeholder="Nombres" autocomplete="off" required><br>
+						<div class="TituloCampo">Apellidos *</div>
+						<input class="InputGeneral" type="text" id="apellidos" name="apellidos" placeholder="Apellidos" utocomplete="off" required><br>
+						<div class="TituloCampo">Empresa</div>
+						<input class="InputGeneral" type="text" id="empresa" name="empresa" placeholder="Empresa" autocomplete="off"><br>
+						<div class="TituloCampo">Correo *</div>
+						<input class="InputGeneral" placeholder="Correo" type="text" name="correo" id="correo" autocomplete="off" spellcheck="false" required><br>
+						<div class="TituloCampo">Contraseña nueva *</div>
+						<input class="InputGeneral" onkeyup="verificarContrasenia();" placeholder="Contraseña nueva" type="password" name="pass" id="pass" autocomplete="off" spellcheck="false" required><br>
+						<div class="TituloCampo">Confirmar contraseña *</div>
+						<input class="InputGeneral" onkeyup="verificarContrasenia();" placeholder="Confirmar contraseña" type="password" name="pass2" id="pass2" autocomplete="off" spellcheck="false" required><br>
+
+						<div class="ImagenContrasenia">
+							<img id="IMGSeguridad" name="IMGSeguridad" src="../imagenes/Seguridad4.png" width="40px;">
+							<span id="txtSeguridadpass" style="font-size: 12px; font-weight: normal;"></span>
+						</div>
+								
+						<center>
+						<p style="font-size: 12px;">Recuerda utilizar mayúsculas, minúsculas, 
+						números y mínimo 8 caracteres para que tu contraseña sea segura</p>
+
+						<div id="DivImg2" style="display: none;">
+							<img src="../imagenes/Cargando6Recorte.gif" width="40px"><br>
+							<span style="font-size: 12px;">Cargando</span>
+						</div>
+						</center>
+									
+									
+						<div id="DivButton" style="display: block;">
+							<input class="BotonGeneral" disabled class="BotonGuardar" type="submit" name="btn" id="btn" value="Siguiente" onclick="CambiarImagen();">
+						</div>
+					</form>
+				</div>
+
+
 			</div>
+		</div>
 
-			<div class="divdatos" id="divLogin" style="display: block;">
+		<div class="item2">
+			<div class="divAdorno">
 				<center>
-					<div class="TituloDatos">Ingresa a tu cuenta</div>
+					<img src="../imagenes/fluent_globe-search-24-filled.png" alt="" width="200px"><br>
+					<span class="TituloDatos">Accede a tu cuenta y gestiona <br> tus alertas</span><br>
+					<div class="parrafo">Programa alertas de las empresas <br> que quieras saber</div>
 				</center>
-				<form method="POST" action="Logear.php">
-					
-					<div class="TituloCampo">Usuario</div>
-
-					<div>
-						<input class="InputGeneral" type="email" name="email" id="email" placeholder="Introduce tu email o usuario" autocomplete="off" value="<?php echo $Email; ?>" required>
-					</div>
-
-					<div class="TituloCampo">Contraseña</div>
-					
-					<div>
-						<input class="InputGeneral" type="password" name="password" id="password" placeholder="Introduce tu contraseña"  autocomplete="off" required>			
-					</div>
-
-
-					<div class="divVinculo1">
-						<a class="inputVinculos" href="RecuperarPass.php">He olvidado la contraseña</a><br>
-					</div>
-
-					<input class="BotonGeneral" type="submit" name="enviar" value="Ingresar">
-				</form>
-
-				<!--
-				<div class="divVinculo">
-					<a class="inputVinculos" href="registro.php">Registrarme</a>
-				</div>-->
 			</div>
-
-
-
-			<div class="divdatos" style="display: none;" id="divRegistro">
-				<form method="POST" action="../app/RegistrarUsuario.php">
-					<center>
-					<p>Crea un usuario y contraseña nueva</p>
-					</center>
-
-					<div class="TituloCampo">Nombres *</div>
-					<input class="InputGeneral" type="text" id="nombres" name="nombres" placeholder="Nombres" autocomplete="off" required><br>
-					<div class="TituloCampo">Apellidos *</div>
-					<input class="InputGeneral" type="text" id="apellidos" name="apellidos" placeholder="Apellidos" utocomplete="off" required><br>
-					<div class="TituloCampo">Empresa</div>
-					<input class="InputGeneral" type="text" id="empresa" name="empresa" placeholder="Empresa" autocomplete="off"><br>
-					<div class="TituloCampo">Correo *</div>
-					<input class="InputGeneral" placeholder="Correo" type="text" name="correo" id="correo" autocomplete="off" spellcheck="false" required><br>
-					<div class="TituloCampo">Contraseña nueva *</div>
-					<input class="InputGeneral" onkeyup="verificarContrasenia();" placeholder="Contraseña nueva" type="password" name="pass" id="pass" autocomplete="off" spellcheck="false" required><br>
-					<div class="TituloCampo">Confirmar contraseña *</div>
-					<input class="InputGeneral" onkeyup="verificarContrasenia();" placeholder="Confirmar contraseña" type="password" name="pass2" id="pass2" autocomplete="off" spellcheck="false" required><br>
-
-					<div class="ImagenContrasenia">
-						<img id="IMGSeguridad" name="IMGSeguridad" src="../imagenes/Seguridad4.png" width="40px;">
-						<span id="txtSeguridadpass" style="font-size: 12px; font-weight: normal;"></span>
-					</div>
-							
-					<center>
-					<p style="font-size: 12px;">Recuerda utilizar mayúsculas, minúsculas, 
-					números y mínimo 8 caracteres para que tu contraseña sea segura</p>
-
-					<div id="DivImg2" style="display: none;">
-						<img src="../imagenes/Cargando6Recorte.gif" width="40px"><br>
-						<span style="font-size: 12px;">Cargando</span>
-					</div>
-					</center>
-								
-								
-					<div id="DivButton" style="display: block;">
-						<input class="BotonGeneral" disabled class="BotonGuardar" type="submit" name="btn" id="btn" value="Siguiente" onclick="CambiarImagen();">
-					</div>
-				</form>
-			</div>
-
-
 		</div>
 	</div>
 
-	<div class="item2">
-		<div class="divAdorno">
-			<center>
-				<img src="../imagenes/fluent_globe-search-24-filled.png" alt="" width="200px"><br>
-				<span class="TituloDatos">Accede a tu cuenta y gestiona <br> tus alertas</span><br>
-				<div class="parrafo">Programa alertas de las empresas <br> que quieras saber</div>
-			</center>
+
+	<!--	
+	<div class="Base">
+		<div class="Cuadro1">
+
 		</div>
 	</div>
+	-->
 </div>
-
-
-<!--	
-<div class="Base">
-	<div class="Cuadro1">
-
-	</div>
-</div>
--->
 
 
 <?php include '../templates/footer.php'; ?>

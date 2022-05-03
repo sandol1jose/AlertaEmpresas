@@ -49,13 +49,27 @@ if(isset($_GET["tipo"])){
     if($dia != 0 && $dia != 6){//Verificando que no sea Sabado o Domingo
         //$fechaActual = date("Ymd", $fecha_Millis[0] - 86400);
         $fechaActual = date("Ymd", $fecha_Millis[0]);
-        RecorrerXML($fechaActual);
-        Notificar(); // /app/Notificacion.php
+        $Retorno = RecorrerXML($fechaActual);
         UnirCambiosDeNombre(1); // /ArchivosExtraccionDB/UnirCambiosDeNombre.php
         Top5Empresas(); // /ArchivosExtraccionDB/top5.php
+
+        $collection3 = $database->cron;
+        $document = [
+            "fecha" => $fechaActual,
+            "texto" => $Retorno
+        ];
+        $Result = $collection3->insertOne($document);
+        Notificar(); // /app/Notificacion.php
         unset($fechaActual);
     }else{
         Top5Empresas(); //Borra las constituciones del dia sabado o domingo
+        $collection3 = $database->cron;
+        $document = [
+            "fecha" => $fechaActual,
+            "texto" => "es sabado o domingo"
+        ];
+        $Result = $collection3->insertOne($document);
+        unset($fechaActual);
         echo "es sabado o domingo";
     }
 }
@@ -71,6 +85,7 @@ function RecorrerXML($fecha){
     $xml = ("https://www.boe.es/diario_borme/xml.php?id=BORME-S-" . $fecha);
 
     $diario = NULL;
+    $Retorno = NULL;
     try {
         //$contents = file_get_contents($xml);
         //Recorriendo xml
@@ -90,6 +105,11 @@ function RecorrerXML($fecha){
         echo "El Archivo XML no tiene nada<br>";
         echo $xml . "<br>";
         echo "<span style='background-color: red;  color: white;'>" . $e->getMessage() . "</span><br><br>";
+
+        $Retorno = $Retorno . "El Archivo XML no tiene nada<br>";
+        $Retorno = $Retorno . $xml . "<br>";
+        $Retorno = $Retorno . $e->getMessage();
+
         unset($e); 
         //unset($xml); 
     }
@@ -128,6 +148,7 @@ function RecorrerXML($fecha){
                         $contadorGeneral = $contadorGeneral +  $contador;*/
                         if(!isset($_GET["tipo"])){
                             echo $URL . "\n";
+                            $Retorno[] = $URL;
                         }else{
                             echo $URL . "<br>";
                             echo "Anuncios: " . $contador . "<br><br>"; 
@@ -174,6 +195,8 @@ function RecorrerXML($fecha){
         echo "---------------------------------------------------<br><br><br><br>";
         unset($xml);
     }
+
+    return $Retorno;
 }
 
 restore_error_handler();//Restaura el mensaje de alerta

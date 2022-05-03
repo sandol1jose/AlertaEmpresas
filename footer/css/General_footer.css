@@ -1,0 +1,59 @@
+.Marco{
+    margin-top: 10px;
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-bottom: 350px;
+}
+
+p{
+    text-align: justify;
+}
+
+table{
+    min-width: 40%;
+    border-radius: 1em;
+    overflow: hidden;
+    border-collapse: collapse; 
+    border: none;
+}
+
+tr{
+    height: 35px; 
+}
+
+td{
+    padding-left: 15px;
+    padding-right: 15px;
+
+    border-right: solid 1px #f1f1f1; 
+    border-left: solid 1px #f1f1f1;
+}
+
+thead{
+    background-color: #3F388D;
+    color: white;
+    text-align: center;
+}
+
+table tbody tr:nth-child(even){
+    /*table tbody tr:nth-child(odd){*/
+    background-color: #f1f1f1;
+}
+
+
+.center{
+    text-align: center;
+}
+
+@media screen and (max-width: 430px) {/*PARA CELULARES*/
+    .Marco{
+        margin-top: 10px;
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-bottom: 350px;
+    }
+
+    table{
+        min-width: 100%;
+    }
+}

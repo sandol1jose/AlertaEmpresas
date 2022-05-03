@@ -189,33 +189,35 @@ function UnirCambiosDeNombre($tipo){
 
     echo count($Result) . "<br><br>";
 
-    foreach($Result as $res){
-        //$anuncio_borme = $res["anuncio_borme"];
-        //$anuncio_borme = $res;
-        //foreach($anuncio_borme as $anuncio){
-            //$Texto_anuncio_borme = $res["anuncio_borme"][0]["anuncio"];
-            $Texto_anuncio_borme = $res["anuncio"];
-            //$Tipo_Anuncio = 1;
-            /*if(!(strpos($Texto_anuncio_borme, "Cambio de denominación social") === false)){
-                //$Tipo_Anuncio = 2;
-                $Marca = strpos($Texto_anuncio_borme, "Cambio de denominación social");
-            }else{
-                $Marca = strpos($Texto_anuncio_borme, "Transformación de sociedad");
-            }*/
+    if($Result != NULL){
+        foreach($Result as $res){
+            //$anuncio_borme = $res["anuncio_borme"];
+            //$anuncio_borme = $res;
+            //foreach($anuncio_borme as $anuncio){
+                //$Texto_anuncio_borme = $res["anuncio_borme"][0]["anuncio"];
+                $Texto_anuncio_borme = $res["anuncio"];
+                //$Tipo_Anuncio = 1;
+                /*if(!(strpos($Texto_anuncio_borme, "Cambio de denominación social") === false)){
+                    //$Tipo_Anuncio = 2;
+                    $Marca = strpos($Texto_anuncio_borme, "Cambio de denominación social");
+                }else{
+                    $Marca = strpos($Texto_anuncio_borme, "Transformación de sociedad");
+                }*/
 
-            //$Texto_anuncio_borme = substr($Texto_anuncio_borme, $Marca);
-            $Lista = explode(" Datos registrales. ", $Texto_anuncio_borme);
-            $Texto_anuncio_borme = $Lista[0];
+                //$Texto_anuncio_borme = substr($Texto_anuncio_borme, $Marca);
+                $Lista = explode(" Datos registrales. ", $Texto_anuncio_borme);
+                $Texto_anuncio_borme = $Lista[0];
 
-            if(!(strpos($Texto_anuncio_borme, "Cambio de denominación social") === false) || 
-            !(strpos($Texto_anuncio_borme, "Transformación de sociedad") === false) ){
-                //$ID_EmpresaEmisora = $res["_id"];
-                $NombreActual_Empresa = $res["nombre_comercial"];
-                $IDActual_Empresa = $res["_id"];
-                ProcesarNivel($Texto_anuncio_borme, $Anuncios, 1, NULL);
-                OrientarResultados();
-            }
-        //}
+                if(!(strpos($Texto_anuncio_borme, "Cambio de denominación social") === false) || 
+                !(strpos($Texto_anuncio_borme, "Transformación de sociedad") === false) ){
+                    //$ID_EmpresaEmisora = $res["_id"];
+                    $NombreActual_Empresa = $res["nombre_comercial"];
+                    $IDActual_Empresa = $res["_id"];
+                    ProcesarNivel($Texto_anuncio_borme, $Anuncios, 1, NULL);
+                    OrientarResultados();
+                }
+            //}
+        }
     }
     //GuardarDatos();
 }

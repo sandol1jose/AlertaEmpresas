@@ -6,7 +6,7 @@ session_start();
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Recuperara password</title>
+
 	<link rel="stylesheet" type="text/css" href="css/RecuperarPass.css">
 </head>
 <body>
@@ -21,26 +21,28 @@ session_start();
 	}
 ?>
 
-<div class="divBase">
-	<b>Recuperar contraseña</b>
+<div class="divBackGround">
+	<div class="divBase">
+		<b>Recuperar contraseña</b>
 
-	<!--
-	<img src="../imagenes/jingle-keys.gif" width="100px">-->
+		<!--
+		<img src="../imagenes/jingle-keys.gif" width="100px">-->
 
-	<p>Enviaremos un codigo a tu correo:</p>
+		<p>Enviaremos un codigo a tu correo:</p>
 
-	<form action="../app/RecuperarPass.php" method="POST" >
-		<input class="inputGeneral" type="email" name="Email" id="Email" placeholder="Escribe tu correo" autocomplete="off" required>
-		<br><br>
-		<input class="BotonGeneral2"  type="submit" name="" value="Recuperar" onclick="CambiarImagen();">
+		<form action="../app/RecuperarPass.php" method="POST" >
+			<input class="inputGeneral" type="email" name="Email" id="Email" placeholder="Escribe tu correo" autocomplete="off" required>
+			<br><br>
+			<input class="BotonGeneral2"  type="submit" name="" value="Recuperar" onclick="CambiarImagen();">
 
-		<div  class="DivContenedorImagen">
-			<div id="DivImg2" style="display: none;">
-				<br>
-				<img class="imgCargando" src="../imagenes/Cargando6Recorte.gif" height="30px">
+			<div  class="DivContenedorImagen">
+				<div id="DivImg2" style="display: none;">
+					<br>
+					<img class="imgCargando" src="../imagenes/Cargando6Recorte.gif" height="30px">
+				</div>
 			</div>
-		</div>
-	</form>
+		</form>
+	</div>
 </div>
 
 <?php include '../templates/footer.php'; ?>	

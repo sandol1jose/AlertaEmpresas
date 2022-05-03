@@ -122,8 +122,12 @@ $Anuncios = [
     "Situación concursal. " => NULL,
 ];
 
-/*$_GET["id"] = "624f8211280b0000c600b93b";
-$_GET["sucursal"] = "EN CANARIAS";*/
+//$_GET["id"] = "6261d731d109000007092ed6";
+//$_GET["sucursal"] = "EN CANARIAS";
+
+if(!isset($_GET["id"])){
+    header('Location: ../AlertaEmpresas');
+}
 
 $id = $_GET["id"];
 //$id = "6261d731d109000007092ed5";
@@ -131,70 +135,13 @@ $id = $_GET["id"];
 $conexion = new Conexion();
 $database = $conexion->Conectar();
 $Result = $database->anuncios->findOne([ "_id" => new MongoDB\BSON\ObjectID($id)]);
+
+if($Result == NULL){
+    header('Location: ../AlertaEmpresas');
+}
+
 $nombre_comercial = $Result["nombre_comercial"];
 $Result = NULL;
-
-/*
-    $nombre_comercial2 = str_replace(".", "", $nombre_comercial);
-    $nombre_comercial2 = str_replace(",", "", $nombre_comercial2);
-    $nombre_comercial2 = str_replace(" ", "", $nombre_comercial2);
-    $filtro1 = [ '$or' => [
-        ["empresa_receptora" => $nombre_comercial2], 
-        ["id_empresasa_emisora" => new MongoDB\BSON\ObjectID($id)] 
-    ]];
-    $filtro1 = [ '$or' => [
-        ["empresa_receptora" => $nombre_comercial2], 
-        ["empresa_emisora" => $nombre_comercial] 
-    ]];
-    $Result = $database->cambios_nombres->find($filtro1)->toArray();
-
-    if(count($Result) > 0){
-    /*if($Result[0]["id_empresasa_emisora"] == $id){
-        $nombre_comercial2 = $Result[0]["empresa_receptora"];
-    }*/
-    /*if($Result[0]["empresa_emisora"] == $nombre_comercial){
-        $nombre_comercial2 = $Result[0]["empresa_receptora"];
-    }
-
-    //Se esta buscando por Empresa receptora
-    $id_emisora = $Result[0]["id_empresasa_emisora"];
-    $busqueda1 =  ["_id" => new MongoDB\BSON\ObjectID($id_emisora)];
-    $Result = $database->empresas->find($busqueda1)->toArray();
-    $Array = $Result[0]["anuncio_borme"];
-    $id_nombre_comercial_Emisora = $Result[0]["id_nombre_comercial"];   
-    $nombre_comercial_Emisora = $Result[0]["nombre_comercial"];   
-
-    $busqueda2 =  ["id_nombre_comercial" => $nombre_comercial2];
-
-    //En vez de elmiminar el documento lo colocamos como inactivo
-    $Result = $database->empresas->updateOne($busqueda1, ['$set' => ["activo" => 0]]);
-
-    foreach($Array as $arr){
-        $arr["extraido_de"] = $id_emisora;
-        $update = [
-            '$addToSet' => [
-                "anuncio_borme" => $arr
-            ]
-        ];
-        $Result = $database->empresas->updateOne($busqueda2, $update);
-    }
-
-    //Agregando la denominacion anterior
-    $update = [
-        '$addToSet' => [
-            "id_denominaciones_sociales" => $id_nombre_comercial_Emisora,
-            "denominaciones_sociales" => $nombre_comercial_Emisora
-        ]
-    ];
-
-    $Result = $database->empresas->updateOne($busqueda2, $update);
-
-    //cambiamos el id y nombre comercial
-    $Result = $database->empresas->findOne($busqueda2);
-    $id = $Result["_id"];
-    $nombre_comercial = $Result["nombre_comercial"];
-    }
-*/
 
 //Consultado si existe cambios de nombre en archivos diferentes
 $idNombre_comercial = Id_DeNombre($nombre_comercial);
@@ -302,6 +249,7 @@ function OrdenarArray($Array){
 
     return $ArrayPorAnio2;
 }
+
 /*
 function OrdenarArray($Array){
     //$Array = iterator_to_array($Array);
@@ -392,7 +340,8 @@ $_SESSION['AnuncioBorme'] = [
     "anuncio_borme" => $anuncio_borme
 ];
 
-
+//GUARDANDO EL NOMBRE SEO FRIENDLY
+$NombreEmpresa_Friendly = LimpiarNombre($nombre_comercial);
 
 
 if(isset($Result["actualizado"])){
@@ -412,49 +361,10 @@ if($Actualizado == 0){//Si los datos no estan actualizados
     //Documento actualizado = 1
     $document = ['$set' => [ "actualizado" => 1]];
     $Result = $collection->updateOne($filter, $document);
-    header('Location: PantallaConsulta.php?id=' . $id);
+    header('Location: PantallaConsulta/' . $NombreEmpresa_Friendly);
 }else{
-    header('Location: PantallaConsulta.php?id=' . $id);
+    header('Location: PantallaConsulta/' . $NombreEmpresa_Friendly);
 }
-
-/*
-    $DocumentoEntero;
-    $numero_borme;
-    $fecha_borme;
-    $nombre_comercial;
-    if($Result->getModifiedCount() == 1){
-        $collection = $database->empresas;
-        $Result = $collection->find($filter)->toArray();
-        //$Result = array_reverse($Result);
-        foreach($Result as $res){
-            $anuncio_borme = $res["anuncio_borme"];
-
-            if(isset($res["actualizado"])){
-                $Actualizado = $res["actualizado"];
-            }else{
-                $Actualizado = 0;
-            }
-            $nombre_comercial = $res["nombre_comercial"];
-            $DocumentoEntero = $res; 
-            if($Actualizado == 0){//Si los datos no estan actualizados
-                foreach($anuncio_borme as $anuncio){
-                    $numero_borme = $anuncio["numero"];
-                    $fecha_borme = $anuncio["fecha"];
-                    $Texto_anuncio_borme = $anuncio["anuncio"];
-                    ProcesarNivel($Texto_anuncio_borme, $Anuncios, 1, NULL);
-                    GuardarResultados();
-                }
-                //Documento actualizado = 1
-                $document = ['$set' => [ "actualizado" => 1]];
-                $Result = $collection->updateOne($filter, $document);
-                header('Location: PantallaConsulta.php?id=' . $id);
-            }else{
-                //echo "Los datos ya estan actualizados";
-                header('Location: PantallaConsulta.php?id=' . $id);
-            }
-        }
-    }
-*/
 
 $Array_Nivel1; //Guardará el parrafo seccionado como Array
 function ProcesarNivel($Texto, $ArrayAnuncios, $Nivel, $PalabraNivel1){
@@ -1312,6 +1222,16 @@ function Id_DeNombre($Nombre){
     $IdNombre = str_replace(",", "", $IdNombre);
     $IdNombre = str_replace(" ", "", $IdNombre);
     return $IdNombre;
+}
+
+function LimpiarNombre($Nombre){
+    $Nombre = str_replace(".", "", $Nombre);
+    $Nombre = str_replace(",", "", $Nombre);
+    $Nombre = str_replace("(", "-", $Nombre);
+    $Nombre = str_replace(")", "", $Nombre);
+    $Nombre = mb_strtolower($Nombre, 'UTF-8');
+    $Nombre = str_replace(" ", "-", $Nombre);
+    return $Nombre;
 }
 
 ?>

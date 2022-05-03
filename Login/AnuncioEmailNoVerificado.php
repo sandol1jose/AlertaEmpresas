@@ -11,39 +11,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Email no verificado</title>
 
 	<link rel="stylesheet" type="text/css" href="css/EmailNoVerificado.css">
 </head>
 <body>
 
-<div class="divBase">
+<div class="divBackGround">
 
-	
-	<span class="Titulo"><b>Email no verificado</b></span>
-	<img src="../imagenes/Error.png" width="20px">
+	<div class="divBase">
 
-	<p>Necesita verificacion</p>
+		
+		<span class="Titulo"><b>Email no verificado</b></span>
+		<img src="../imagenes/Error.png" width="20px">
 
-	<span>Escribe tu correo</span><br>
+		<p>Necesita verificacion</p>
 
-	
+		<span>Escribe tu correo</span><br>
 
-	<form action="../app/ReenviarEmail.php" method="POST" >
+		
 
-		<input class="InputGeneral" type="email" name="Email" id="Email" autocomplete="off" required value="<?php echo $email; ?>">
-		<br>
+		<form action="../app/ReenviarEmail.php" method="POST" >
 
-		<br>
-		<input class="BotonGeneral2" type="submit" name="" value="Reenviar codigo" onclick="CambiarImagen();">
-		<br><br>
-		<a style="font-size: 13px;" href="Verificacion.php?email=<?php echo $email; ?>">-Tengo un código-</a>
-	</form>
+			<input class="InputGeneral" type="email" name="Email" id="Email" autocomplete="off" required value="<?php echo $email; ?>">
+			<br>
 
-	<div id="DivImg2" style="display: none;">
-		<img src="../imagenes/Cargando6Recorte.gif" width="30px">
+			<br>
+			<input class="BotonGeneral2" type="submit" name="" value="Reenviar codigo" onclick="CambiarImagen();">
+			<br><br>
+			<a style="font-size: 13px;" href="Verificacion.php?email=<?php echo $email; ?>">-Tengo un código-</a>
+		</form>
+
+		<div id="DivImg2" style="display: none;">
+			<img src="../imagenes/Cargando6Recorte.gif" width="30px">
+		</div>
 	</div>
-</div>	
+</div>		
+
 <?php include '../templates/footer.php'; ?>	
 </body>
 </html>

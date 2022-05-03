@@ -1,0 +1,35 @@
+.ecabezado_cpanel{
+    height: 60px;
+    width: 100%;
+    background-color: #A4D915;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.BotonGeneral3{
+    background: white;
+    color: black;
+    width: 100px;
+    height: 40px;
+    margin-right: 20px;
+    font-size: 16px;
+    box-shadow: 0px 3px 3px 3px rgba(63, 56, 141, 0.35);
+
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    font-style: normal;
+    font-weight: 500;
+    line-height: 19px;
+}
+
+.BotonGeneral3:hover{
+    transform: scale(0.95, 0.95);
+    box-shadow: 0px 1px 1px 1px rgba(63, 56, 141, 0.35);
+    background: black;
+    color: white;
+}

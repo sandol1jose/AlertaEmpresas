@@ -10,16 +10,20 @@ $Correo = $_POST["Correo"];
 $position = $_POST["position"]; //Posicion en el array del cliente
 $tipo = $_POST["tipo"];
 
-$LimiteEmpresas = 10; //Indica cuantas empresas puedo seguir
-
-/*
-$idEmpresa = "6250993165260000c006ddc3";
-$Correo = "sandol1jose@gmail.com";
-$position = 2;
-$tipo = 1;*/
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();
+
+
+//BUSCANDO LA CONFIGURACION DE CUANTAS ALERTAS SE PUEDEN AGREGAR
+$collection = $database->config;
+$filter = ["tipo" => "Alertas"];//Buscando la configuracion de tipo Alertas
+$Result = $collection->findOne($filter);
+$NumAlertas = 0;
+if($Result != NULL){
+    $NumAlertas = $Result["cantidad"];
+}
+$LimiteEmpresas = $NumAlertas; //Indica cuantas empresas puedo seguir
 
 //Actualizando al Cliente
 $filter = ["email" => $Correo];

@@ -144,13 +144,12 @@ use PHPMailer\PHPMailer\Exception;
 			$mail->SMTPAuth   = true;                                   //Enable SMTP authentication
 			$mail->Username   = 'support@alertaempresas.com';             //SMTP username
 			$mail->Password   = 'Suport7859';                  //SMTP password
-			//$mail->Username   = 'soporte@jumpgt.com';             //SMTP username
-			//$mail->Password   = '$6y9KUtAs2sVWF';                  		//SMTP password
+			//$mail->Username   = 'jumpchiquimula@gmail.com';             //SMTP username
+			//$mail->Password   = 'jumpchiquimula9899';                  		//SMTP password
 			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
 			//$mail->Port       = 465;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 			$mail->Port       = 587;
-			$mail->AddCustomHeader("List-Unsubscribe:<mailto:suppport@alertaempresas.com>,
-			<https://alertaempresas.com/app/unsubscribe.php?identifier=>"); 
+			//$mail->AddCustomHeader("List-Unsubscribe:<mailto:suppport@alertaempresas.com>,<https://alertaempresas.com/app/unsubscribe.php?identifier=>"); 
 			//Recipients
 			$mail->setFrom('support@alertaempresas.com', 'Alerta Empresas');
 			
@@ -176,11 +175,10 @@ use PHPMailer\PHPMailer\Exception;
 			$mail->Subject = 'Alerta de Cambios en Empresa';
 			$mail->Body    = $message;
 			//$mail->AltBody = 'Enviado desde 000webhost.com';
-		
 			$mail->send();
-			echo 'Message has been sent';
+			//echo 'Message has been sent';
 		} catch (Exception $e) {
-			echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+			//echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 		}
 	}
 ?>

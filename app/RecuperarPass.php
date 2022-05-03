@@ -76,8 +76,7 @@ EnviarEmail($Email, $collection);
 			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
 			//$mail->Port       = 465;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 			$mail->Port = 587;
-			$mail->AddCustomHeader("List-Unsubscribe:<mailto:suppport@alertaempresas.com>,
-			<https://alertaempresas.com/app/unsubscribe.php?identifier=".$Email.">"); 
+			//$mail->AddCustomHeader("List-Unsubscribe:<mailto:suppport@alertaempresas.com>,<https://alertaempresas.com/app/unsubscribe.php?identifier=".$Email.">"); 
 			//Recipients
 			$mail->setFrom('support@alertaempresas.com', 'Alerta Empresas');
 			$mail->addAddress($Email);                 					//Add a recipient

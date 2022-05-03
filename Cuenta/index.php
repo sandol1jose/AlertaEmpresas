@@ -27,7 +27,6 @@ $Result = $collection->findOne($filter);
 
     <link rel="stylesheet" type="text/css" href="index.css">
     <link rel="stylesheet" type="text/css" href="../css/switch.css">
-    <title>Cuenta</title>
 </head>
 <body>
 

@@ -137,11 +137,6 @@ body{
 
 
 
-
-
-
-
-
 .DivTituloGrande{
     height: auto;
     padding-bottom: 5px;
@@ -185,7 +180,7 @@ body{
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
-    line-height: 19px;
+    /*line-height: 19px;*/
 }
 
 .BotonGeneral:hover{
@@ -212,7 +207,7 @@ body{
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
-    line-height: 19px;
+    /*line-height: 19px;*/
 }
 
 .BotonGeneral2:hover{
@@ -224,6 +219,29 @@ body{
     background: #949494;
     color: #646464;
 }
+
+
+.BotonViculo{
+    background: transparent;
+    height: auto;
+    width: auto;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    text-align: left;
+
+    color: #3d3d3d;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    /*line-height: 19px;*/
+}
+
+.BotonViculo:hover{
+    color: #483bd1;
+}
+
 
 
 
@@ -278,6 +296,32 @@ body{
     background-color: #343435;
 }
 
+
+
+/*BACKGROUD*/
+.divBackGround{
+    max-width: 1366px;
+    margin: auto;
+    border: 0px solid black;
+}
+
+
+html {
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    margin: 0;
+    margin-bottom: 210px;
+}
+
+.Pie{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 205px;
+}
 
 
 

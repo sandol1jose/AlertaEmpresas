@@ -2,21 +2,13 @@
 $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/Archivos de Ayuda PHP/conexion.php');
 
-//Top5Empresas();
 function Top5Empresas(){
     $conexion = new Conexion();
     $database = $conexion->Conectar();
     $collection = $database->anuncios_dia;
 
-    date_default_timezone_set("UTC");
-
-    $fecha_Millis = getdate();
-    $Fecha = date("Y-m-d", $fecha_Millis[0]);
-    //$Fecha = "2009-02-05";
-    $FechaInsert = new MongoDB\BSON\UTCDatetime(strtotime($Fecha . " 00:00:00")*1000);
     $filtro = [
-        "tipo" => "Constitución",
-        "fecha" => ['$eq' => $FechaInsert]
+        "tipo" => "Constitución"
     ];
     $options = ['projection' => ["nombre_comercial" => 1, "provincia" => 1]];
 
@@ -27,6 +19,7 @@ function Top5Empresas(){
         foreach($Result as $res){
             $Provincia = $res["provincia"];
             $Nombre = $res["nombre_comercial"];
+            $id = $res["_id"];
             if(isset($ArrayAgrupado[$Provincia])){
                 if(count($ArrayAgrupado[$Provincia]["empresas"]) < 5){
                     $ArrayAgrupado[$Provincia]["empresas"][] = $Nombre;
@@ -43,6 +36,7 @@ function Top5Empresas(){
             $Documents[] = $array;
         }
 
+        $Result = $database->top5->deleteMany([]);
         $Result = $database->top5->insertMany($Documents);
         if($Result->isAcknowledged()){
             return 1;
@@ -57,18 +51,7 @@ function Top5Empresas(){
             return 3;
         }
     }
-    
 
-    /*foreach($ArrayAgrupado as $Provincia=>$Empresas){
-        echo $Provincia . "<br>";
-        $contador = 1;
-        foreach($Empresas as $empresa){
-            echo "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" . $contador . ") " . $empresa . "<br>";
-            $contador++;
-        }
-        echo "------------------------------------<br><br><br>";
-    }*/
-    //echo "si";
 }
 
 ?>

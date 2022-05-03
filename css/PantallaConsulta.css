@@ -131,6 +131,11 @@ th{
 }
 
 
+body{
+    margin-bottom: 270px;
+}
+
+
 
 @media screen and (max-width: 430px) {/*PARA CELULARES*/
     .grid-container{

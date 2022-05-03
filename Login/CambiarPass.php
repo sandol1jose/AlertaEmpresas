@@ -11,7 +11,6 @@ if(!isset($_SESSION["Correo"])){
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Restablecer su contraseña</title>
 
 	<link rel="stylesheet" type="text/css" href="css/CambiarPass.css">
 </head>
@@ -32,39 +31,41 @@ if(!isset($_SESSION["Correo"])){
 	}
 ?>
 
-<div class="divBase">
-	<p>Restablecer su contraseña</p>
+<div class="divBackGround">
+	<div class="divBase">
+		<p>Restablecer su contraseña</p>
 
-    <form method="POST" action="../app/CambiarPass.php">
-        
-        <p class="parrafo1">Copie el código de restablecimiento de su correo electrónico y péguelo a continuación.</p>
+		<form method="POST" action="../app/CambiarPass.php">
+			
+			<p class="parrafo1">Copie el código de restablecimiento de su correo electrónico y péguelo a continuación.</p>
 
-		<p style="font-size: 11px;">Si no aparece, revisa la carpeta de spam</p>
-        <input class="InputGeneral" placeholder="Codigo" style="text-transform:uppercase" type="text" name="codigo" id="codigo" autocomplete="off" required><br>
-        <br>
-		<input class="InputGeneral" placeholder="Contraseña nueva" onkeyup="verificarContrasenia();" type="password" name="pass" id="pass" autocomplete="off" required><br>
-        <br>
-		<input class="InputGeneral" placeholder="Confirmar contraseña" onkeyup="verificarContrasenia();" type="password" name="pass2" id="pass2" autocomplete="off" required>
+			<p style="font-size: 11px;">Si no aparece, revisa la carpeta de spam</p>
+			<input class="InputGeneral" placeholder="Codigo" style="text-transform:uppercase" type="text" name="codigo" id="codigo" autocomplete="off" required><br>
+			<br>
+			<input class="InputGeneral" placeholder="Contraseña nueva" onkeyup="verificarContrasenia();" type="password" name="pass" id="pass" autocomplete="off" required><br>
+			<br>
+			<input class="InputGeneral" placeholder="Confirmar contraseña" onkeyup="verificarContrasenia();" type="password" name="pass2" id="pass2" autocomplete="off" required>
 
 
-		<div class="divSeguridad">
-			<div class="divSeguridad2">
-			<img id="IMGSeguridad" name="IMGSeguridad" src="../imagenes/Seguridad4.png" width="40px;">
-			<div class="textoSeguridad" id="txtSeguridadpass" style="font-size: 12px; font-weight: normal;"></div>
+			<div class="divSeguridad">
+				<div class="divSeguridad2">
+				<img id="IMGSeguridad" name="IMGSeguridad" src="../imagenes/Seguridad4.png" width="40px;">
+				<div class="textoSeguridad" id="txtSeguridadpass" style="font-size: 12px; font-weight: normal;"></div>
+				</div>
 			</div>
-		</div>
-  
-        <p>Recuerda utilizar mayúsculas, minúsculas, <br>
-        números y mínimo 8 caracteres para que tu contraseña sea segura</p>
-        
-        <div id="DivImg2" style="display: none;">
-            <img src="../imagenes/Cargando6Recorte.gif" width="70px"><br>
-            <span>Cargando</span>
-        </div>
+	
+			<p>Recuerda utilizar mayúsculas, minúsculas, <br>
+			números y mínimo 8 caracteres para que tu contraseña sea segura</p>
+			
+			<div id="DivImg2" style="display: none;">
+				<img src="../imagenes/Cargando6Recorte.gif" width="70px"><br>
+				<span>Cargando</span>
+			</div>
 
-        <input class="BotonGeneral2" disabled type="submit" name="btn" id="btn" value="Siguiente" onclick="CambiarImagen();">
+			<input class="BotonGeneral2" disabled type="submit" name="btn" id="btn" value="Siguiente" onclick="CambiarImagen();">
 
-    </form>
+		</form>
+	</div>
 </div>
 
 <?php include '../templates/footer.php'; ?>
