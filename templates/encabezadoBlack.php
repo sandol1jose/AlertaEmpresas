@@ -3,10 +3,10 @@
         session_start();//inicio de sesion
     }
     
-    $ip = "localhost";
+    $ip = "http://localhost";
     //$ip = "https://alertaempresas.com";
     //$ip = gethostname();
-    $Servidor = 'http://'.$ip.'/AlertaEmpresas/';
+    $Servidor = $ip.'/AlertaEmpresas/';
 ?>
 
 <?php
@@ -55,10 +55,12 @@ $ListaCadena = array_values($ListaCadena);
 <title>Sin titulo</title>
 <?php } ?>
 
-<div class="Cabecera">
-    <div class="Cabecera_Arriba" style="background-color: #343435;">
-        <div class="DivTitulo">
-            <a href="<?php echo $Servidor; ?>" class="TituloPrincipal" style="color: white;">Alertaempresas.com</a>
+<div class="Cabecera" style="background-color: #343435;">
+    <div clas="divBackGround">
+        <div class="Cabecera_Arriba" style="background-color: #343435;">
+            <div class="DivTitulo">
+                <a href="<?php echo $Servidor; ?>" class="TituloPrincipal" style="color: white;">Alertaempresas.com</a>
+            </div>
         </div>
     </div>
 </div>

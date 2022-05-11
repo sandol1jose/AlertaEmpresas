@@ -16,6 +16,9 @@ body{
     height: 65px;
     align-items: center;
 
+    max-width: 1366px;
+    margin: auto;
+
     /*Alinear 3 divs horizontalmente*/
     display: flex;                  /* establish flex container */
     flex-direction: row;            /* default value; can be omitted */
@@ -32,9 +35,6 @@ body{
     font-size: 190%;
     color: #343435;
 }
-
-
-
 
 
 
@@ -145,6 +145,13 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+
+    max-width: 1366px;
+    margin: auto;
+}
+
+.DivPadreTituloGrande{
+    background-color: #3F388D;
 }
 
 .Titulo2{
@@ -302,7 +309,6 @@ body{
 .divBackGround{
     max-width: 1366px;
     margin: auto;
-    border: 0px solid black;
 }
 
 

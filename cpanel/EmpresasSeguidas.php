@@ -6,7 +6,6 @@ if(!isset($_SESSION["ADMIN_CPANEL"])){
 ?>
 
 <?php
-$_GET["email"] = "sandol1jose@gmail.com";
     if(!isset($_GET["email"])){
         header('Location: usuarios'); //Agregamos el producto
     }

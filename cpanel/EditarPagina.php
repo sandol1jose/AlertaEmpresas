@@ -92,8 +92,6 @@ fclose($file); // Cierras el archivo
     </span>
 
     <h1>Edita el cuerpo de la página "<?php echo $NombrePaginaSola ?>"</h1>
-    <span>Puedes agregar etiquetas html</span><br><br>
-
     
     <form action="app/editararchivo.php" method="POST">
         <button class="BotonGeneral2" class="btnGeneral2" type="submit">Guardar</button>

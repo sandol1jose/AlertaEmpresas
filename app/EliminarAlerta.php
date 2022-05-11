@@ -5,10 +5,6 @@ require_once($root . '/Archivos de Ayuda PHP/conexion.php');
 $idEmpresa = $_POST["idEmpresa"];
 $Correo = $_POST["Correo"];
 
-/*
-$idEmpresa = "6250993165260000c006ddc3";
-$Correo = "sandol1jose@gmail.com";*/
-
 $conexion = new Conexion();
 $database = $conexion->Conectar();
 

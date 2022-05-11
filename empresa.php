@@ -135,16 +135,18 @@ function OrdenarArray($Array){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" type="text/css" href="../css/PantallaConsulta.css">
+    <link rel="stylesheet" type="text/css" href="../css/empresa.css">
 
 </head>
 <body>
 
-<div class="DivTituloGrande">
-    <div class="TituloEmpresa">
-        <img src="../imagenes/edificio.png" alt="" width="18px">
-        <span style="color: white">Empresa</span><br>
-        <span class="Titulo3"><?php echo $NombreComercial; ?></span>
+<div class="DivPadreTituloGrande">
+    <div class="DivTituloGrande">
+        <div class="TituloEmpresa">
+            <img src="../imagenes/edificio.png" alt="" width="18px">
+            <span style="color: white">Empresa</span><br>
+            <span class="Titulo3"><?php echo $NombreComercial; ?></span>
+        </div>
     </div>
 </div>
 

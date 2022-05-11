@@ -56,32 +56,32 @@ $ListaCadena = array_values($ListaCadena);
 <title>Sin titulo</title>
 <?php } ?>
 
-<div class="Cabecera">
-        <div class="Cabecera_Arriba">
-            <div class="DivTitulo">
-                <a href="<?php echo $Servidor; ?>" class="TituloPrincipal">Alertaempresas.com</a>
-            </div>
-
-            <div class="DivBoton">
-                <?php
-                    if(isset($_SESSION["Cliente"])){
-                        $Color = $_SESSION["Cliente"]['ColorCuenta'];
-                        //printf("#%06X\n", mt_rand(0, 0x222222));
-                        ?>
-                        <!--<a href="Cuenta"><?php// echo $_SESSION["Cliente"]["Nombres"]; ?>
-                        <a href="Login/LogOut.php">cerrar sesion</a>-->
-
-                        <button class="BotonCuenta" onclick="window.location.href='<?php echo $Servidor ?>Cuenta'" style='background-color:<?php echo $Color ?>' >
-                            <?php echo strtoupper($_SESSION["Cliente"]["Nombres"][0]);?>
-                        </button>
-                        <a href="<?php echo $Servidor ?>Login/LogOut.php"><button class="Boton">Salir</button></a>
-                <?php }else{ ?>
-                    <a href="<?php echo $Servidor ?>Login">
-                    <button class="Boton">Acceder</button>
-                    </a>
-                <?php }?>
-            </div>
+<div class="Cabecera" style="background-color: white;">
+    <div class="Cabecera_Arriba">
+        <div class="DivTitulo">
+            <a href="<?php echo $Servidor; ?>" class="TituloPrincipal">Alertaempresas.com</a>
         </div>
+
+        <div class="DivBoton">
+            <?php
+                if(isset($_SESSION["Cliente"])){
+                    $Color = $_SESSION["Cliente"]['ColorCuenta'];
+                    //printf("#%06X\n", mt_rand(0, 0x222222));
+                    ?>
+                    <!--<a href="Cuenta"><?php// echo $_SESSION["Cliente"]["Nombres"]; ?>
+                    <a href="Login/LogOut.php">cerrar sesion</a>-->
+
+                    <button class="BotonCuenta" onclick="window.location.href='<?php echo $Servidor ?>Cuenta'" style='background-color:<?php echo $Color ?>' >
+                        <?php echo strtoupper($_SESSION["Cliente"]["Nombres"][0]);?>
+                    </button>
+                    <a href="<?php echo $Servidor ?>Login/LogOut.php"><button class="Boton">Salir</button></a>
+            <?php }else{ ?>
+                <a href="<?php echo $Servidor ?>Login">
+                <button class="Boton">Acceder</button>
+                </a>
+            <?php }?>
+        </div>
+    </div>
 
         <div class="Cabecera_Abajo">
             <div class="Vinculos">

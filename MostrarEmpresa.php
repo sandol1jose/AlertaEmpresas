@@ -361,9 +361,9 @@ if($Actualizado == 0){//Si los datos no estan actualizados
     //Documento actualizado = 1
     $document = ['$set' => [ "actualizado" => 1]];
     $Result = $collection->updateOne($filter, $document);
-    header('Location: PantallaConsulta/' . $NombreEmpresa_Friendly);
+    header('Location: empresa/' . $NombreEmpresa_Friendly);
 }else{
-    header('Location: PantallaConsulta/' . $NombreEmpresa_Friendly);
+    header('Location: empresa/' . $NombreEmpresa_Friendly);
 }
 
 $Array_Nivel1; //Guardará el parrafo seccionado como Array

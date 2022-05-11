@@ -1,5 +1,5 @@
 <?php
-
+    //$_POST['NombrePagina'] = "NuevaPagina";
     if(!isset($_POST['NombrePagina'])){
         header('Location: ../agregarpaginas.php');
     }

@@ -8,7 +8,6 @@ $root = str_replace('\\', '/', dirname(__DIR__));
 require_once($root . '/Archivos de Ayuda PHP/conexion.php');
 
 $Email = $_POST["Email"];
-//$Email = "sandol1jose@gmail.com";
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();
@@ -32,7 +31,7 @@ EnviarEmail($Email, $collection);
 	
 		<div style='font-size:16px;line-height:21px;color:#141823; padding-top: 5px;'>
 		Has solicitado restablecer tu contraseña para la cuenta de Alerta Empresas asociada con 
-        esta dirección de correo electrónico (sandoljose@gmail.com). Para 
+        esta dirección de correo electrónico (".$Email."). Para 
         restablecer la contraseña, por favor copie este código y péguelo en la aplicación:</div>
 	
 		<div style='font-size:30px;line-height:50px;color:#141823; 

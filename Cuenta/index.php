@@ -32,13 +32,16 @@ $Result = $collection->findOne($filter);
 
 <?php include '../templates/encabezado.php'; ?>
 
-<div class="DivTituloGrande">
-    <span class="Titulo2">Bienvenido a tu cuenta</span>
+<div class="DivPadreTituloGrande">
+    <div class="DivTituloGrande">
+        <span class="Titulo2">Bienvenido a tu cuenta</span>
+    </div>
 </div>
 
 
+<div class="divBackGround">
 
-    <?php
+<?php
     	if(isset($_SESSION["Cliente"])){?>
         <div class="nombre">
             <span><?php echo $_SESSION["Cliente"]["Nombres"] . " " . $_SESSION["Cliente"]["Apellidos"]; ?></span>
@@ -120,6 +123,8 @@ $Result = $collection->findOne($filter);
 
 </div>
 
+
+</div><!-- divBackGround-->
 
 
 

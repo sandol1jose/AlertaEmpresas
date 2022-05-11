@@ -12,7 +12,7 @@ $sitemap->setFilename("../sitemap");
 
 $sitemap->addItem("index.php", "1.0", "yearly", "Today");
 $sitemap->addItem("ListarResultados.php", "1.0", "yearly", "Today");
-$sitemap->addItem("PantallaConsulta.php", "1.0", "yearly", "Today");
+$sitemap->addItem("empresa.php", "1.0", "yearly", "Today");
 
 $sitemap->addItem("Cuenta/index.php", "0.5", "yearly", "Today");
 
