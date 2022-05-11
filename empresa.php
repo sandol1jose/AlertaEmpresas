@@ -1,7 +1,9 @@
 <?php
 session_start();//inicio de sesion
-$root = str_replace('\\', '/', dirname(__DIR__));
-require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
+/*$root = str_replace('\\', '/', dirname(__DIR__));
+require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');*/
+include_once("app/conf.php");
+require_once($root . 'Archivos de Ayuda PHP/conexion.php');
 
 if(!isset($_SESSION["AnuncioBorme"])){
     header('Location: index.php');

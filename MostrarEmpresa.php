@@ -1,7 +1,9 @@
 <?php
     session_start();//inicio de sesion
-    $root = str_replace('\\', '/', dirname(__DIR__));
-    require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
+    /*$root = str_replace('\\', '/', dirname(__DIR__));
+    require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');*/
+    include_once("app/conf.php");
+    require_once($root . 'Archivos de Ayuda PHP/conexion.php');
 
 $Anuncio_Constitucion = [
     "Capital: ",
@@ -126,7 +128,8 @@ $Anuncios = [
 //$_GET["sucursal"] = "EN CANARIAS";
 
 if(!isset($_GET["id"])){
-    header('Location: ../AlertaEmpresas');
+    //header('Location: ../AlertaEmpresas');
+    header('Location: ../');
 }
 
 $id = $_GET["id"];
@@ -137,7 +140,8 @@ $database = $conexion->Conectar();
 $Result = $database->anuncios->findOne([ "_id" => new MongoDB\BSON\ObjectID($id)]);
 
 if($Result == NULL){
-    header('Location: ../AlertaEmpresas');
+    //header('Location: ../AlertaEmpresas');
+    header('Location: ../');
 }
 
 $nombre_comercial = $Result["nombre_comercial"];

@@ -1,7 +1,9 @@
 <?php
 session_start();
-$root = str_replace('\\', '/', dirname(__DIR__));
-require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');
+/*$root = str_replace('\\', '/', dirname(__DIR__));
+require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');*/
+include_once("app/conf.php");
+require_once($root . 'Archivos de Ayuda PHP/conexion.php');
 
 if(!isset($_SESSION["buscador"]) || $_SESSION["buscador"] == ""){
     header('Location: index.php');

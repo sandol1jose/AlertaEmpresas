@@ -1,6 +1,6 @@
 Options +FollowSymLinks
 RewriteEngine on
-RewriteRule ^PantallaConsulta/(.*)$ PantallaConsulta.php?name=$1
+RewriteRule ^empresa/(.*)$ empresa.php?name=$1
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*)$ $1.php

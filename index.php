@@ -12,8 +12,11 @@
 
 
 <?php
+/*
 $root = str_replace('\\', '/', dirname(__DIR__));
-require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');    
+require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');*/
+include_once("app/conf.php");
+require_once($root . 'Archivos de Ayuda PHP/conexion.php');
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();

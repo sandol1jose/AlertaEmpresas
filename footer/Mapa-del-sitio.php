@@ -101,7 +101,7 @@ function obtenerListadoDeArchivos2($directorio){
             </ul>
         </div>
 
-        <a href="../sitemap.xml">Ver XML</a>
+        <a href="../../sitemap.xml">Ver XML</a>
 
     </div>
 </div>

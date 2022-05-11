@@ -6,6 +6,7 @@
     //$ip = "https://alertaempresas.com";
     //$ip = gethostname();
     $Servidor = $ip.'/AlertaEmpresas/';
+    //$Servidor = $ip;
 ?>
 
 
