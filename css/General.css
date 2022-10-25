@@ -249,6 +249,27 @@ body{
     color: #483bd1;
 }
 
+.BotonGeneral_Eliminar{
+    background: #d31900;
+    height: 50px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    cursor: pointer;
+    border-radius: 5px 5px 5px 5px;
+
+    color: white;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    /*line-height: 19px;*/
+}
+
+.BotonGeneral_Eliminar:hover{
+    background: #df402b;
+    transform: scale(0.98, 0.98);
+}
+
 
 
 

@@ -6,8 +6,12 @@ include_once("app/conf.php");
 require_once($root . 'Archivos de Ayuda PHP/conexion.php');
 
 if(!isset($_SESSION["AnuncioBorme"])){
-    header('Location: index.php');
+    $NombreEmpresa_GET = $_GET["name"];
+    $NombreEmpresa_GET =  strtoupper(str_replace("-", " ", $NombreEmpresa_GET));
+    header('Location: ../app/buscarid.php?buscadorEmpresa=' . $NombreEmpresa_GET);
+    exit();
 }
+
 
 $id_Empresa = $_SESSION['AnuncioBorme']["id"];
 
@@ -24,14 +28,14 @@ $Anuncios_Borme;
 try{
     $filter = [ "_id" => new MongoDB\BSON\ObjectID($id_Empresa) ];
 }catch(Exception $e){
-    header('Location: index.php');
+    header('Location: ../');
 }
 
 //$Result = $collection->find($filter, ["anuncio_borme" => 0, 'typeMap' => ['array' => 'array']])->toArray();
 $Result = $collection->findOne($filter, ["anuncio_borme" => 0]);
 
 if($Result == NULL){
-    header('Location: index.php');
+    header('Location: ../');
 }
 
 $Result = iterator_to_array($Result);
@@ -106,13 +110,14 @@ $Denominaciones_anteriores = iterator_to_array($DocumentoEntero["denominaciones_
 /*$Anuncios_Borme = NULL;
 if($_SESSION['AnuncioBorme']["id"] == $id_Empresa){*/
 $Anuncios_Borme = $_SESSION['AnuncioBorme']["anuncio_borme"];
+unset($_SESSION['AnuncioBorme']);
 //}
 
 if($Anuncios_Borme != NULL){
     //$Anuncios_Borme = array_reverse(iterator_to_array($Result['anuncio_borme']));
     $Anuncios_Borme = array_reverse($Anuncios_Borme);
 }else{
-    header('Location: index.php');
+    header('Location: ../');
 }
 
 
@@ -128,7 +133,18 @@ function OrdenarArray($Array){
 }
 ?>
 
+<title>
+<?php 
+$NombreComercial_minuscula = ucwords(strtolower($NombreComercial));
+echo $NombreComercial_minuscula;
+?>
+</title>
+
+
 <?php include 'templates/encabezado.php'; ?>
+    
+</body>
+</html>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -136,9 +152,7 @@ function OrdenarArray($Array){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" type="text/css" href="../css/empresa.css">
-
 </head>
 <body>
 
@@ -209,7 +223,10 @@ function OrdenarArray($Array){
                 
 
                 <span name="btn_alertas" id="btn_alertas">
-                    <?php VerificarSeguimiento(); ?>
+                    <?php 
+                    VerificarSeguimiento(); 
+                    VerificarAdministrador();
+                    ?>
                 </span>
 
             </div>
@@ -411,11 +428,17 @@ function VerificarSeguimiento(){
 }
 
 
+function VerificarAdministrador(){
+    //Verifica si un administrador esta viendo la empresa para poder eliminarla
+    global $id_Empresa;
+    $Retorno = NULL;
+    if(isset($_SESSION["ADMIN_CPANEL"])){
+        $Retorno = "<button style='width: 230px;' class='BotonGeneral_Eliminar' onclick=\"EliminarEmpresa('". $id_Empresa ."')\">Eliminar Empresa</button>";
+    }
+    echo $Retorno;
+}
+
 ?>
-
-
-
-
 
 <script>
     function SeguirEmpresa(idEmpresa, Correo, position, tipo){
@@ -456,4 +479,50 @@ function VerificarSeguimiento(){
 			}
 		});
     }
+
+
+
+    function EliminarEmpresa(idEmpresa){
+
+        Swal.fire({
+            title: '¿Quieres eliminar ésta empresa?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            denyButtonText: `No eliminar`,
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+
+                $.ajax({
+                type: "POST",
+                url: "../cpanel/app/EliminarEmpresa.php",
+                data: {'idEmpresa': idEmpresa},
+                dataType: "html",
+                beforeSend: function(){
+                //console.log("Estamos procesando los datos... ");
+                },
+                error: function(){
+                    console.log("error petición ajax");
+                    Swal.fire('No se ha eliminado', '', 'info')
+                },
+                success: function(data){
+                    if(data == "1"){
+                        Swal.fire('Listo!', '', 'success').then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.replace("../cpanel/EliminarEntrada.php"); //Redireccionmos al cpanel
+                            }
+                        })
+                    }else{
+                        Swal.fire('No se ha eliminado', '', 'info')
+                    }
+                }
+                });
+
+            } else if (result.isDenied) {
+                Swal.fire('No se ha eliminado', '', 'info')
+            }
+        })
+    }
+
 </script>

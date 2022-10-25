@@ -10,6 +10,7 @@ require_once($root . '/Librerias/pdfparser-master/alt_autoload.php-dist');//Clas
 require_once($root . '/app/Notificacion.php');
 require_once($root . '/ArchivosExtraccionDB/UnirCambiosDeNombre.php');
 require_once($root . '/ArchivosExtraccionDB/top5.php');
+require_once($root . '/sitesmaps/GenerarSiteMap.php');
 //include 'scraping.php';
 
 //Codigo para que ignore la alerta cuando no existe un archivo
@@ -25,17 +26,18 @@ $ArrayInsertador = NULL; //Almacenará 20 registros para almacenar de 20 en 20
 
 $conexion = new Conexion();
 $database = $conexion->Conectar();
-$collection = $database->anuncios;
+$collection = $database->anuncios2;
 
 //$_GET["tipo"] = 1;
 if(isset($_GET["tipo"])){
-    //$_POST["fecha"] = '20090102';
+    //$_POST["fecha"] = '20090105';
     //$_POST["fecha"] = '20120907';
     $fechaActual = $_POST["fecha"];
     RecorrerXML($fechaActual);
     //UnirCambiosDeNombre(2); // /ArchivosExtraccionDB/UnirCambiosDeNombre.php
 }else{
-    $collection2 = $database->anuncios_dia;
+    //Automatico, se ejectua con tarea cron
+    $collection2 = $database->anuncios_dia2;
     $Result = $collection2->deleteMany([]);
 
     date_default_timezone_set("Europe/Madrid");
@@ -49,9 +51,11 @@ if(isset($_GET["tipo"])){
     if($dia != 0 && $dia != 6){//Verificando que no sea Sabado o Domingo
         //$fechaActual = date("Ymd", $fecha_Millis[0] - 86400);
         $fechaActual = date("Ymd", $fecha_Millis[0]);
+        //$fechaActual = '20090105'; //Para buscar una fecha especifica
         $Retorno = RecorrerXML($fechaActual);
         UnirCambiosDeNombre(1); // /ArchivosExtraccionDB/UnirCambiosDeNombre.php
         Top5Empresas(); // /ArchivosExtraccionDB/top5.php
+        GenerarSiteMap(2); // /sitesmaps/GenerarSiteMap.php
 
         $collection3 = $database->cron;
         $document = [
@@ -463,6 +467,12 @@ function GuardarRegistro($NombreEmpresa, $Entrada, $NumeroEntrada, $fecha, $Sucu
         ];
     }
 
+    
+    //Agregando el campo "Eliminado" al nuevo anuncio si la empresa está eliminada o inhabilitada
+    $Esta_Eliminada = ComprobarEstado($id_NombreEmpresa);
+    if($Esta_Eliminada == 1){
+        $ArrayInsertador[count($ArrayInsertador)-1]["eliminado"] = 1;
+    }
 
     $contadorArray = count($ArrayInsertador);
 
@@ -527,6 +537,30 @@ function NuevosAnunciosPorDia($ArrayInsertador){
                 $Result = $collection2->insertMany($ArrayInsertador);
             //}
         //}
+}
+
+
+function ComprobarEstado($id_NombreEmpresa){
+    //comprueba si la empresa está en estado eliminada. para no mostrar su anuncio
+    global $collection; //Coleccion anuncios
+    global $database;
+    $Retorno = 0;
+    $filter = ["id_otros_nombres" => $id_NombreEmpresa, 'eliminado' => 1];
+    $Result = $database->cambios_nombres->findOne($filter);
+
+    if($Result === NULL){
+        //No se encontro nada en otros nombres
+
+        $filter = ["id_nombre_comercial" => $id_NombreEmpresa, 'eliminado' => 1];
+        $Result = $collection->findOne($filter);
+        if($Result != NULL){//Si se encontro algun registro
+            $Retorno = 1; //La empresa si está eliminada
+        }
+    }else{
+        $Retorno = 1; //La empresa si está eliminada
+    }
+
+    return $Retorno;
 }
 
 /*

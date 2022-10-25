@@ -1,14 +1,13 @@
 Options +FollowSymLinks
-RewriteEngine on
-RewriteRule ^empresa/(.*)$ empresa.php?name=$1
+RewriteEngine On
+RewriteRule ^empresa.php/(.*)$ empresa.php?name=$1
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*)$ $1.php
 
+
 #php_flag log_errors on
 #php_flag display_errors on
-
-
 
 
 #Options +FollowSymLinks

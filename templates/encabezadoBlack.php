@@ -4,7 +4,7 @@
     }
     
     $ip = "http://localhost";
-    //$ip = "https://alertaempresas.com";
+    //$ip = "https://alertaempresas.com/";
     //$ip = gethostname();
     $Servidor = $ip.'/AlertaEmpresas/';
     //$Servidor = $ip;
@@ -36,14 +36,23 @@ if(!isset($_SESSION["TITULOS_PAGINAS"]) || $_GET["prueba"] == 1){
 
 
 $ListaCadena = explode("/", str_replace('.php', '', $_SERVER['PHP_SELF']));
-unset($ListaCadena[0]);
+if($ListaCadena[0] == ""){
+    $ListaCadena[0] = "AlertaEmpresas";
+}else{
+    unset($ListaCadena[0]);
+}
+
 if(count($ListaCadena) != 2){
-    unset($ListaCadena[1]);
+    foreach($ListaCadena as $key=>$Clave){
+        if($Clave == "AlertaEmpresas"){
+            unset($ListaCadena[$key]);
+        }
+    }
 }
 $ListaCadena = array_values($ListaCadena);
 ?>
 <script src="<?php echo $Servidor; ?>js/general.js"></script>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
 

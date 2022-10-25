@@ -5,6 +5,8 @@ require_once($root . '/AlertaEmpresas/Archivos de Ayuda PHP/conexion.php');*/
 include_once("app/conf.php");
 require_once($root . 'Archivos de Ayuda PHP/conexion.php');
 
+
+//$_SESSION["buscador"] = "BODEGAS VALLEGARCIA, SOCIEDAD LIMITADA";
 if(!isset($_SESSION["buscador"]) || $_SESSION["buscador"] == ""){
     header('Location: index.php');
 }
@@ -20,7 +22,7 @@ $QuienEncontro = NULL;
 $Encontrado = 0;
 
 //$filter = ["otros_nombres" => ['$regex' => $NombreEmpresa ]];
-$filter = ["id_otros_nombres" => $id_nombre_empresa ];
+$filter = ["id_otros_nombres" => $id_nombre_empresa, 'eliminado' => ['$ne' => 1]];
 $options = NULL;
 //$options["nombre_comercial"] = 1;
 $options["limit"] = 80;
@@ -31,7 +33,7 @@ if(count($Result) != 0){
     $QuienEncontro = "OtrosNombres";
     $Encontrado = 1;
 }else{
-    $filter = ['id_nombre_comercial' =>  $id_nombre_empresa];
+    $filter = ['id_nombre_comercial' =>  $id_nombre_empresa, 'eliminado' => ['$ne' => 1]];
     $options["limit"] = 80;
     //$options["projection"] = ['nombre_comercial' => 1];
     //$options = ["nombre_comercial" => 1, 'limit' => 50];
@@ -41,12 +43,12 @@ if(count($Result) != 0){
         $Encontrado = 1;
     }else{
         //$filter = [ '$text' => [ '$search' => "\"$NombreEmpresa\"" ] ];
-        $filter = [ '$text' => ['$search' => $NombreEmpresa ]];
+        $filter = [ '$text' => ['$search' => $NombreEmpresa ], 'eliminado' => ['$ne' => 1]];
         //$options["nombre_comercial"] = 1;
         $options["limit"] = 3000;
         $options["projection"] = [
             'nombre_comercial' => 1,
-            'id_nombre_comercial' => 1,
+            'id_nombre_comercial' => 1
             //'score' => ['$meta' => "textScore"]
         ];
         //$options["projection"] = ['score' => ['$meta' => "textScore"]];
@@ -176,6 +178,8 @@ function Id_DeNombre($Nombre){
                 }
             }
         }
+    }else{
+        echo "No se encontraron resultados<br><br>";
     }
     ?>
 

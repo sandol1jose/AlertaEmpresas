@@ -59,6 +59,13 @@ if(!isset($_SESSION["ADMIN_CPANEL"])){
                 <span class="subtitulo">Contraseña</span><br><br>
                 <span class="parrafo1">Cambia la contraseña del usuario administrador</span>          
             </div>
+
+            <div class="item5" onclick="location.href='EliminarEntrada.php'">
+                <br><br>
+                <img src="../imagenes/cpanel/Eliminar.png" alt="" width="70px"><br><br>
+                <span class="subtitulo">Eliminar Entrada</span><br><br>
+                <span class="parrafo1">Elimina los datos de una empresa en particular</span>          
+            </div>
         </div>
         </div>
 

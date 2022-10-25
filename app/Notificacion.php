@@ -10,7 +10,8 @@ function Notificar(){
 	$conexion = new Conexion();
 	$database = $conexion->Conectar();
 	$collection = $database->anuncios_dia;
-	$Anuncios = $collection->find()->toArray();
+	$filtro = ['eliminado' => ['$ne' => 1]];//Solo los anuncios de empresas que no estén eliminadas
+	$Anuncios = $collection->find($filtro)->toArray();
 
 	//Agrupando los anuncios por empresa
 	if($Anuncios != NULL){

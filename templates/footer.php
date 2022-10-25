@@ -57,7 +57,7 @@ function obtenerListadoDeArchivos($directorio){
                 $Nombre = str_replace("-", " ", $Archivo["Nombre"]);
 ?>
             
-        <a class="aPieFooter" href="<?php echo $Servidor."footer/".$Archivo["Nombre"].".".$Archivo["ext"]; ?>">
+        <a class="aPieFooter" href="<?php echo $Servidor."footer/".$Archivo["Nombre"]; ?>">
             <?php echo $Nombre ?>&nbsp &nbsp &nbsp
         </a>  
             
